@@ -1,159 +1,38 @@
+from datetime import datetime
 from lxml import etree
 import os
 import re
 import tomlkit
 
-from . import schema
-
-class ReadError(Exception):
-    """Raised when there is a generic issue parsing CCV data"""
-    pass
-
-class SectionError(Exception):
-    """Raised when there is an issue parsing or generating CCV sections"""
-    pass
-
-class FieldError(Exception):
-    """Raised when there is an issue parsing or generating CCV section fields"""
-    pass
+from .schema import Schema, FieldError
 
 #===============================================================================
 class CCV(object):
 
     #---------------------------------------------------------------------------
-    def __init__(self, schema = schema.cv, lov = schema.lov, ref = schema.ref):
+    def __init__(self, schema = Schema()):
+    
         self.schema = schema
-        self.lov = lov
-        self.ref = ref
-
-        # Generating section and field lookup table
-        self._sections = {}
-        self._fields = {}
-
-        for _, elem in etree.iterwalk(schema, events=("start",), tag="section"):
-            label = elem.get("englishName")
-            parent_label = elem.getparent().get("englishName")
-            
-            if label not in self._sections:
-                self._sections[label] = { parent_label: elem }
-            else:
-                if parent_label in self._sections[label]:
-                    err = '"{}" is not unique within "{}"'
-                    err = err.format(label, parent_label)
-                    raise SectionError(err)
-                else:
-                    self._sections[label][parent_label] = elem
-
-            # Looping through fields within each section
-            code = elem.get("id")
-            self._fields[code] = {}
-
-            for child in elem.getchildren():
-                if child.tag == "field":
-                    child_label = child.get("englishName")
-
-                    if label in self._fields[code]:
-                        err = '"{}" is not unique within "{}"'
-                        err = err.format(child_label, child)
-                        raise FieldError(err)
-                    else:
-                        self._fields[code][child_label] = child
-
-        # Generating type lookup table
-        self._types = {}
-        for _, elem in etree.iterwalk(schema, events=("start",), tag="type"):
-            self._types[elem.get("id")] = elem.get("englishName")
-
-        # Generating type lookup table
-        self._lov = {}
-        for _, elem in etree.iterwalk(lov, events=("start",), tag="table"):
-            self._lov[elem.get("id")] = {}
-
-            for _, code in etree.iterwalk(elem, events=("start",), tag="code"):
-                self._lov[elem.get("id")][code.get("englishName")] = code.get("id")
-
-        # Reference tables are a bit more annoying -- each "final" value like
-        # "Dalhousie University" carries with it reference metainformation such as
-        # (Canada, Nova Scotia, Academic) so the lookup process is:
-        # table id -> entry -> entry_id -> meta_ids -> meta
         
-        # Simplifying this information yields 
-        #   entry -> {id: string, meta: ((name, id), ...)
+        nsmap = {'generic-cv': 'http://www.cihr-irsc.gc.ca/generic-cv/1.0.0'}
+        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+        self.xml = etree.Element('{%s}generic-cv' % nsmap['generic-cv'], 
+                nsmap = nsmap, lang = "en", dateTimeGenerated=timestamp
+        )
+
+        self.sections = {}
 
     #---------------------------------------------------------------------------
-    def get_section_element(self, section, parent = None):
+    def gen_blank_entry(self, section, parent = None):
 
-        if section not in self._sections:
-            err = '"{}" section is not defined in the schema.'
-            err = err.format(section)
-            raise SectionError(err)
+        section = self.schema.get_section_element(section, parent)
 
-        table = self._sections[section]
+        # Initializing xml element
+        xml = etree.Element("section", 
+                id = section.get("id"), label = section.get("englishName"))
 
-        if (parent is None) and (len(table) == 1):
-            return table[list(table.keys())[0]]
-
-        if parent is None:
-            err = '"{}" section is ambigious without a parent section (one of {})'
-            err = err.format(section, ", ".join(table.keys()))
-            raise SectionError(err)
-
-        if parent not in table:
-            err = '"{}" section is not defined within "{}".'
-            err = err.format(section, parent)
-            raise SectionError(err)
-
-        return table[parent]
-
-    #---------------------------------------------------------------------------
-    def get_field_elements(self, section, parent = None):
-
-        # First, get section
-        section = self.get_section_element(section, parent)
-
-        # And then use code to lookup fields
-        return self._fields[section.get("id")]
-
-    #---------------------------------------------------------------------------
-    def get_field_type(self, field):
-
-        data_type = field.get("dataType")
-
-        if data_type not in self._types:
-            err = '"{}" type is not defined in the schema.'
-            err = err.format(data_type)
-            raise FieldError(err)
-
-        return self._types[data_type]
-
-    #---------------------------------------------------------------------------
-    def get_lov_id(self, value, field):
-
-        # Double checking field type
-        data_type = self.get_field_type(field)
-
-        if data_type != "LOV":
-            err = 'Processing error, {} is not an "LOV" field.'
-            err = err.format(data_type)
-            raise FieldError(err)
-
-        # Getting appropriate table
-        table_id = field.get("lookupId")
-        table_name = field.get("lookupEnglishExplanation")
-        if table_id not in self._lov:
-            err = 'No lookup table "{}" defined in the schema.'
-            err = err.format(table_name)
-            raise FieldError(err)
-
-        table = self._lov[table_id]
-
-        # Checking if value is in table
-        if value not in table:
-            err = '"{}" is not a valid value for "{}" (one of {})'
-            err = err.format(value, table_name, ", ".join(table.keys()))
-            raise FieldError(err)
-
-        return table[value]
+        return xml, section
 
     #---------------------------------------------------------------------------
     def gen_entry(self, entry):
@@ -167,29 +46,25 @@ class CCV(object):
         if "CCVCategory" in entry:
             category_label = entry["CCVCategory"]
 
-        section = self.get_section_element(section_label, category_label)
-        fields = self.get_field_elements(section_label, category_label)
-
         # Initializing xml element
-        xml = etree.Element("section", 
-                id = section.get("id"), label = section.get("englishName"))
+        xml, section = self.gen_blank_entry(section_label, category_label)
 
         # Loop through valid elements and add them
+        fields = self.schema.get_field_elements(section_label, category_label)
+
         for field_label in fields:
 
             if field_label in entry:
-                element = self.gen_element(entry[field_label], fields[field_label])
+                xml.append(self.gen_element(entry[field_label], fields[field_label]))
+
+        # Return both entry and the xml schema it was based on 
+        return xml, section
 
     #---------------------------------------------------------------------------
     def gen_element(self, value, field):
 
         # First, determine what sort of field this is
-        data_type = self.get_field_type(field)
-
-        # Defining generic error message for missing implementations
-        err = '"{}" data type is not currently supported due to lack of examples. ' \
-              'Contact the package author with an XML example of field data.'
-        err = err.format(data_type)
+        data_type = self.schema.get_field_type(field)
 
         elem = etree.Element("field", 
             id = field.get("id"), label = field.get("englishName"))
@@ -200,41 +75,115 @@ class CCV(object):
         if data_type == "Year":
             inner = etree.Element("value", format = "yyyy", type = data_type)
             inner.text = value
+
         elif data_type == "Year Month":
             inner = etree.Element("value", format = "yyyy/MM", type = data_type)
             inner.text = value
+
         elif data_type == "Month Day":
             inner = etree.Element("value", format = "MM/dd", type = data_type)
             inner.text = value
+
         elif data_type == "Date":
             inner = etree.Element("value", format = "yyyy-MM-dd", type = data_type)
             inner.text = value
+
         elif data_type == "Datetime":
             pass
+
         elif data_type == "String":
             inner = etree.Element("value", type = data_type)
             inner.text = value
+
         elif data_type == "Integer":
             inner = etree.Element("value", type = "Number")
             inner.text = value
+
         elif data_type == "LOV":
-            inner = etree.Element("lov", id = self.get_lov_id(value, field))
+            lov_id = self.schema.get_lov_id(value, field)
+            inner = etree.Element("lov", id = lov_id)
             inner.text = value
+
         elif data_type == "Reference":
-            pass
+            ref_id, meta = self.schema.get_ref_ids(value, field)
+            inner = etree.Element("refTable", refValueId = ref_id)
+
+            for link in meta:
+                link = etree.Element("linkedWith", 
+                    label = "x", value = link["label"], refOrLovId = link["id"]
+                )
+                inner.append(link)
+
         elif data_type == "Bilingual":
-            pass
+            inner = etree.Element("value", type = "Bilingual")
+            inner.append(etree.Element("english"))
+            inner.append(etree.Element("french"))
+            inner[0].text = value
+        
         elif data_type == "PubMed":
             pass
+        
         elif data_type == "Elapsed-Time":
             pass
 
-        if inner is not None:
-            elem.append(inner)
+        if inner is None:
+            # Defining generic error message for missing implementations
+            err = '"{}" data type is not currently supported. ' \
+                  'Contact the package author with an XML example of field data.'
+            err = err.format(data_type)
+            raise FieldError(err)
 
-        print(etree.tostring(elem))
+        elem.append(inner)
 
-        print(value)
+        return elem
+
+    #---------------------------------------------------------------------------
+    def add_entry(self, entry):
+
+        # First generate the new xml segement to be added
+        xml_entry, section = self.gen_entry(entry)
+
+        # Then trace section hierarchy
+        parents = []
+        parent = section.getparent()
+
+        while parent is not None:
+            parents.append(parent.get("englishName"))
+            parent = parent.getparent()
+
+        parents.reverse()
+
+        p0 = parents[0]
+        p1 = parents[1]
+
+        # Ensuring that the top-level section exists
+        if p1 not in self.sections:
+            self.sections[p1] = {}
+
+        if p0 not in self.sections[p1]:
+            xml, _ = self.gen_blank_entry(p1, p0)
+            self.sections[p1][p0] = xml
+            self.xml.append(xml)
+
+        xml_parent = self.sections[p1][p0]
+
+        # From there, keep stepping through and linking
+        for i in range(2, len(parents)):
+            p0 = parents[i-1]
+            p1 = parents[i]
+
+            if p1 not in self.sections:
+                self.sections[p1] = {}
+
+            if p0 not in self.sections[p1]:
+                xml, _ = self.gen_blank_entry(p1, p0)
+                self.sections[p1][p0] = xml
+                xml_parent.append(xml)
+
+            xml_parent = self.sections[p1][p0]
+
+        # Which should result in the simple addition of new element to parent
+        xml_parent.append(xml_entry)
 
     #---------------------------------------------------------------------------
     def add_entries_from_toml(self, path, **kwargs):
@@ -244,7 +193,7 @@ class CCV(object):
                 f = open(path)
                 with f:
                     text = f.read() 
-                #self.add_entry(tomlkit.loads(text))
+                self.add_entry(tomlkit.loads(text))
             else:
                 err = '"path" must be a TOML file (with .toml suffix) or directory '\
                       'containing TOML files'
@@ -261,7 +210,7 @@ class CCV(object):
                         f = open(name)
                         with f:
                             text = f.read() 
-                        self.gen_entry(tomlkit.loads(text))
+                        self.add_entry(tomlkit.loads(text))
                      
 
         

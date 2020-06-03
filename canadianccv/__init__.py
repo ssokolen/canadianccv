@@ -1,2 +1,2 @@
-from . import schema
+from .schema import *
 from .ccv import *

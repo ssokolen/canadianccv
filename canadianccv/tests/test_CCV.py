@@ -3,38 +3,22 @@ import os
 from unittest import TestCase
 
 import canadianccv
-from canadianccv import CCV, SectionError
+from canadianccv import CCV
 
 class TestCCV(TestCase):
 
     ccv = CCV()
-
-    def test_init(self):
-        self.assertTrue(isinstance(self.ccv.schema, etree._Element))
-
-    def test_get_section_element(self):
-        f = self.ccv.get_section_element
-
-        elem = f("Courses Taught")
-        self.assertTrue(isinstance(elem, etree._Element))
-
-        self.assertRaises(SectionError, f, "Test")
-        self.assertRaises(SectionError, f, "Research Disciplines")
-
-    def test_get_field_elements(self):
-        f = self.ccv.get_field_elements
-
-        fields = f("Courses Taught")
-        self.assertTrue(isinstance(fields, dict))
-        self.assertTrue(len(fields) > 0)
-
-        self.assertRaises(SectionError, f, "Test")
-        self.assertRaises(SectionError, f, "Research Disciplines")
 
     def test_add_entries_from_toml(self):
         f = self.ccv.add_entries_from_toml
 
         path = os.path.join(os.path.dirname(__file__), 'toml_files')
         f(path)
+
+        f = open('test.xml', 'wb')
+        with f:
+            #f.write(etree.tostring(self.ccv.xml, pretty_print = True))
+            f.write(etree.tostring(self.ccv.xml, 
+                pretty_print = False, xml_declaration = True, encoding = "UTF-8"))
         
 
