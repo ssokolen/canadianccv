@@ -4,70 +4,104 @@ import os
 import re
 import tomlkit
 
-from .schema import Schema, FieldError
+from .schema import Schema, SchemaError
 
 #===============================================================================
 class CCV(object):
 
     #---------------------------------------------------------------------------
-    def __init__(self, schema = Schema()):
+    def __init__(self, xml_path = None, schema = Schema()):
     
         self.schema = schema
-        
+        self._sections = {}
+
         nsmap = {'generic-cv': 'http://www.cihr-irsc.gc.ca/generic-cv/1.0.0'}
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-
         self.xml = etree.Element('{%s}generic-cv' % nsmap['generic-cv'], 
-                nsmap = nsmap, lang = "en", dateTimeGenerated=timestamp
+                nsmap = nsmap, lang = "en", dateTimeGenerated = timestamp,
         )
 
-        self.sections = {}
+        if xml_path is not None:
+            f = open(xml_path, 'rb')
+            with f:
+                content = f.read()
+            xml = etree.XML(content)
+            
+            # Re-mapping existing sections according to specified schema
+            for _, section in etree.iterwalk(xml, tag="section"):
+
+                section_id = section.get("id")
+                lock = self.schema.get_section_lock(section_id)
+
+                if not lock:
+                    self.add_xml_entry(section) 
 
     #---------------------------------------------------------------------------
-    def gen_blank_entry(self, section, parent = None):
+    def gen_blank_entry(self, section_id):
 
-        section = self.schema.get_section_element(section, parent)
+        section_schema = self.schema.get_section_schema(section_id)
+        section_id, section_label = self.schema.get_ids(section_schema)
 
         # Initializing xml element
-        xml = etree.Element("section", 
-                id = section.get("id"), label = section.get("englishName"))
+        xml = etree.Element("section", id = section_id, label = section_label)
 
-        return xml, section
+        return xml
 
     #---------------------------------------------------------------------------
     def gen_entry(self, entry):
 
-        # Look up section based on entry
         section_label = None
         if "CCVSection" in entry:
-            section_label = entry["CCVSection"]
+            category_label = entry["CCVSection"]
+            del entry["CCVSection"]
 
         category_label = None
         if "CCVCategory" in entry:
             category_label = entry["CCVCategory"]
+            del entry["CCVCategory"]
+
+        # Try to infer section based on fields
+        section_ids = self.schema.get_section_id_from_fields(list(entry.keys()))
+
+        if len(section_ids) == 1:
+            section_id = section_ids[0]
+        else:
+            if "CCVSection" is None:
+                err = "Add CCVSection to explicitly identify entry sections."
+                raise SchemaError
+
+            section_id = self.schema.get_section_id(section_label, category_label)
 
         # Initializing xml element
-        xml, section = self.gen_blank_entry(section_label, category_label)
+        xml = self.gen_blank_entry(section_id)
 
         # Loop through valid elements and add them
-        fields = self.schema.get_field_elements(section_label, category_label)
+        fields = self.schema.get_section_fields(section_id)
+        sections = self.schema.get_section_sections(section_id)
 
-        for field_label in fields:
+        for label in entry:
 
-            if field_label in entry:
-                xml.append(self.gen_element(entry[field_label], fields[field_label]))
+            if label in fields:
+                xml.append(self.gen_element(entry[label], fields[label]))
+            elif label in sections:
+                entry[label]["CCVSection"] = label
+                entry[label]["CCVCategory"] = section_label
+                xml.append(self.gen_entry(entry[label]))
+            else:
+                err = '"{}" is not a valid field or section in "{}"'
+                err = err.format(label, section_label)
 
         # Return both entry and the xml schema it was based on 
-        return xml, section
+        return xml
 
     #---------------------------------------------------------------------------
-    def gen_element(self, value, field):
+    def gen_element(self, value, schema):
 
         # First, determine what sort of field this is
-        data_type = self.schema.get_field_type(field)
+        data_type = self.schema.get_field_type(schema)
 
-        elem = etree.Element("field", 
-            id = field.get("id"), label = field.get("englishName"))
+        field_id, field_label = self.schema.get_ids(schema)
+        elem = etree.Element("field", id = field_id, label = field_label)
 
         # And then parse based on type
         inner = None
@@ -100,12 +134,12 @@ class CCV(object):
             inner.text = value
 
         elif data_type == "LOV":
-            lov_id = self.schema.get_lov_id(value, field)
+            lov_id = self.schema.get_lov_id(value, schema)
             inner = etree.Element("lov", id = lov_id)
             inner.text = value
 
         elif data_type == "Reference":
-            ref_id, meta = self.schema.get_ref_ids(value, field)
+            ref_id, meta = self.schema.get_ref_ids(value, schema)
             inner = etree.Element("refTable", refValueId = ref_id)
 
             for link in meta:
@@ -138,52 +172,43 @@ class CCV(object):
         return elem
 
     #---------------------------------------------------------------------------
-    def add_entry(self, entry):
+    def add_dict_entry(self, entry):
 
-        # First generate the new xml segement to be added
-        xml_entry, section = self.gen_entry(entry)
+        # Generate the new xml segement to be added and pass it on
+        xml_entry = self.gen_entry(entry)
+
+        self.add_xml_entry(xml_entry)
+
+    #---------------------------------------------------------------------------
+    def add_xml_entry(self, entry):
+
+        schema = self.schema.get_section_schema(entry.get("id"))
 
         # Then trace section hierarchy
         parents = []
-        parent = section.getparent()
+        parent = schema.getparent()
 
         while parent is not None:
-            parents.append(parent.get("englishName"))
+            parents.append(parent.get("id"))
             parent = parent.getparent()
 
         parents.reverse()
 
-        p0 = parents[0]
-        p1 = parents[1]
+        xml_parent = self.xml
 
-        # Ensuring that the top-level section exists
-        if p1 not in self.sections:
-            self.sections[p1] = {}
+        # From there, step through parents and link
+        for i in range(1, len(parents)):
+            section_id = parents[i]
 
-        if p0 not in self.sections[p1]:
-            xml, _ = self.gen_blank_entry(p1, p0)
-            self.sections[p1][p0] = xml
-            self.xml.append(xml)
-
-        xml_parent = self.sections[p1][p0]
-
-        # From there, keep stepping through and linking
-        for i in range(2, len(parents)):
-            p0 = parents[i-1]
-            p1 = parents[i]
-
-            if p1 not in self.sections:
-                self.sections[p1] = {}
-
-            if p0 not in self.sections[p1]:
-                xml, _ = self.gen_blank_entry(p1, p0)
-                self.sections[p1][p0] = xml
+            if section_id not in self._sections:
+                xml = self.gen_blank_entry(section_id)
                 xml_parent.append(xml)
+                self._sections[section_id] = xml
 
-            xml_parent = self.sections[p1][p0]
+            xml_parent = self._sections[section_id]
 
         # Which should result in the simple addition of new element to parent
-        xml_parent.append(xml_entry)
+        xml_parent.append(entry)
 
     #---------------------------------------------------------------------------
     def add_entries_from_toml(self, path, **kwargs):
@@ -193,7 +218,7 @@ class CCV(object):
                 f = open(path)
                 with f:
                     text = f.read() 
-                self.add_entry(tomlkit.loads(text))
+                self.add_dict_entry(tomlkit.loads(text))
             else:
                 err = '"path" must be a TOML file (with .toml suffix) or directory '\
                       'containing TOML files'
@@ -210,7 +235,7 @@ class CCV(object):
                         f = open(name)
                         with f:
                             text = f.read() 
-                        self.add_entry(tomlkit.loads(text))
+                        self.add_dict_entry(tomlkit.loads(text))
                      
 
         

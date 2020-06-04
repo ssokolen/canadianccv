@@ -29,8 +29,15 @@ _ref = _read_schema("ref.xml")
 #===============================================================================
 class Schema(object):
     """ 
-    _entries [section name][parent name] -> 
-        {section: [XML], fields: [field name] -> XML}
+    _section_lookup [section name][parent name] -> id
+    _section_lookup_by_field [field_name] -> set(id)
+
+    _sections [id] -> {
+        schema: XML, 
+        label: section label
+        fields: [XML],
+        sections: [XML],
+        }
     
     _type_names [type id] -> name
 
@@ -41,81 +48,137 @@ class Schema(object):
     #---------------------------------------------------------------------------
     def __init__(self, schema = _cv, lov = _lov, ref = _ref):
 
-        # Generating entry lookup table
-        self._entries = {}
+        self._lang = "english"
+
+        # Generating section/field tables
+        self._section_lookup = {}
+        self._section_lookup_by_field = {}
+        self._section_lookup_by_fields = {}
+
+        self._sections = {}
 
         # Walk over every section
-        for _, elem in etree.iterwalk(schema, events=("start",), tag="section"):
-            section_label = elem.get("englishName")
-            parent_label = elem.getparent().get("englishName")
-            
-            if section_label not in self._entries:
-                self._entries[section_label] = {}
+        for _, section in etree.iterwalk(schema, tag="section"):
+
+            section_id, section_label = self.get_ids(section)
+
+            parent = section.getparent()
+            _, parent_label = self.get_ids(parent)
+
+            # Add to lookup table by name
+            if section_label not in self._section_lookup:
+                self._section_lookup[section_label] = {}
                 
-            if parent_label in self._entries[section_label]:
+            if parent_label in self._section_lookup[section_label]:
                 err = '"{}" is not unique within "{}"'
                 err = err.format(section_label, parent_label)
                 raise SectionError(err)
             
-            self._entries[section_label][parent_label] = {
-                "section": elem, "fields": {}
+            self._section_lookup[section_label][parent_label] = section_id
+
+            # Generating full entry
+            self._sections[section_id] = {
+                "schema": section,
+                "label": section_label,
+                "fields": {},
+                "sections": {},
             }
 
             # Looping through fields within each section
-            fields = self._entries[section_label][parent_label]["fields"]
-            for field in elem.getchildren():
-                
-                if field.tag != "field":
-                    continue
+            fields = self._sections[section_id]["fields"]
+            sections = self._sections[section_id]["sections"]
 
-                field_label = field.get("englishName")
+            for child in section.getchildren():
 
-                if field_label in fields:
-                    err = '"{}" is not unique within "{}"'
-                    err = err.format(field_label, section_label)
-                    raise FieldError(err)
+                child_id, child_label = self.get_ids(child)
 
-                fields[field_label] = field
+                if child.tag == "field":
+
+                    if child_label not in self._section_lookup_by_field:
+                        self._section_lookup_by_field[child_label] = set()
+                    
+                    self._section_lookup_by_field[child_label].add(section_id)
+
+                    if child_label in fields:
+                        err = '"{}" is not unique within "{}"'
+                        err = err.format(child_label, section_label)
+                        raise FieldError(err)
+
+                    fields[child_label] = child
+
+                elif child.tag == "section":
+
+                    if child_label in sections:
+                        err = '"{}" is not unique within "{}"'
+                        err = err.format(child_label, section_label)
+                        raise SectionError(err)
+
+                    sections[child_label] = child
+
+        # Any section that is found within a section that has fields must be locked
+        # (to prevent stakeholder from drifting out of research funding)
+        for section_id in self._sections:
+            section = self._sections[section_id]["schema"]
+
+            # Trace section hierarchy
+            parents = []
+            parent = section.getparent()
+
+            while parent is not None:
+                parents.append(parent.get("id"))
+                parent = parent.getparent()
+
+            parents.reverse()
+
+            lock = False
+
+            # Ignoring the root, we look for any parent that has fields
+            for i in range(1, len(parents)):
+                parent_id = parents[i]
+                fields = self._sections[parent_id]["fields"]
+
+                if len(fields) > 0:
+                    lock = True
+                    break
+
+            self._sections[section_id]["lock"] = lock
 
         # Generating type lookup table
         self._type_names = {}
-        for _, elem in etree.iterwalk(schema, events=("start",), tag="type"):
-            self._type_names[elem.get("id")] = elem.get("englishName")
+        for _, elem in etree.iterwalk(schema, tag="type"):
+            elem_id, elem_label = self.get_ids(elem)
+            self._type_names[elem_id] = elem_label
 
         # Generating lov lookup table
         self._lov_categories = {}
         self._lov_ids = {}
 
-        for _, table in etree.iterwalk(lov, events=("start",), tag="table"):
+        for _, table in etree.iterwalk(lov, tag="table"):
 
-            table_id = table.get("id")
-            table_label = table.get("englishName")
+            table_id, table_label = self.get_ids(table)
+            
             self._lov_ids[table_id] = codes = {}
             self._lov_categories[table_label] = table_id
 
-            for _, code in etree.iterwalk(table, events=("start",), tag="code"):
-                code_id = code.get("id")
-                code_label = code.get("englishName")
+            for _, code in etree.iterwalk(table, tag="code"):
+
+                code_id, code_label = self.get_ids(code)
                 codes[code_label] = code_id 
 
         # Generating ref lookup table
         self._ref_categories = {}
-
         
         # First pass over the meta
-        for _, table in etree.iterwalk(ref, events=("start",), tag="table"):
+        for _, table in etree.iterwalk(ref, tag="table"):
 
-            table_id = table.get("id")
-            table_label = table.get("englishName")
+            table_id, table_label = self.get_ids(table)
             self._ref_categories[table_label] = table_id
-
 
         # Second pass
         meta = {}
-        for _, table in etree.iterwalk(ref, events=("start",), tag="table"):
+        for _, table in etree.iterwalk(ref, tag="table"):
 
-            table_id = table.get("id")
-            table_label = table.get("englishName")
+            table_id, table_label = self.get_ids(table)
             meta[table_id] = {}
            
             values = {}
@@ -124,9 +187,8 @@ class Schema(object):
             ref_ids = []
 
             # Within the meta, go over values
-            for _, value in etree.iterwalk(table, events=("start",), tag="value"):
-                value_id = value.get("id")
-                value_label = value.get("englishName")
+            for _, value in etree.iterwalk(table, tag="value"):
+                value_id, value_label = self.get_ids(value)
 
                 if value_id == "-1":
                     table_label = re.sub(".*?\((.*?)\).*", r"\1", value_label)
@@ -149,10 +211,9 @@ class Schema(object):
                     raise SchemaError(err)
 
             # Then use those value to fill in the meta info
-            for _, field in etree.iterwalk(table, events=("start",), tag="field"):
+            for _, field in etree.iterwalk(table, tag="field"):
 
-                field_id = field.get("id")
-                field_label = field.get("englishName")
+                field_id, field_label = self.get_ids(field)
 
                 ids = [v.get("id") for v in field.getchildren()]
                 n = len(ids)
@@ -166,9 +227,9 @@ class Schema(object):
 
         # With the meta information decoded, do final pass over ref table entries
         self._ref_ids = {}
-        for _, table in etree.iterwalk(ref, events=("start",), tag="refTable"):
+        for _, table in etree.iterwalk(ref, tag = "refTable"):
 
-            table_id = table.get("id")
+            table_id, table_value = self.get_ids(table)
 
             if table_id not in meta:
                 err = "Schema inconsistency in refTable mapping. Aborting."
@@ -176,9 +237,8 @@ class Schema(object):
 
             self._ref_ids[table_id] = values = {}
 
-            for _, value in etree.iterwalk(table, events=("start",), tag="value"):
-                value_id = value.get("id")
-                value_label = value.get("englishDescription")
+            for _, value in etree.iterwalk(table, tag = "value"):
+                value_id, value_label = self.get_ids(value, key = "Description")
 
                 if value_id not in meta[table_id]:
                     err = "Schema inconsistency in refTable mapping. Aborting."
@@ -187,16 +247,20 @@ class Schema(object):
                 meta[table_id][value_id][-1]["label"] = value_label
                 values[value_label] = (value_id, meta[table_id][value_id])
 
+    #---------------------------------------------------------------------------
+    def get_ids(self, elem, key = "Name"):
+        """Get XML element identifiers based on language"""
+        return elem.get("id"), elem.get(self._lang + key)
 
     #---------------------------------------------------------------------------
-    def get_section_components(self, section, parent = None):
+    def get_section_id(self, section, parent = None):
 
-        if section not in self._entries:
+        if section not in self._section_lookup:
             err = '"{}" section is not defined in the schema.'
             err = err.format(section)
             raise SectionError(err)
 
-        table = self._entries[section]
+        table = self._section_lookup[section]
 
         if (parent is None) and (len(table) == 1):
             return table[list(table.keys())[0]]
@@ -214,14 +278,71 @@ class Schema(object):
         return table[parent]
 
     #---------------------------------------------------------------------------
-    def get_section_element(self, section, parent = None):
+    def get_section_id_from_fields(self, fields):
 
-        return self.get_section_components(section, parent)["section"]
+        full_list = "".join(sorted(fields))
+
+        # First, check if the set of fields has been previously stored
+        if full_list in self._section_lookup_by_fields:
+            return self._section_lookup_by_fields[full_list]
+
+        # If not, then start building the set one entry at a time
+        partial_set = self._section_lookup_by_field[fields[0]]
+        wrong_fields = []
+
+        for field in fields:
+            if field not in self._section_lookup_by_field:
+                wrong_fields.append(field)
+                continue
+            
+            intersection = partial_set & self._section_lookup_by_field[field]
+
+            if len(intersection) == 0:
+                wrong_fields.append(field)
+            else:
+                partial_set = intersection
+
+        # Issue an error
+        if len(wrong_fields) > 0:
+            err = "Some fields do not belong to the same section, likely: {}."
+            err = err.format(', '.join(wrong_fields))
+            raise SectionError(err)
+
+        # If match found, add shortcut
+        if len(partial_set) == 1:
+            self._section_lookup_by_fields[full_list] = list(partial_set)
+
+        return list(partial_set)
 
     #---------------------------------------------------------------------------
-    def get_field_elements(self, section, parent = None):
+    def get_section_components(self, section_id):
 
-        return self.get_section_components(section, parent)["fields"]
+        if section_id not in self._sections:
+            err = '"{}" section id is not defined in the schema.'
+            err = err.format(section_id)
+            raise SectionError(err)
+
+        return self._sections[section_id]
+
+    #---------------------------------------------------------------------------
+    def get_section_schema(self, section_id):
+
+        return self.get_section_components(section_id)["schema"]
+
+    #---------------------------------------------------------------------------
+    def get_section_fields(self, section_id):
+
+        return self.get_section_components(section_id)["fields"]
+
+    #---------------------------------------------------------------------------
+    def get_section_sections(self, section_id):
+
+        return self.get_section_components(section_id)["sections"]
+
+    #---------------------------------------------------------------------------
+    def get_section_lock(self, section_id):
+
+        return self.get_section_components(section_id)["lock"]
 
     #---------------------------------------------------------------------------
     def get_field_type(self, field):

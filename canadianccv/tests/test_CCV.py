@@ -7,6 +7,7 @@ from canadianccv import CCV
 
 class TestCCV(TestCase):
 
+    #ccv = CCV(os.path.join(os.path.dirname(__file__), 'toml_files', 'ccv.xml'))
     ccv = CCV()
 
     def test_add_entries_from_toml(self):
@@ -17,8 +18,8 @@ class TestCCV(TestCase):
 
         f = open('test.xml', 'wb')
         with f:
-            #f.write(etree.tostring(self.ccv.xml, pretty_print = True))
-            f.write(etree.tostring(self.ccv.xml, 
-                pretty_print = False, xml_declaration = True, encoding = "UTF-8"))
+            f.write(etree.tostring(self.ccv.xml, pretty_print = True))
+            #f.write(etree.tostring(self.ccv.xml, 
+                #pretty_print = False, xml_declaration = True, encoding = "UTF-8"))
         
 
