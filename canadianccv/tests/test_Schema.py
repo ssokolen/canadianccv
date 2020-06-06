@@ -2,7 +2,7 @@ from lxml import etree
 from unittest import TestCase
 
 import canadianccv
-from canadianccv import Schema, SectionError
+from canadianccv import Schema, SchemaError
 
 class TestSchema(TestCase):
 
@@ -15,8 +15,8 @@ class TestSchema(TestCase):
         elem = self.schema.get_section_schema(section_id)
         self.assertTrue(isinstance(elem, etree._Element))
 
-        self.assertRaises(SectionError, f, "Test")
-        self.assertRaises(SectionError, f, "Research Disciplines")
+        self.assertRaises(SchemaError, f, "Test")
+        self.assertRaises(SchemaError, f, "Research Disciplines")
 
     def test_get_lov_id(self):
         f = self.schema.get_lov_id

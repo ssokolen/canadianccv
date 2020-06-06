@@ -1,17 +1,10 @@
 import importlib.resources
+import logging
 from lxml import etree
 import re
 
 class SchemaError(Exception):
     """Raised when there is a generic issue parsing CCV data"""
-    pass
-
-class SectionError(Exception):
-    """Raised when there is an issue parsing CCV sections"""
-    pass
-
-class FieldError(Exception):
-    """Raised when there is an issue parsing CCV section fields"""
     pass
 
 #===============================================================================
@@ -28,25 +21,18 @@ _ref = _read_schema("ref.xml")
 
 #===============================================================================
 class Schema(object):
-    """ 
-    _section_lookup [section name][parent name] -> id
-    _section_lookup_by_field [field_name] -> set(id)
-
-    _sections [id] -> {
-        schema: XML, 
-        label: section label
-        fields: [XML],
-        sections: [XML],
-        }
-    
-    _type_names [type id] -> name
-
-    _lov_ids [table id][lov name] -> [lov id]
-    _ref_ids [table id][ref name] -> ([ref id],  [meta dicts of id, name])
-    """
 
     #---------------------------------------------------------------------------
     def __init__(self, schema = _cv, lov = _lov, ref = _ref):
+
+        # Setting up default logger (which will in practice be overwritten by CCV)
+        logger = logging.getLogger(__name__)
+        log_format = logging.Formatter('Schema - %(levelname)s: %(message)s')
+        log_handler = logging.StreamHandler()
+        log_handler.setFormatter(log_format)
+        logger.addHandler(log_handler)
+
+        self.log = logger
 
         self._lang = "english"
 
@@ -72,7 +58,7 @@ class Schema(object):
             if parent_label in self._section_lookup[section_label]:
                 err = '"{}" is not unique within "{}"'
                 err = err.format(section_label, parent_label)
-                raise SectionError(err)
+                raise SchemaError(err)
             
             self._section_lookup[section_label][parent_label] = section_id
 
@@ -102,7 +88,7 @@ class Schema(object):
                     if child_label in fields:
                         err = '"{}" is not unique within "{}"'
                         err = err.format(child_label, section_label)
-                        raise FieldError(err)
+                        raise SchemaError(err)
 
                     fields[child_label] = child
 
@@ -111,7 +97,7 @@ class Schema(object):
                     if child_label in sections:
                         err = '"{}" is not unique within "{}"'
                         err = err.format(child_label, section_label)
-                        raise SectionError(err)
+                        raise SchemaError(err)
 
                     sections[child_label] = child
 
@@ -258,7 +244,7 @@ class Schema(object):
         if section not in self._section_lookup:
             err = '"{}" section is not defined in the schema.'
             err = err.format(section)
-            raise SectionError(err)
+            raise SchemaError(err)
 
         table = self._section_lookup[section]
 
@@ -268,51 +254,78 @@ class Schema(object):
         if parent is None:
             err = '"{}" section is ambigious without a parent section (one of {})'
             err = err.format(section, ", ".join(table.keys()))
-            raise SectionError(err)
+            raise SchemaError(err)
 
         if parent not in table:
             err = '"{}" section is not defined within "{}".'
             err = err.format(section, parent)
-            raise SectionError(err)
+            raise SchemaError(err)
 
         return table[parent]
 
     #---------------------------------------------------------------------------
     def get_section_id_from_fields(self, fields):
 
-        full_list = "".join(sorted(fields))
+        # Parsing fields in alphabetical order for consistency
+        fields.sort()
 
-        # First, check if the set of fields has been previously stored
+        # First, check if the full set of fields has been previously stored
+        full_list = "".join(fields)
+
         if full_list in self._section_lookup_by_fields:
-            return self._section_lookup_by_fields[full_list]
+            section_id = self._section_lookup_by_fields[full_list]
+            section_label = self.get_section_label(section_id)
+            msg = "%s has been previously identified from fields: %s"
+            self.log.debug(msg, section_label, full_list)
 
-        # If not, then start building the set one entry at a time
-        partial_set = self._section_lookup_by_field[fields[0]]
-        wrong_fields = []
+            return section_label
+
+        # Helper fu
+        
+        field_numbers = []
+        section_sets = [set()]
 
         for field in fields:
             if field not in self._section_lookup_by_field:
-                wrong_fields.append(field)
+                msg = "%s is not a valid field, ignoring"
+                self.log.debug(msg, field)
                 continue
             
-            intersection = partial_set & self._section_lookup_by_field[field]
+            # Generating new intersection with every existing set
+            n_matches = 0
+            new_set = self._section_lookup_by_field[field]
+            
+            for i in range(len(section_sets)): 
+                intersection = section_sets[i] & new_set 
 
-            if len(intersection) == 0:
-                wrong_fields.append(field)
-            else:
-                partial_set = intersection
+                if len(intersection) > 0:
+                    section_sets[i] = intersection
+                    field_numbers[i-1] += 1
+                    n_matches += 1
+
+            # If there were no matches, start a new set
+            if n_matches == 0:
+                msg = "Generating new section set starting from %s"
+                self.log.debug(msg, field)
+
+                section_sets.append(new_set)
+                field_numbers.append(1)
+
+            # Printing out most likely set
+            index = field_numbers.index(max(field_numbers)) + 1
+            section_labels = [self.get_section_label(i) for i in section_sets[index]]
+            msg = "Likely set of sections updated to: %s"
+            self.log.debug(msg, ", ".join(sorted(section_labels)))
+
+        # Picking off set with most fields
+        index = field_numbers.index(max(field_numbers))
 
         # Issue an error
-        if len(wrong_fields) > 0:
-            err = "Some fields do not belong to the same section, likely: {}."
-            err = err.format(', '.join(wrong_fields))
-            raise SectionError(err)
+        if len(field_numbers) > 1:
+            msg = "Only %i of %i fields were matched to the same set of sections"
+            self.log.warn(msg, field_numbers[index], sum(field_numbers))
 
-        # If match found, add shortcut
-        if len(partial_set) == 1:
-            self._section_lookup_by_fields[full_list] = list(partial_set)
-
-        return list(partial_set)
+        return list(section_sets[index + 1])
 
     #---------------------------------------------------------------------------
     def get_section_components(self, section_id):
@@ -320,7 +333,7 @@ class Schema(object):
         if section_id not in self._sections:
             err = '"{}" section id is not defined in the schema.'
             err = err.format(section_id)
-            raise SectionError(err)
+            raise SchemaError(err)
 
         return self._sections[section_id]
 
@@ -328,6 +341,11 @@ class Schema(object):
     def get_section_schema(self, section_id):
 
         return self.get_section_components(section_id)["schema"]
+
+    #---------------------------------------------------------------------------
+    def get_section_label(self, section_id):
+
+        return self.get_section_components(section_id)["label"]
 
     #---------------------------------------------------------------------------
     def get_section_fields(self, section_id):
@@ -352,7 +370,7 @@ class Schema(object):
         if data_type not in self._type_names:
             err = '"{}" type is not defined in the schema.'
             err = err.format(data_type)
-            raise FieldError(err)
+            raise SchemaError(err)
 
         return self._type_names[data_type]
 
@@ -365,7 +383,7 @@ class Schema(object):
         if data_type != "LOV":
             err = 'Processing error, {} is not an "LOV" field.'
             err = err.format(data_type)
-            raise FieldError(err)
+            raise SchemaError(err)
 
         # Getting appropriate table
         table_id = field.get("lookupId")
@@ -373,7 +391,7 @@ class Schema(object):
         if table_id not in self._lov_ids:
             err = '"{}" lookup table not defined in the schema.'
             err = err.format(table_name)
-            raise FieldError(err)
+            raise SchemaError(err)
 
         table = self._lov_ids[table_id]
 
@@ -381,7 +399,7 @@ class Schema(object):
         if value not in table:
             err = '"{}" is not a valid value for "{}" (one of {})'
             err = err.format(value, table_name, ", ".join(table.keys()))
-            raise FieldError(err)
+            raise SchemaError(err)
 
         return table[value]
 
@@ -394,7 +412,7 @@ class Schema(object):
         if data_type != "Reference":
             err = 'Processing error, {} is not a "Reference" field.'
             err = err.format(data_type)
-            raise FieldError(err)
+            raise SchemaError(err)
 
         # Getting appropriate table
         table_id = field.get("lookupId")
@@ -402,7 +420,7 @@ class Schema(object):
         if table_id not in self._ref_ids:
             err = '"{}" reference table not defined in the schema.'
             err = err.format(table_name)
-            raise FieldError(err)
+            raise SchemaError(err)
 
         table = self._ref_ids[table_id]
 
@@ -410,6 +428,6 @@ class Schema(object):
         if value not in table:
             err = '"{}" is not a valid value for "{}"'
             err = err.format(value, table_name)
-            raise FieldError(err)
+            raise SchemaError(err)
 
         return table[value]

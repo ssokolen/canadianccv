@@ -14,5 +14,6 @@ setup(name='canadianccv',
       include_package_data=True,
       install_requires=[
           'lxml',
+          'pyyaml',
           'tomlkit',
       ],)
