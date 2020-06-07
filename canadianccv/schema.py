@@ -101,6 +101,12 @@ class Schema(object):
 
                     sections[child_label] = child
 
+                    # A child section still qualifies for field look-up
+                    if child_label not in self._section_lookup_by_field:
+                        self._section_lookup_by_field[child_label] = set()
+
+                    self._section_lookup_by_field[child_label].add(section_id)
+
         # Any section that is found within a section that has fields must be locked
         # (to prevent stakeholder from drifting out of research funding)
         for section_id in self._sections:

@@ -4,7 +4,7 @@ from lxml import etree
 import logging
 import os
 import re
-import tomlkit
+import toml
 import warnings
 import yaml
 
@@ -18,7 +18,7 @@ class CCV(object):
 
     #---------------------------------------------------------------------------
     def __init__(self, xml_path = None, log_path = "ccv.log", 
-                 log_level = logging.INFO,  schema = Schema()):
+                 log_level = "INFO",  schema = Schema()):
 
         # Setting schema
         self.schema = schema
@@ -35,6 +35,7 @@ class CCV(object):
         log_handler = logging.StreamHandler()
         log_handler.setFormatter(log_format)
         logger.addHandler(log_handler)
+        logger.setLevel(log_level)
 
         self.log = logger
         # Overriding Schema logger with CCV one
@@ -113,17 +114,19 @@ class CCV(object):
 
             if len(section_ids) == 1:
                 section_id = section_ids[0]
-                section_xml = self.schema.get_section_schema(section_id)
-                _, section_label = self.schema.get_ids(section_xml)
+                section_label = self.schema.get_section_label(section_id)
             elif section_id:
                 msg = "CCV section could not be uniquely inferred from field names."
                 self.log.error(msg)
 
         if section_id is None:
-            msg = "CCV section could not be determined. See logs for details."
-            self.log.info(msg)
+            msg = "CCV section could not be determined. See log for details."
+            self.log.warning(msg)
             warnings.warn(msg, CCVWarning)
             return
+        else:
+            msg = "Section identified as %s (%s)"
+            self.log.info(msg, section_label, section_id)
 
         # Initializing xml element
         xml = self.gen_blank_entry(section_id)
@@ -154,8 +157,13 @@ class CCV(object):
             xml.append(self.gen_element(entry[field], fields[field]))
 
         for section in valid_sections:
-            entry[section]["CCVSection"] = section_label + "/" + section
-            xml.append(self.gen_entry(entry[section]))
+            # The section entry may be the first item of a list or a full dict
+            if isinstance(entry[section], dict):
+                entry[section] = [entry[section]]
+
+            for sub_entry in entry[section]:
+                sub_entry["CCVSection"] = section_label + "/" + section
+                xml.append(self.gen_entry(sub_entry))
 
         # Return both entry and the xml schema it was based on 
         return xml
@@ -305,10 +313,7 @@ class CCV(object):
         self.log.info("## Parsing %s ##", os.path.basename(path))
 
         f = open(path)
-        with f:
-            text = f.read() 
-
-        return tomlkit.loads(text)
+        return toml.load(text)
 
     #----------------------------------------
     def read_yaml(self, path):
@@ -323,6 +328,9 @@ class CCV(object):
         return yaml.safe_load(text)
 
     #---------------------------------------------------------------------------
+    # Main user functions
+
+    #----------------------------------------
     def add_entries(self, path, pattern = None):
         """Recursively add XML entries from specified path based on pattern"""
 
@@ -348,3 +356,14 @@ class CCV(object):
                 name = os.path.join(root, name)
                 if path_check(name):
                     self.add_dict_entry(self.read_file(name))
+
+    #----------------------------------------
+    def write_xml(self, path, pretty_print = False):
+        """Write xml file to path (adds .xml extension if none provided)"""
+
+        if not path.endswith(".xml"):
+            path = path + ".xml"
+
+        f = open(path, 'wb')
+        with f:
+            f.write(etree.tostring(self.xml, pretty_print = pretty_print))
