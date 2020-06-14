@@ -2,7 +2,9 @@ import importlib.resources
 import locale
 import logging
 from lxml import etree
+import operator
 import re
+from textwrap import TextWrapper
 
 locale.setlocale(locale.LC_ALL, "")
 
@@ -13,25 +15,9 @@ class SchemaError(Exception):
 #===============================================================================
 class Schema(object):
 
-    _section_by_id = {}
-    _section_by_label = {}
+    _lookup = {}
 
-    # This table has indexes of section entry labels and values of section id sets
-    _section_id_by_entry = {}
-
-    _field_by_id = {}
-    # Fielf by label gets messy so its moved within Section
-
-    _lov_by_id = {}
-    _lov_by_label = {}
-
-    _ref_by_id = {}
-    _ref_by_label = {}
-
-    _type_by_id = {}
-    _type_by_label = {}
-
-    #---------------------------------------------------------------------------
+    #----------------------------------------
     def __init__(self, language = "english", cv = None, lov = None, ref = None):
 
         # Default schema
@@ -55,61 +41,46 @@ class Schema(object):
 
         self._log = logger
 
-        # Common function for adding lookup entries if not already in dct
-        def check_add(key, value, dct, table_name = None):
-            if key not in dct:
-                dct[key] = value
-            elif table_name is not None and key is not None:
-                err = '"{}" is not unique within "{}"'
-                err = err.format(key, table_name)
-                raise SchemaError(err)
-
         # Section lookup tables
         for _, xml in etree.iterwalk(cv, tag="section"):
 
             section = Entry(xml, language)
 
-            # Section by id
-            lookup = self._section_by_id
-            check_add(section.id, xml, lookup, "cv-xml")
-
-            # Section by name
-            lookup = self._section_by_label
-            check_add(section.label, {}, lookup)
-
-            lookup = self._section_by_label[section.label]
-            check_add(section.parent.label, xml, lookup, section.label)
+            lookup = ["section", "id", section.id]
+            self.add_lookup(lookup, xml)
+            
+            lookup = ["section", "label", section.label, section.parent.label]
+            self.add_lookup(lookup, xml)
 
             # Section by entry
             for child in xml.getchildren():
 
+                if child.tag not in ["section", "field"]:
+                    continue
+
                 # Using a generic schema class for either section or field
                 entry = Entry(child, language)
+                
+                lookup = ["section", "entry_label", entry.label]
 
-                lookup = self._section_id_by_entry
-                check_add(entry.label, set(), lookup)
+                # Initializing lookup set if necessary 
+                self.add_lookup(lookup, set(), unique = False)
 
-                lookup[entry.label].add(section.id)
+                # Adding to lookup set
+                self.lookup(lookup).add(section.id)
 
                 # Adding to field lists
                 if child.tag == "field":
 
                     # Field by id
-                    lookup = self._field_by_id
-                    check_add(entry.id, child, lookup, "cv-xml")
+                    self.add_lookup(["field", "id", entry.id], child)
 
         # LOV lookup tables 
         for _, xml in etree.iterwalk(lov, tag="table"):
 
             entry = Entry(xml, language)
-
-            # LOV by id
-            lookup = self._lov_by_id
-            check_add(entry.id, xml, lookup, "cv-lov")
-
-            # LOV by name
-            lookup = self._lov_by_label
-            check_add(entry.label, xml, lookup, "cv-lov")
+            self.add_lookup(["lov", "id", entry.id], xml)
+            self.add_lookup(["lov", "label", entry.label], xml)
 
         # Ref table lookup tables 
         for _, xml in etree.iterwalk(ref, tag="table"):
@@ -120,41 +91,79 @@ class Schema(object):
             container = etree.Element("container", **xml.attrib)
             container.append(xml)
 
-            # Ref table by id
-            lookup = self._ref_by_id
-            check_add(entry.id, container, lookup, "cv-ref-table")
-
-            # Ref table by name
-            lookup = self._ref_by_label
-            check_add(entry.label, container, lookup, "cv-ref-table")
+            self.add_lookup(["ref", "id", entry.id], container)
+            self.add_lookup(["ref", "label", entry.label], container)
 
         # Adding second component of ref tables
         for _, xml in etree.iterwalk(ref, tag="refTable"):
 
             entry = Entry(xml, language)
-
-            # Manually combining xml code
-            lookup = self._ref_by_id
-            if entry.id not in lookup:
-                err = 'No matching table for refTable "{}"'.format(entry.id)
-                raise SchemaError(err)
-            else:
-                lookup[entry.id].append(xml)
+            container = self.lookup(["ref", "id", entry.id])
+            container.append(xml)
 
         # Data types
         for _, xml in etree.iterwalk(cv, tag="type"):
 
             entry = Entry(xml, language)
+            self.add_lookup(["type", "id", entry.id], xml)
+            self.add_lookup(["type", "label", entry.label], xml)
 
-            # Type by id
-            lookup = self._type_by_id
-            check_add(entry.id, xml, lookup, "cv-lov")
+        # Rules
+        for _, xml in etree.iterwalk(cv, tag="rule"):
 
-            # LOV by name
-            lookup = self._type_by_label
-            check_add(entry.label, xml, lookup, "cv-lov")
+            entry = Entry(xml, language)
+            self.add_lookup(["rule", "id", entry.id], xml)
+            self.add_lookup(["rule", "label", entry.label], xml)
 
-            
+    #----------------------------------------
+    def add_lookup(self, keys, value, unique = True, overwrite = False):
+
+        keys = keys.copy()
+
+        full_name = "-".join(keys[:-1])
+
+        lookup = self._lookup
+
+        while len(keys) > 1:
+            key = keys.pop(0)
+
+            if key not in lookup:
+                lookup[key] = {}
+            lookup = lookup[key]
+
+        key = keys.pop()
+        
+        if key in lookup:
+            if unique:
+                err = '"{}" is not unique in "{}"'
+                err = err.format(key, full_name)
+                raise SchemaError(err)
+            elif overwrite:
+                lookup[key] = value
+        else:
+            lookup[key] = value
+
+    #----------------------------------------
+    def lookup(self, keys, cache = None):
+
+        keys = keys.copy()
+
+        lookup = self._lookup
+        lookup_name = "lookup"
+
+        while len(keys) > 0:
+            key = keys.pop(0)
+
+            if key not in lookup:
+                err = '"{}" does not exist within "{}"'
+                err = err.format(key, lookup_name)
+                raise SchemaError(err)
+                
+            lookup = lookup[key]
+            lookup_name += "-" + key
+
+        return lookup
+
 #===============================================================================
 class Entry(Schema):
     """
@@ -162,6 +171,7 @@ class Entry(Schema):
     well as a lookup classemethod.
     """
 
+    #----------------------------------------
     def __init__(self, xml, language = "english"):
         self.xml = xml
         self._language = language
@@ -176,47 +186,29 @@ class Entry(Schema):
         self.lookup_id = xml.get("lookupId")
         self.lookup_label = xml.get("lookup" + language + "Explanation")
 
+        self.validator = xml.get("validatorRule")
+        self.parameters = xml.get("parameters")
+
         self.parent = None 
-        if xml.getparent() is not None:
+        if xml.getparent() is not None and xml.tag != "rule":
             self.parent = Entry(xml.getparent(), language)
 
+
+    #----------------------------------------
     @classmethod
-    def from_keys(cls, keys, lookup, language = "english", cache = None):
+    def from_lookup(cls, keys, language = "english", cache = None):
 
-        keys.reverse()
+        full_name = "-".join(keys)
+
+        if cache is not None and full_name in cache:
+            return cache[full_name]
+
+        out = cls(cls.lookup(cls, keys), language)
         
-        key1 = keys.pop()
-        if key1 not in lookup:
-            err = '"{}" is not defined in the schema'
-            err = err.format(key1)
-            raise SchemaError(err)
+        if cache is not None:
+            cache[full_name] = out
 
-        lookup = lookup[key1]
-
-        while len(keys) > 0:
-            key2 = key1
-            key1 = keys.pop()
-
-            if key1 == None:
-                break
-
-            if key1 not in lookup:
-                err = '"{}" label does not exist within "{}"'
-                err = err.format(key2, key1)
-                raise SchemaError(err)
-
-            lookup = lookup[key1]
-
-        if isinstance(lookup, etree._Element):
-            xml = lookup
-        elif len(lookup) == 1:
-            xml = lookup[list(lookup.keys())[0]]
-        else:
-            err = 'There are multiple "{}" entries; specify parent keys'
-            err = err.format(key1)
-            raise SchemaError(err)
-
-        return cls(xml, language)
+        return out
 
 #===============================================================================
 class Type(Entry):
@@ -226,22 +218,40 @@ class Type(Entry):
     they have slightly more complicated logic.
     """
 
-    @classmethod
-    def from_id(cls, id_, lookup_id = None, language = "english"):
+    def __init__(self, xml, language = "english"):
 
-        out = super().from_keys([id_], cls._type_by_id, language)
+        super().__init__(xml, language)
+
+        # Generating entry prompts for certain field types
+        self.prompt = ""
         
-        if out.label == "LOV":
+        if self.label == "Year":
+            self.prompt = "yyyy"
+        elif self.label == "Year Month":
+            self.prompt = "yyyy/mm"
+        elif self.label == "Month Day":
+            self.prompt = "mm/dd"
+        elif self.label == "Date":
+            self.prompt = "yyyy-mm-dd"
+
+    #----------------------------------------
+    @classmethod
+    def from_id(cls, type_id, lookup_id = None, language = "english"):
+
+        out = cls.from_lookup(["type", "id", type_id], language)
+
+        if out.label == "LOV" and lookup_id is not None:
             return LOV.from_id(lookup_id, language)
-        elif out.label == "Reference":
+        elif out.label == "Reference" and lookup_id is not None:
             return RefTable.from_id(lookup_id, language)
         else:
             return out
 
+    #----------------------------------------
     @classmethod
-    def from_label(cls, label, lookup_label = None, language = "english"):
+    def from_label(cls, type_label, lookup_label = None, language = "english"):
 
-        out = super().from_keys([label], cls._type_by_label, language)
+        out = cls.from_lookup(["type", "label", type_label], language)
 
         if out.label == "LOV":
             return LOV.from_label(lookup_label, language)
@@ -249,6 +259,60 @@ class Type(Entry):
             return RefTable.from_label(lookup_label, language)
         else:
             return out
+
+    #---------------------------------------------------------------------------
+    def to_xml(self, value):
+
+        if self.label == "Year":
+            elem = etree.Element("value", format = "yyyy", type = self.label)
+            elem.text = str(value)
+
+        elif self.label == "Year Month":
+            elem = etree.Element("value", format = "yyyy/MM", type = self.label)
+            elem.text = str(value)
+
+        elif self.label == "Month Day":
+            elem = etree.Element("value", format = "MM/dd", type = self.label)
+            elem.text = str(value)
+
+        elif self.label == "Date":
+            elem = etree.Element("value", format = "yyyy-MM-dd", type = self.label)
+            elem.text = str(value)
+
+        elif self.label == "Datetime":
+            pass
+
+        elif self.label == "String":
+            elem = etree.Element("value", type = self.label)
+            elem.text = str(value)
+
+        elif self.label == "Integer":
+            elem = etree.Element("value", type = "Number")
+            elem.text = str(value)
+
+        elif self.label == "Bilingual":
+            elem = etree.Element("value", type = "Bilingual")
+            elem.append(etree.Element("english"))
+            elem.append(etree.Element("french"))
+
+            if self.language == "english":
+                elem[0].text = str(value)
+            else:
+                elem[1].text = str(value)
+        
+        elif self.label == "PubMed":
+            pass
+        
+        elif self.label == "Elapsed-Time":
+            pass
+
+        if elem is None:
+            # Defining generic error message for missing implementations
+            err = '"{}" data type is not currently supported. '
+            err = err.format(self.label)
+            raise SchemaError(err)
+
+        return elem 
 
 #-------------------------------------------------------------------------------
 class LOV(Entry):
@@ -258,6 +322,7 @@ class LOV(Entry):
 
     _cache = {}
     
+    #----------------------------------------
     def __init__(self, xml, language = "english"):
         
         super().__init__(xml, language)
@@ -275,29 +340,57 @@ class LOV(Entry):
         self._by_id = _by_id
 
         self.values = sorted(list(_by_label.keys()), key = locale.strxfrm)
+        self.prompt = ", ".join(self.values)
 
-        # Store to cache
-        self._cache[self.id] = self
-        self._cache[self.label] = self
-
+    #----------------------------------------
     @classmethod
     def from_id(cls, id_, language = "english"):
 
-        return super().from_keys([id_], cls._lov_by_id, language, cls._cache)
+        return cls.from_lookup(["lov", "id", id_], language, cls._cache)
 
+    #----------------------------------------
     @classmethod
     def from_label(cls, label, language = "english"):
 
-        return super().from_keys([label], cls._lov_by_label, language, cls._cache)
+        return cls.from_lookup(["lov", "label", label], language, cls._cache)
 
-    def value_by_label(self, label):
+    #----------------------------------------
+    def has_id(self, id_):
 
-        if label not in self._by_label:
-            err = '"{}" is not a valid option for "{}"'
+        return id_ in self._by_id 
+
+    #----------------------------------------
+    def has_label(self, label):
+
+        return label in self._by_label
+
+    #----------------------------------------
+    def by_id(self, id_):
+
+        if not self.has_id(id_):
+            err = '"{}" is not a valid value for "{}"'
+            err = err.format(label, self.label)
+            raise SchemaError(err)
+        else:
+            return self._by_id[id_]
+
+    #----------------------------------------
+    def by_label(self, label):
+
+        if not self.has_label(label):
+            err = '"{}" is not a valid value for "{}"'
             err = err.format(label, self.label)
             raise SchemaError(err)
         else:
             return self._by_label[label]
+
+    #----------------------------------------
+    def to_xml(self, value):
+
+        elem = etree.Element("lov", id = self.id)
+        elem.text = self.by_label(value).label
+
+        return elem 
 
 #-------------------------------------------------------------------------------
 class RefTable(Entry):
@@ -308,6 +401,7 @@ class RefTable(Entry):
 
     _cache = {}
     
+    #----------------------------------------
     def __init__(self, xml, language = "english"):
 
         super().__init__(xml, language)
@@ -365,68 +459,310 @@ class RefTable(Entry):
         # individual entry.references list stored in _by_label or _by_id
 
         self.values = sorted(list(_by_label.keys()), key = locale.strxfrm)
+        self.prompt = ", ".join(self.values)
 
-        # Store to cache
-        self._cache[self.id] = self
-        self._cache[self.label] = self
-
+    #----------------------------------------
     @classmethod
     def from_id(cls, id_, language = "english"):
 
-        return super().from_keys([id_], cls._ref_by_id, language, cls._cache)
+        return cls.from_lookup(["ref", "id", id_], language, cls._cache)
 
+    #----------------------------------------
     @classmethod
     def from_label(cls, label, language = "english"):
 
-        return super().from_keys([label], cls._ref_by_label, language, cls._cache)
+        return cls.from_lookup(["ref", "label", label], language, cls._cache)
 
-    def value_by_label(self, label):
+    #----------------------------------------
+    def has_id(self, id_):
 
-        if label not in self._by_label:
-            err = '"{}" is not a valid option for "{}"'
+        return id_ in self._by_id 
+
+    #----------------------------------------
+    def has_label(self, label):
+
+        return label in self._by_label 
+
+    #----------------------------------------
+    def by_id(self, id_):
+
+        if not self.has_id(id_):
+            err = '"{}" is not a valid value for "{}"'
+            err = err.format(label, self.label)
+            raise SchemaError(err)
+        else:
+            return self._by_id[id_]
+
+    #----------------------------------------
+    def by_label(self, label):
+
+        if not self.has_label(label):
+            err = '"{}" is not a valid value for "{}"'
             err = err.format(label, self.label)
             raise SchemaError(err)
         else:
             return self._by_label[label]
+
+    #----------------------------------------
+    def to_xml(self, value):
+
+        value = self.by_label(value)
+
+        ids = self.tables + [self]
+        values = value.references + [value]
+
+        elem = etree.Element("refTable", refValueId = value.id)
+
+        for i in range(len(ids)):
+            link = etree.Element("linkedWith", 
+                label = "x", value = values[i].label, refOrLovId = ids[i].id
+            )
+            elem.append(link)
+
+        return elem 
+
+#===============================================================================
+class Rule(Entry):
+    """
+    Validation rule that can be used to assess Field entries.
+    """
+
+    _cache = {}
+
+    #----------------------------------------
+    def __init__(self, xml, parameters, language = "english"):
+
+        super().__init__(xml, language)
+
+        # Since only a small fraction of rules are used in practice,
+        # only generating validations for these
+
+        self.parameters = parameters
+
+        rule_id = int(self.id)
+
+        # Default validation
+        def validate(self, value, entries = None):
+            return ""
+
+        prompt = '"{}" -- not currently checked'.format(self.label)
+
+        # Specific rules
+        if rule_id == 8:
+            def validate(self, value, entries = None):
+                if len(value) > int(parameters):
+                    return "too long"
+
+            prompt = "Must be fewer than {} characters long.".format(
+                parameters
+            )
+
+        elif rule_id == 11:
+            def validate(self, value, entries = None):
+                if len(value) == 0:
+                    return "null entries not allowed"
+
+            prompt = "Must not be left blank."
+
+        elif rule_id == 15:
+            # Validate Unique Value -- unclear rule
+            pass
+
+        elif rule_id == 18:
+            def validate(self, value, entries = None):
+                if len(value) > int(parameters):
+                    return "too many entries"
+
+            prompt = "Must have {} entries or fewer.".format(parameters)
+
+        elif rule_id == 19:
+            # Validate Primary Record Chosen -- unclear rule
+            pass
+
+        elif rule_id == 20:
+            
+            # Requires parsing parameters
+            lines = parameters.split(";")
+            
+            field_id = re.sub(":.*", "", lines[1])
+            field = Field.from_id(field_id, language)
+
+            lov_id = re.sub(":.*", "", lines[2])
+            lov = LOV.from_id(lov_id, language)
+
+            other_id = lines[-1]
+            other = lov.by_id(other_id)
+
+            op = re.sub(":.*", "", lines[-2])
+
+            if int(op) == 359:
+                op = operator.eq
+                prompt = "Required if {} is {}"
+                prompt = prompt.format(field.label, other.label)
+                
+                msg = "entry required if {} is {}"
+                msg = msg.format(field.label, other.label)
+            else:
+                op = operator.ne
+                prompt = "Required if {} is not {}"
+                prompt = prompt.format(field.label, other.label)
+                
+                msg = "entry required if {} is not {}"
+                msg = msg.format(field.label, other.label)
+
+            def validate(self, value, entries):
+                other_value = entries[field.label]
+                if len(value) == 0 and op(other_value, other.label):
+                    return msg
+
+        elif rule_id == 24:
+
+            # Requires parsing parameters
+            field_id = re.sub(":.*", "", parameters)
+            field = Field.from_id(field_id, language)
+
+            def validate(self, value, entries):
+                other_value = entries[field.label]
+                if len(other_value) > 0 and len(value) > 0:
+                    msg = "Must be left blank if using {}"
+                    msg = msg.format(field.label)
+                    return msg
+
+            prompt = "Mutually exclusive with {}.".format(field.label)
+
+        elif rule_id == 25:
+            # PubMed, leaving for now
+            pass
+
+        elif rule_id == 28:
+            # Birthday, too limited to implement now
+            pass
+
+        self.validate = validate
+        self.prompt = prompt
+
+    #----------------------------------------
+    @classmethod
+    def from_id(cls, id_, parameters, language = "english"):
+
+        xml = cls.lookup(cls, ["rule", "id", id_], cls._cache)
+        return cls(xml, parameters, language)
+
+    #----------------------------------------
+    @classmethod
+    def from_label(cls, label, parameters, language = "english"):
+
+        xml = cls.lookup(cls, ["rule", "label", label], cls._cache)
+        return cls(xml, parameters, language)
 
 #===============================================================================
 class Section(Entry):
 
     _cache = {}
 
+    #----------------------------------------
     def __init__(self, xml, language = "english"):
         super().__init__(xml, language)
 
-        # Then proceed to extract fields by label...
+        # Get all parents -- using xml to avoid recursion error
+        parent_ids = []
 
+        parent = xml.getparent()
+        parent_id = parent.get("id")
 
+        while parent_id is not None:
+            parent_ids.append(parent_id)
+            parent = parent.getparent()
+            parent_id = parent.get("id")
+
+        self.parent_ids = parent_ids
+
+        self.fields = {}
+        self.sections = {}
+        
+        # Parsing fields
+        for child in xml.getchildren():
+
+            # Adding to field lists
+            if child.tag == "field":
+                entry = Field(child, language)
+                lookup = self.fields
+            elif child.tag == "section":
+                entry = Section(child, language)
+                lookup = self.sections
+            else:
+                continue
+
+            if entry.label in lookup:
+                err = '"{}" is not unique within "{}"'
+                err = err.format(entry.label, self.label)
+                raise SchemaError(err)
+
+            lookup[entry.label] = entry
+
+        # Gather all rules
+        self.rules = []
+
+        for child in xml.xpath("constraint"):
+            entry = Entry(child, language)
+            self.rules.append(Rule.from_id(entry.validator, language))
+
+    #----------------------------------------
     @classmethod
     def from_id(cls, id_, language = "english"):
 
-        return super().from_keys([id_], cls._section_by_id, language)
+        return cls.from_lookup(["section", "id", id_], language, cls._cache)
         
+    #----------------------------------------
     @classmethod
     def from_label(cls, section_label, parent_label = None, language = "english"):
 
-        return super().from_keys([section_label, parent_label], 
-                cls._section_by_label, language)
+        # Check cache
+        full_name = section_label + str(parent_label)
+        if full_name in cls._cache:
+            return cls._cache[full_name]
 
+        # Check just section label
+        section = cls.lookup(cls, ["section", "label", section_label])
+
+        # If there is only one key, generate class
+        keys = list(section.keys())
+        if len(keys) == 1:
+            out = cls(section[keys[0]], language)
+        else:
+            if parent_label is not None:
+                if parent_label not in keys:
+                    err = '"{}" section not in {}'
+                    err = err.format(section_label, parent_label)
+                    raise SchemaError(err)
+                else:
+                    out = cls(section[parent_label])
+            else:
+                err = '"{}" section is ambiguous, specify parent label'
+                err = err.format(section_label)
+                raise SchemaError(err)
+
+        cls._cache[full_name] = out
+
+        return out
+
+    #----------------------------------------
     @classmethod
     def from_entries(cls, entries, warning = True, language = "english"):
-
-        lookup = cls._section_id_by_entry
 
         # Parsing fields in alphabetical order for consistency
         entries.sort()
 
         # First, check if the full set of fields has been previously stored
-        full_list = "".join(entries)
+        full_name = "".join(entries)
 
-        if full_list in cls._cache:
-            return cls._cache[full_list]
+        if full_name in cls._cache:
+            return cls._cache[full_name]
             
         numbers = [0]
         sets = [set()]
+
+        lookup = cls.lookup(cls, ["section", "entry_label"])
 
         for entry in entries:
             if entry not in lookup:
@@ -467,207 +803,163 @@ class Section(Entry):
             _schema._log.warning(msg)
 
         # Store to cache
-        cls._cache[full_list] = section
+        cls._cache[full_name] = section
 
         return section
+
+    #----------------------------------------
+    def field(self, label):
+        if label in self.fields:
+            return self.fields[label]
+        else:
+            err = '"{}" field does not exist in "{}" section.'
+            err = err.format(label, self.label)
+            raise SchemaError(err)
+
+    #----------------------------------------
+    def field_list(self):
+        out = list(self.fields.values())
+        out.sort(key = lambda x: x.order)
+        return out
+
+    #----------------------------------------
+    def section_list(self):
+        out = list(self.sections.values())
+        out.sort(key = lambda x: x.order)
+        return out
+
+    #----------------------------------------
+    def to_xml(self):
+        
+        section = etree.Element("section", id = self.id, label = self.label)
+
+        return section
+
+    #----------------------------------------
+    def yaml_template(self, sep = '\n', width = 80, max_lines = 2, 
+                      indent_char = '    ', indent_level = 0,
+                      add_description = True, add_type = True, 
+                      add_constraint = True,
+                      join = True):
+
+        lines = []
+
+        def format_line(line, comment = False):
+
+            indent = indent_char*indent_level
+            if comment:
+                indent = indent + "#"
+
+            wrapper = TextWrapper(
+                initial_indent = indent, subsequent_indent = indent,
+                width = width, max_lines = max_lines, placeholder = " ...", 
+                drop_whitespace = False
+            )
+            lines = wrapper.wrap(line)
+
+            return(lines)
+
+        for field in self.field_list():
+
+            if add_description:
+                line = "[Description] " + field.description
+                lines.extend(format_line(line, True))
+            
+            if add_type:
+                line = "[Type] " + field.type.label
+                if field.type.prompt != "":
+                    line = line + " -- " + field.type.prompt
+
+                lines.extend(format_line(line, True))
+
+            if add_constraint:
+                for rule in field.rules:
+                    line = "[Constraint] " + rule.prompt
+                    lines.extend(format_line(line, True))
+
+            line = field.label + ":"
+            lines.extend(format_line(line))
+            lines[-1] = lines[-1] + sep
+
+        for section in self.section_list():
+
+            line = section.label + ":"
+            lines.extend(format_line(line))
+            lines[-1] = lines[-1] + sep
+
+            lines.extend(
+                section.yaml_template(
+                    sep, width, max_lines, indent_char, indent_level + 1, 
+                    join = False
+                )
+            )
+
+        if join:
+            return "\n".join(lines)
+        else:
+            return lines
 
 #===============================================================================
 class Field(Entry):
 
+    _cache = {}
+
+    #----------------------------------------
     def __init__(self, xml, language = "english"):
     
         # Default parsing
         super().__init__(xml, language)
 
-        # But a field also has a type
         self.type = Type.from_id(self.type_id, self.lookup_id)
 
+        # Double checking in case lookup was none while it should have a value
+        if self.type.label == "LOV":
+            lov = LOV.from_label(self.label)
+            self.type = Type.from_id(self.type_id, lov.id)
+        elif self.type.label == "Reference":
+            ref = RefTable.from_label(self.label)
+            self.type = Type.from_id(self.type_id, ref.id)
+
+        # And adding rules
+        self.rules = []
+
+        for child in xml.xpath("constraint"):
+            entry = Entry(child, language)
+            self.rules.append(
+                Rule.from_id(entry.validator, entry.parameters, language)
+            )
+
+    #----------------------------------------
+    @classmethod
+    def from_id(cls, id_, language = "english"):
+        return cls.from_lookup(["field", "id", id_], language, cls._cache)
+
+    #----------------------------------------
+    @classmethod
+    def from_label(cls, label, section):
+        return section.field(label)
+
+    #----------------------------------------
+    def validate(self, value, entries):
+        
+        msgs = []
+
+        for rule in self.rules:
+            msg = rule.validate(rule, value, entries)
+            if msg is not None:
+                msgs.append(msg)
+
+        if len(msgs) > 0:
+            return "; ".join(msgs)
+
+    #----------------------------------------
+    def to_xml(self, value):
+        
+        field = etree.Element("field", id = self.id, label = self.label)
+
+        # Adding on the actual value based on type
+        field.append(self.type.to_xml(value))
+
+        return field
 
 _schema = Schema()
-
-#f = Type.from_label("Date")
-#print(f.id)
-a = RefTable.from_label("Organization")
-b = Type.from_label("Reference", "Organization")
-
-s = Section.from_label("Courses Taught")
-print(s.label)
-
-class TEMP:
-
-    #---------------------------------------------------------------------------
-    def get_section_components(self, section_id):
-
-        if section_id not in self._sections:
-            err = '"{}" section id is not defined in the schema.'
-            err = err.format(section_id)
-            raise SchemaError(err)
-
-        return self._sections[section_id]
-
-    #---------------------------------------------------------------------------
-    def get_section_schema(self, section_id):
-
-        return self.get_section_components(section_id)["schema"]
-
-    #---------------------------------------------------------------------------
-    def get_section_label(self, section_id):
-
-        return self.get_section_components(section_id)["label"]
-
-    #---------------------------------------------------------------------------
-    def get_section_fields(self, section_id):
-
-        return self.get_section_components(section_id)["fields"]
-
-    #---------------------------------------------------------------------------
-    def get_section_sections(self, section_id):
-
-        return self.get_section_components(section_id)["sections"]
-
-    #---------------------------------------------------------------------------
-    def get_section_lock(self, section_id):
-
-        return self.get_section_components(section_id)["lock"]
-
-    #---------------------------------------------------------------------------
-    def get_field_type(self, field):
-
-        data_type = field.get("dataType")
-
-        if data_type is None:
-            return
-
-        if data_type not in self._type_names:
-            err = '"{}" type is not defined in the schema.'
-            err = err.format(data_type)
-            raise SchemaError(err)
-
-        return self._type_names[data_type]
-
-    #---------------------------------------------------------------------------
-    def get_lov_id(self, value, field):
-
-        # Double checking field type
-        data_type = self.get_field_type(field)
-
-        if data_type != "LOV":
-            err = 'Processing error, {} is not an "LOV" field.'
-            err = err.format(data_type)
-            raise SchemaError(err)
-
-        # Getting appropriate table
-        table_id = field.get("lookupId")
-        table_name = field.get("lookupEnglishExplanation")
-        if table_id not in self._lov_ids:
-            err = '"{}" lookup table not defined in the schema.'
-            err = err.format(table_name)
-            raise SchemaError(err)
-
-        table = self._lov_ids[table_id]
-
-        # Checking if value is in table
-        if value not in table:
-            err = '"{}" is not a valid value for "{}" (one of {})'
-            err = err.format(value, table_name, ", ".join(table.keys()))
-            raise SchemaError(err)
-
-        return table[value]
-
-    #---------------------------------------------------------------------------
-    def get_ref_ids(self, value, field):
-
-        # Double checking field type
-        data_type = self.get_field_type(field)
-
-        if data_type != "Reference":
-            err = 'Processing error, {} is not a "Reference" field.'
-            err = err.format(data_type)
-            raise SchemaError(err)
-
-        # Getting appropriate table
-        table_id = field.get("lookupId")
-        table_name = field.get("lookupEnglishExplanation")
-        if table_id not in self._ref_ids:
-            err = '"{}" reference table not defined in the schema.'
-            err = err.format(table_name)
-            raise SchemaError(err)
-
-        table = self._ref_ids[table_id]
-
-        # Checking if value is in table
-        if value not in table:
-            err = '"{}" is not a valid value for "{}"'
-            err = err.format(value, table_name)
-            raise SchemaError(err)
-
-        return table[value]
-
-    #---------------------------------------------------------------------------
-    def generate_template(self, section, parent = None):
-
-        # First, attempt to get section id
-        section_id = self.get_section_id(section, parent)
-
-        # Define generic dict to list conversion
-        def generate_list(entry_dict):
-            entry_list = []
-            entry_order = {}
-
-            for key in entry_dict:
-                xml = entry_dict[key]
-                
-                order = int(xml.get("orderIndex"))
-                entry_order[key] = order
-
-                comments = []
-                comments.append(self.get_description(xml))
-
-                field_type = self.get_field_type(xml)
-                if field_type is not None:
-                    comments.append("[" + field_type + "]")
-
-                entry_list.append([key, comments])
-
-            entry_list.sort(key = lambda x: entry_order[x[0]])
-
-            return entry_list
-
-        # Pull up dictionary of sections 
-        fields = generate_list(self.get_section_fields(section_id))
-        sections = generate_list(self.get_section_sections(section_id))
-        
-        # Recursively apply operation to all sections
-        for i in range(len(sections)):
-            sections[i].append(self.generate_template(sections[i][0], section))
-
-        # Return combination
-        return fields + sections
-
-
-    #---------------------------------------------------------------------------
-    def generate_yaml_template(self, section, parent = None):
-
-        template = self.generate_template(section, parent)
-
-        # As the yaml structure isn't particularly complicated, it's
-        # easier to generate a string manually, thereby preserving order
-        def add_line(item, string_list = [], indent = ""):
-
-            comment_string = ""
-            for line in item[1]:
-                comment_string = comment_string + "\n" + indent + "#" + line
-
-            string_list.append(comment_string)
-            string_list.append(indent + item[0] + ":")
-
-            if len(item) > 2:
-                for item2 in item[2]:
-                    add_line(item2, string_list, indent + " "*4)
-
-        string_list = []
-        for item in template:
-            add_line(item, string_list)
-
-        return "\n".join(string_list)
-
