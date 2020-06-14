@@ -1,3 +1,4 @@
+from cached_property import cached_property
 import importlib.resources
 import locale
 import logging
@@ -12,117 +13,34 @@ class SchemaError(Exception):
     """Raised when there is a generic issue parsing CCV data"""
     pass
 
+_schema = {}
+
 #===============================================================================
-class Schema(object):
+def load_schema(language = "english", cv = None, lov = None, ref = None):
 
-    _lookup = {}
-
-    #----------------------------------------
-    def __init__(self, language = "english", cv = None, lov = None, ref = None):
-
-        # Default schema
-        def read_xml(path):
-            #content = importlib.resources.read_binary('canadianccv', path)
-            f = open(path, 'rb')
-            with f:
-                content = f.read()
-            return etree.XML(content)
-
-        cv = cv if cv is not None else read_xml("cv.xml")
-        lov = cv if lov is not None else read_xml("cv-lov.xml")
-        ref = cv if ref is not None else read_xml("cv-ref-table.xml")
-
-        # Setting up default logger
-        logger = logging.getLogger(__name__)
-        log_format = logging.Formatter('Schema - %(levelname)s: %(message)s')
-        log_handler = logging.StreamHandler()
-        log_handler.setFormatter(log_format)
-        logger.addHandler(log_handler)
-
-        self._log = logger
-
-        # Section lookup tables
-        for _, xml in etree.iterwalk(cv, tag="section"):
-
-            section = Entry(xml, language)
-
-            lookup = ["section", "id", section.id]
-            self.add_lookup(lookup, xml)
-            
-            lookup = ["section", "label", section.label, section.parent.label]
-            self.add_lookup(lookup, xml)
-
-            # Section by entry
-            for child in xml.getchildren():
-
-                if child.tag not in ["section", "field"]:
-                    continue
-
-                # Using a generic schema class for either section or field
-                entry = Entry(child, language)
-                
-                lookup = ["section", "entry_label", entry.label]
-
-                # Initializing lookup set if necessary 
-                self.add_lookup(lookup, set(), unique = False)
-
-                # Adding to lookup set
-                self.lookup(lookup).add(section.id)
-
-                # Adding to field lists
-                if child.tag == "field":
-
-                    # Field by id
-                    self.add_lookup(["field", "id", entry.id], child)
-
-        # LOV lookup tables 
-        for _, xml in etree.iterwalk(lov, tag="table"):
-
-            entry = Entry(xml, language)
-            self.add_lookup(["lov", "id", entry.id], xml)
-            self.add_lookup(["lov", "label", entry.label], xml)
-
-        # Ref table lookup tables 
-        for _, xml in etree.iterwalk(ref, tag="table"):
-
-            entry = Entry(xml, language)
-
-            # Generating arbitrary container to hold both table and refTable entries
-            container = etree.Element("container", **xml.attrib)
-            container.append(xml)
-
-            self.add_lookup(["ref", "id", entry.id], container)
-            self.add_lookup(["ref", "label", entry.label], container)
-
-        # Adding second component of ref tables
-        for _, xml in etree.iterwalk(ref, tag="refTable"):
-
-            entry = Entry(xml, language)
-            container = self.lookup(["ref", "id", entry.id])
-            container.append(xml)
-
-        # Data types
-        for _, xml in etree.iterwalk(cv, tag="type"):
-
-            entry = Entry(xml, language)
-            self.add_lookup(["type", "id", entry.id], xml)
-            self.add_lookup(["type", "label", entry.label], xml)
-
-        # Rules
-        for _, xml in etree.iterwalk(cv, tag="rule"):
-
-            entry = Entry(xml, language)
-            self.add_lookup(["rule", "id", entry.id], xml)
-            self.add_lookup(["rule", "label", entry.label], xml)
+    global _schema
 
     #----------------------------------------
-    def add_lookup(self, keys, value, unique = True, overwrite = False):
+    def read_xml(path):
+        #content = importlib.resources.read_binary('canadianccv', path)
+        f = open(path, 'rb')
+        with f:
+            content = f.read()
+        return etree.XML(content)
+
+    cv = cv if cv is not None else read_xml("cv.xml")
+    lov = cv if lov is not None else read_xml("cv-lov.xml")
+    ref = cv if ref is not None else read_xml("cv-ref-table.xml")
+
+    #----------------------------------------
+    def add_lookup(keys, value, unique = True, overwrite = False):
+        
+        global _schema
 
         keys = keys.copy()
-
         full_name = "-".join(keys[:-1])
 
-        lookup = self._lookup
+        lookup = _schema
 
         while len(keys) > 1:
             key = keys.pop(0)
@@ -143,6 +61,89 @@ class Schema(object):
         else:
             lookup[key] = value
 
+    # Setting up default logger
+    logger = logging.getLogger(__name__)
+    log_format = logging.Formatter('Schema - %(levelname)s: %(message)s')
+    log_handler = logging.StreamHandler()
+    log_handler.setFormatter(log_format)
+    logger.addHandler(log_handler)
+
+    """
+    # Section lookup tables
+    for _, xml in etree.iterwalk(cv, tag="section"):
+
+        section = XML(xml, language)
+
+        lookup = ["section", "id", section.id]
+        self.add_lookup(lookup, xml)
+        
+        lookup = ["section", "label", section.label, section.parent_label]
+        self.add_lookup(lookup, xml)
+
+        # Section by entry
+        for child in xml.getchildren():
+
+            if child.tag not in ["section", "field"]:
+                continue
+
+            # Using a generic schema class for either section or field
+            entry = XML(child, language)
+            
+            lookup = ["section", "entry_label", entry.label]
+
+            # Initializing lookup set if necessary 
+            self.add_lookup(lookup, set(), unique = False)
+
+            # Adding to lookup set
+            self.lookup(lookup).add(section.id)
+
+            # Adding to field lists
+            if child.tag == "field":
+
+                # Field by id
+                self.add_lookup(["field", "id", entry.id], child)
+    """
+    # LOV lookup tables 
+    for _, xml in etree.iterwalk(lov, tag="table"):
+
+        entry = LOV(xml = xml, language = language)
+        add_lookup(["LOV", entry.id], entry)
+        add_lookup(["LOV", entry.label], entry)
+    """
+    # Ref table lookup tables 
+    for _, xml in etree.iterwalk(ref, tag="table"):
+
+        entry = XML(xml, language)
+
+        # Generating arbitrary container to hold both table and refTable entries
+        container = etree.Element("container", **xml.attrib)
+        container.append(xml)
+
+        self.add_lookup(["ref", "id", entry.id], container)
+        self.add_lookup(["ref", "label", entry.label], container)
+
+    # Adding second component of ref tables
+    for _, xml in etree.iterwalk(ref, tag="refTable"):
+
+        entry = XML(xml, language)
+        container = self.lookup(["ref", "id", entry.id])
+        container.append(xml)
+
+    # Rules
+    for _, xml in etree.iterwalk(cv, tag="rule"):
+
+        entry = XML(xml, language)
+        self.add_lookup(["rule", "id", entry.id], xml)
+        self.add_lookup(["rule", "label", entry.label], xml)
+    """
+    # Data types
+    for _, xml in etree.iterwalk(cv, tag="type"):
+
+        entry = Type(xml = xml, language = language)
+        add_lookup(["Type", entry.id], entry)
+        add_lookup(["Type", entry.label], entry)
+
+    """
     #----------------------------------------
     def lookup(self, keys, cache = None):
 
@@ -163,9 +164,12 @@ class Schema(object):
             lookup_name += "-" + key
 
         return lookup
+    """
+
+
 
 #===============================================================================
-class Entry(Schema):
+class XML(object):
     """
     A generic wrapper around an lxml Element that exposes commonly used tags as
     well as a lookup classemethod.
@@ -174,94 +178,121 @@ class Entry(Schema):
     #----------------------------------------
     def __init__(self, xml, language = "english"):
         self.xml = xml
-        self._language = language
-
-        self.id = xml.get("id")
-        self.name = xml.get(language + "Name")
-        self.description = xml.get(language + "Description")
-        self.label = self.name if self.name is not None else self.description
-
-        self.order = xml.get("orderIndex")
-        self.type_id = xml.get("dataType")
-        self.lookup_id = xml.get("lookupId")
-        self.lookup_label = xml.get("lookup" + language + "Explanation")
-
-        self.validator = xml.get("validatorRule")
-        self.parameters = xml.get("parameters")
-
-        self.parent = None 
-        if xml.getparent() is not None and xml.tag != "rule":
-            self.parent = Entry(xml.getparent(), language)
-
+        self.language = language
 
     #----------------------------------------
     @classmethod
-    def from_lookup(cls, keys, language = "english", cache = None):
-
-        full_name = "-".join(keys)
-
-        if cache is not None and full_name in cache:
-            return cache[full_name]
-
-        out = cls(cls.lookup(cls, keys), language)
+    def from_xml(cls, xml, language = "english"):
         
-        if cache is not None:
-            cache[full_name] = out
+        return cls(cls.lookup(cls, keys), language)
 
-        return out
+    #----------------------------------------
+    # Basics
+
+    @property
+    def id(self):
+        return self.xml.get("id")
+
+    @property
+    def name(self):
+        return self.xml.get(self.language + "Name")
+
+    @property
+    def description(self):
+        return self.xml.get(self.language + "Description")
+
+    @property
+    def label(self):
+        name = self.name
+        description = self.description
+        return name if name is not None else description
+
+    @property
+    def order(self):
+        return self.xml.get("orderIndex")
+
+    #----------------------------------------
+    # Data type related
+
+    @property
+    def type(self):
+        return self.xml.get("dataType")
+
+    @property
+    def lookup(self):
+        return self.xml.get("lookupId")
+
+    #----------------------------------------
+    # Rule related
+
+    @property
+    def validator(self):
+        return self.xml.get("validatorRule")
+
+    @property
+    def parameters(self):
+        return self.xml.get("parameters")
+
+#Temp
+class Entry:
+    pass
 
 #===============================================================================
-class Type(Entry):
+class Singleton(type):
+    
+    def __call__(cls, *args, **kwargs):
+
+        # If xml provided, then initialize from that
+        if "xml" in kwargs:
+            return super(Singleton, cls).__call__(*args, **kwargs)
+
+        # Otherwise, check schema
+        global _schema
+
+        id_ = "-".join(args)
+
+        if cls.__name__ not in _schema:
+            err = 'No schema found for "{}" class'
+            err = err.format(cls.__name__)
+            raise SchemaError
+
+        if id_ not in _schema[cls.__name__]:
+            err = 'No schema found for "{}" class with identifier "{}"'
+            err = err.format(cls.__name__, id_)
+            raise SchemaError
+        
+        return _schema[cls.__name__][id_]
+
+#===============================================================================
+class Type(XML, metaclass = Singleton):
     """
-    Types serve as a desriptive elements for a field and describe how lxml Elements 
-    should be generated. LOV and RefTable types have their own objects as
-    they have slightly more complicated logic.
+    A generic type that covers all types without reference values.
     """
 
-    def __init__(self, xml, language = "english"):
+    def __init__(self, *args, xml = None, language = "english"):
 
         super().__init__(xml, language)
 
-        # Generating entry prompts for certain field types
-        self.prompt = ""
-        
-        if self.label == "Year":
-            self.prompt = "yyyy"
-        elif self.label == "Year Month":
-            self.prompt = "yyyy/mm"
-        elif self.label == "Month Day":
-            self.prompt = "mm/dd"
-        elif self.label == "Date":
-            self.prompt = "yyyy-mm-dd"
+    #----------------------------------------
+    @property
+    def prompt(self):
+
+        prompts = {
+            "Year":"yyyy",
+            "Year Month":"yyyy/mm",
+            "Month Day":"mm/dd",
+            "Date":"yyyy-mm-dd"
+        }
+
+        try:
+            return prompts[self.label]
+        except KeyError:
+            return ""
 
     #----------------------------------------
-    @classmethod
-    def from_id(cls, type_id, lookup_id = None, language = "english"):
-
-        out = cls.from_lookup(["type", "id", type_id], language)
-
-        if out.label == "LOV" and lookup_id is not None:
-            return LOV.from_id(lookup_id, language)
-        elif out.label == "Reference" and lookup_id is not None:
-            return RefTable.from_id(lookup_id, language)
-        else:
-            return out
-
-    #----------------------------------------
-    @classmethod
-    def from_label(cls, type_label, lookup_label = None, language = "english"):
-
-        out = cls.from_lookup(["type", "label", type_label], language)
-
-        if out.label == "LOV":
-            return LOV.from_label(lookup_label, language)
-        elif out.label == "Reference":
-            return RefTable.from_label(lookup_label, language)
-        else:
-            return out
-
-    #---------------------------------------------------------------------------
     def to_xml(self, value):
+
+        elem = None
 
         if self.label == "Year":
             elem = etree.Element("value", format = "yyyy", type = self.label)
@@ -315,44 +346,43 @@ class Type(Entry):
         return elem 
 
 #-------------------------------------------------------------------------------
-class LOV(Entry):
+class LOV(XML, metaclass = Singleton):
     """
-    Essentially a Type that also has a limited set of values it can take.
+    A reference for Type with an LOV value.
     """
 
-    _cache = {}
-    
     #----------------------------------------
-    def __init__(self, xml, language = "english"):
+    def __init__(self, *args, xml = None, language = "english"):
         
         super().__init__(xml, language)
 
-        # Extract values
-        _by_label = {}
-        _by_id = {}
+    #----------------------------------------
+    @cached_property
+    def value_labels(self):
 
-        for child in xml.getchildren():
-            entry = Entry(child, language)
-            _by_label[entry.label] = entry
-            _by_id[entry.id] = entry
+        values = {}
 
-        self._by_label = _by_label
-        self._by_id = _by_id
+        for child in self.xml.getchildren():
+            entry = XML(child, self.language)
+            values[entry.label] = entry
 
-        self.values = sorted(list(_by_label.keys()), key = locale.strxfrm)
-        self.prompt = ", ".join(self.values)
+        return(values)
 
     #----------------------------------------
-    @classmethod
-    def from_id(cls, id_, language = "english"):
+    @cached_property
+    def value_ids(self):
 
-        return cls.from_lookup(["lov", "id", id_], language, cls._cache)
+        values = {}
+
+        for child in self.xml.getchildren():
+            values[entry.id] = entry
+
+        return(values)
 
     #----------------------------------------
-    @classmethod
-    def from_label(cls, label, language = "english"):
-
-        return cls.from_lookup(["lov", "label", label], language, cls._cache)
+    @property
+    def values_list(self):
+        return sorted(list(self.value_labels.keys()), key = locale.strxfrm)
 
     #----------------------------------------
     def has_id(self, id_):
@@ -393,7 +423,7 @@ class LOV(Entry):
         return elem 
 
 #-------------------------------------------------------------------------------
-class RefTable(Entry):
+class RefTableType(Type):
     """
     Essentially a Type that also has a limited set of values it can take (with each
     value being references to a metatable of references).
@@ -404,7 +434,7 @@ class RefTable(Entry):
     #----------------------------------------
     def __init__(self, xml, language = "english"):
 
-        super().__init__(xml, language)
+        super(Type, self).__init__(xml, language)
 
         # Extract values
         _by_label = {}
@@ -462,18 +492,6 @@ class RefTable(Entry):
         self.prompt = ", ".join(self.values)
 
     #----------------------------------------
-    @classmethod
-    def from_id(cls, id_, language = "english"):
-
-        return cls.from_lookup(["ref", "id", id_], language, cls._cache)
-
-    #----------------------------------------
-    @classmethod
-    def from_label(cls, label, language = "english"):
-
-        return cls.from_lookup(["ref", "label", label], language, cls._cache)
-
-    #----------------------------------------
     def has_id(self, id_):
 
         return id_ in self._by_id 
@@ -520,6 +538,7 @@ class RefTable(Entry):
             elem.append(link)
 
         return elem 
+
 
 #===============================================================================
 class Rule(Entry):
@@ -962,4 +981,5 @@ class Field(Entry):
 
         return field
 
-_schema = Schema()
+# Generating default schema
+load_schema()
