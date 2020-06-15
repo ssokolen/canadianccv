@@ -13,6 +13,8 @@ setup(name='canadianccv',
       tests_require=['nose'],
       include_package_data=True,
       install_requires=[
+          'cached-property',
+          'flatten-dict',
           'lxml',
           'pyyaml',
           'tomlkit',
