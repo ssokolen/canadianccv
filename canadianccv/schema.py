@@ -1,4 +1,5 @@
 from cached_property import cached_property
+import copy
 from flatten_dict import flatten
 import importlib.resources
 import locale
@@ -18,12 +19,34 @@ class SchemaError(Exception):
 
 
 # ==============================================================================
+# Helper function for line wrapping in template
+
+_wrapper = TextWrapper(
+    initial_indent = "    ",
+    subsequent_indent = "    ",
+    width = 80,
+    max_lines = 2,
+    placeholder = " ...",
+    drop_whitespace = False,
+)
+
+def load_wrapper(wrapper = None):
+
+    global _wrapper
+    _wrapper = wrapper
+
+
+# ==============================================================================
 # Function dealing with general schema creation
 
 _schema = {}
 
 # ----------------------------------------
-def _add_schema(class_, keys, value, unique=True, overwrite=False):
+def _add_schema(class_, keys, value, unique = True, overwrite = False):
+
+    # If overwrite is true, makes no sense to error out on unique check
+    if overwrite:
+        unique = False
 
     global _schema
 
@@ -122,7 +145,7 @@ def load_schema(language="english", cv = None, lov = None, ref = None):
     ref = _read_xml(ref, "cv-ref-table.xml")
 
     # Section lookup tables
-    for _, xml in etree.iterwalk(cv, tag="section"):
+    for _, xml in etree.iterwalk(cv, tag = "section"):
 
         section = Section(xml = xml, language = language)
         _add_schema("Section", [section.id], section)
@@ -142,20 +165,20 @@ def load_schema(language="english", cv = None, lov = None, ref = None):
 
             # Adding to field lists
             if child.tag == "field":
-                pass
 
                 # Field by id
-                #self.add_lookup(["field", "id", entry.id], child)
+                field = Field(xml = child, language = language)
+                _add_schema("Field", [entry.id],  field)
     
     # LOV lookup tables
-    for _, xml in etree.iterwalk(lov, tag="table"):
+    for _, xml in etree.iterwalk(lov, tag = "table"):
 
-        entry = LOV(xml=xml, language=language)
+        entry = LOV(xml = xml, language = language)
         _add_schema("LOV", [entry.id], entry)
         _add_schema("LOV", [entry.label], entry)
-    """
+    
     # Ref table lookup tables 
-    for _, xml in etree.iterwalk(ref, tag="table"):
+    for _, xml in etree.iterwalk(ref, tag = "table"):
 
         entry = XML(xml, language)
 
@@ -163,52 +186,35 @@ def load_schema(language="english", cv = None, lov = None, ref = None):
         container = etree.Element("container", **xml.attrib)
         container.append(xml)
 
-        self.add_lookup(["ref", "id", entry.id], container)
-        self.add_lookup(["ref", "label", entry.label], container)
+        _add_schema("Reference", [entry.id], container)
+        _add_schema("Reference", [entry.label], container)
 
     # Adding second component of ref tables
-    for _, xml in etree.iterwalk(ref, tag="refTable"):
+    for _, xml in etree.iterwalk(ref, tag = "refTable"):
 
         entry = XML(xml, language)
-        container = self.lookup(["ref", "id", entry.id])
+        container = _get_schema("Reference", [entry.id])
         container.append(xml)
 
-    # Rules
-    for _, xml in etree.iterwalk(cv, tag="rule"):
+        # And replace the placeholder container with a Reference element
+        table = Reference(xml = container, language = language)
+        _add_schema("Reference", [table.id], table, overwrite = True)
+        _add_schema("Reference", [table.label], table, overwrite = True)
 
-        entry = XML(xml, language)
-        self.add_lookup(["rule", "id", entry.id], xml)
-        self.add_lookup(["rule", "label", entry.label], xml)
-    """
     # Data types
-    for _, xml in etree.iterwalk(cv, tag="type"):
+    for _, xml in etree.iterwalk(cv, tag = "type"):
 
-        entry = Type(xml=xml, language=language)
+        entry = Type(xml = xml, language = language)
         _add_schema("Type", [entry.id], entry)
         _add_schema("Type", [entry.label], entry)
 
-    """
-    #----------------------------------------
-    def lookup(self, keys, cache = None):
+    # Rules
+    for _, xml in etree.iterwalk(cv, tag = "rule"):
 
-        keys = keys.copy()
+        entry = Rule(xml = xml, language = language)
+        _add_schema("Rule", [entry.id], entry)
+        _add_schema("Rule", [entry.label], entry)
 
-        lookup = self._lookup
-        lookup_name = "lookup"
-
-        while len(keys) > 0:
-            key = keys.pop(0)
-
-            if key not in lookup:
-                err = '"{}" does not exist within "{}"'
-                err = err.format(key, lookup_name)
-                raise SchemaError(err)
-                
-            lookup = lookup[key]
-            lookup_name += "-" + key
-
-        return lookup
-    """
 
 # ------------------------------------------------------------------------------
 class Schema(type):
@@ -271,11 +277,11 @@ class XML(object):
     # Data type related
 
     @property
-    def type(self):
+    def type_id(self):
         return self.xml.get("dataType")
 
     @property
-    def lookup(self):
+    def lookup_id(self):
         return self.xml.get("lookupId")
 
     # ----------------------------------------
@@ -284,10 +290,6 @@ class XML(object):
     @property
     def validator(self):
         return self.xml.get("validatorRule")
-
-    @property
-    def parameters(self):
-        return self.xml.get("parameters")
 
     # ----------------------------------------
     # Parent/child related
@@ -300,25 +302,38 @@ class XML(object):
             return parent.label
 
     # ----------------------------------------
-    # Helper function for sorting
+    # Helper functions for sorting
 
-    def sort_elements(dct, values = True, attr = None):
-        if values:
-            out = list(dct.values())
+    def to_list(lst, value = None, sort = "alpha"):
+        lst = lst.copy()
+
+        if sort == "alpha":
+            lst.sort(key = lambda x: locale.strxfrm(x.label))
+        elif sort == None:
+            pass
         else:
-            out = list(dct.keys())
+            lst.sort(key = lambda x: getattr(x, sort))
 
-        out.sort(key = lambda x: x.order)
+        if value is not None:
+            lst = [getattr(item, value) for item in lst]
 
-        if attr is not None:
-            out = [getattr(item, attr) for item in out]
+        return lst
+
+    def to_dict(lst, key, value = None):
+
+        if value is None:
+            get = lambda x: x
+        else:
+            get = lambda x: getattr(x, value)
+
+        out = {getattr(item, key):get(item) for item in lst}
 
         return out
 
 # ===============================================================================
 class Type(XML, metaclass = Schema):
     """
-    A generic type that covers all types without reference values.
+    A generic data type.
     """
 
     def __init__(self, *args, xml = None, language = "english"):
@@ -336,72 +351,75 @@ class Type(XML, metaclass = Schema):
             "Date": "yyyy-mm-dd",
         }
 
-        try:
+        if self.label in prompts:
             return prompts[self.label]
-        except KeyError:
+        else:
             return ""
 
     # ----------------------------------------
     def to_xml(self, value):
 
-        elem = None
+        # Coding out the basic types
+        label = self.label
 
-        if self.label == "Year":
-            elem = etree.Element("value", format="yyyy", type=self.label)
+        basic_types = {
+            "Year": etree.Element("value", format="yyyy", type=label),
+            "Year Month": etree.Element("value", format="yyyy/MM", type=label),
+            "Month Day": etree.Element("value", format="MM/dd", type=label),
+            "Date":etree.Element("value", format="yyyy-MM-dd", type=label),
+            "String":etree.Element("value", type=self.label),
+            "Integer":etree.Element("value", type="Number"),
+        }
+
+        if self.label in basic_types:
+
+            elem = basic_types[self.label]
             elem.text = str(value)
-
-        elif self.label == "Year Month":
-            elem = etree.Element("value", format="yyyy/MM", type=self.label)
-            elem.text = str(value)
-
-        elif self.label == "Month Day":
-            elem = etree.Element("value", format="MM/dd", type=self.label)
-            elem.text = str(value)
-
-        elif self.label == "Date":
-            elem = etree.Element("value", format="yyyy-MM-dd", type=self.label)
-            elem.text = str(value)
-
-        elif self.label == "Datetime":
-            pass
-
-        elif self.label == "String":
-            elem = etree.Element("value", type=self.label)
-            elem.text = str(value)
-
-        elif self.label == "Integer":
-            elem = etree.Element("value", type="Number")
-            elem.text = str(value)
-
+        
         elif self.label == "Bilingual":
-            elem = etree.Element("value", type="Bilingual")
-            elem.append(etree.Element("english"))
-            elem.append(etree.Element("french"))
-
-            if self.language == "english":
-                elem[0].text = str(value)
+            
+            if isinstance(value, str):
+                value_dct = {"english":"", "french":""}
+                value_dct[self.language] = value
+            elif isinstance(value, dict):
+                value_dct = value
             else:
-                elem[1].text = str(value)
+                err = "Bilingual data type value must be a string or dictionary."
+                raise SchemaError(err)
 
-        elif self.label == "PubMed":
-            pass
+            elem = etree.Element("value", type="Bilingual")
 
-        elif self.label == "Elapsed-Time":
-            pass
+            elem.append(etree.Element("english"))
+            elem[0].text = str(value_dct["english"])
 
-        if elem is None:
-            # Defining generic error message for missing implementations
-            err = '"{}" data type is not currently supported. '
+            elem.append(etree.Element("french"))
+            elem[1].text = str(value_dct["french"])
+
+        elif self.label in ["Datetime", "Pubmed", "Elapsed-Time"]:
+
+            err = '"{}" type is not currently supported'.format(self.label)
+            raise SchemaError(err)
+
+        elif self.label in ["LOV", "Reference"]:
+
+            err = '"{}" should not have entered here, something went wrong'
+            err = err.format(self.label)
+            raise SchemaError(err)
+
+        else: 
+
+            err = '"{}" is not a known data type, something went wrong'
             err = err.format(self.label)
             raise SchemaError(err)
 
         return elem
 
-
-# -------------------------------------------------------------------------------
-class LOV(XML, metaclass = Schema):
+# ===============================================================================
+class ReferenceType(XML, metaclass = Schema):
     """
-    A reference for Type with an LOV value.
+    A generic class for LOV and Reference data types, which share a few
+    common principles in that both are associated with a list of possible
+    values depending on the instance of the type.
     """
 
     # ----------------------------------------
@@ -410,330 +428,157 @@ class LOV(XML, metaclass = Schema):
         super().__init__(xml, language)
 
     # ----------------------------------------
-    @cached_property
-    def value_labels(self):
+    @property
+    def prompt(self):
 
-        values = {}
+        out = XML.to_list(self.values_list, "label")
+        return "One of: " + ", ".join(out)
+
+    # ----------------------------------------
+    @cached_property
+    def values(self):
+        
+        return XML.to_dict(self.values_list, "label")
+
+    # ----------------------------------------
+    def get_value(self, value):
+
+        dct = self.values
+
+        if value not in dct:
+            err = '"{}" is not a valid value for "{}"'
+            err = err.format(value, self.label)
+            raise SchemaError(err)
+        else:
+            return dct[value]
+
+# -------------------------------------------------------------------------------
+class LOV(ReferenceType, metaclass = Schema):
+    """
+    Essentially a Type that also has a limited set of values it can take.
+    """
+
+    # ----------------------------------------
+    @cached_property
+    def values_list(self):
+
+        values = []
 
         for child in self.xml.getchildren():
             entry = XML(child, self.language)
-            values[entry.label] = entry
+            values.append(entry)
 
         return values
-
-    # ----------------------------------------
-    @cached_property
-    def value_ids(self):
-
-        values = {}
-
-        for child in self.xml.getchildren():
-            values[entry.id] = entry
-
-        return values
-
-    # ----------------------------------------
-    @property
-    def values_list(self):
-        return sorted(list(self.value_labels.keys()), key=locale.strxfrm)
-
-    # ----------------------------------------
-    def has_id(self, id_):
-
-        return id_ in self._by_id
-
-    # ----------------------------------------
-    def has_label(self, label):
-
-        return label in self._by_label
-
-    # ----------------------------------------
-    def by_id(self, id_):
-
-        if not self.has_id(id_):
-            err = '"{}" is not a valid value for "{}"'
-            err = err.format(label, self.label)
-            raise SchemaError(err)
-        else:
-            return self._by_id[id_]
-
-    # ----------------------------------------
-    def by_label(self, label):
-
-        if not self.has_label(label):
-            err = '"{}" is not a valid value for "{}"'
-            err = err.format(label, self.label)
-            raise SchemaError(err)
-        else:
-            return self._by_label[label]
 
     # ----------------------------------------
     def to_xml(self, value):
 
-        elem = etree.Element("lov", id=self.id)
-        elem.text = self.by_label(value).label
+        value = self.get_value(value)
+
+        elem = etree.Element("lov", id = self.id)
+        elem.text = value.label
 
         return elem
 
-
 # -------------------------------------------------------------------------------
-class RefTable(XML, metaclass = Schema):
+class Reference(ReferenceType, metaclass = Schema):
     """
     Essentially a Type that also has a limited set of values it can take (with each
-    value being references to a metatable of references).
+    value being linked to a metatable of references).
     """
 
-    _cache = {}
-
     # ----------------------------------------
-    def __init__(self, xml, language="english"):
+    @cached_property
+    def values_list(self):
 
-        super(Type, self).__init__(xml, language)
+        values = {}
 
-        # Extract values
-        _by_label = {}
-        _by_id = {}
+        # Initializing the values as simple XML elements around names
+        for child in self.xml.xpath("refTable/value"):
+            entry = XML(child, self.language)
+            values[entry.id] = entry
 
-        # First, just getting names
-        reftable = xml.xpath("./refTable")[0]
-        for child in reftable.getchildren():
-            entry = Entry(child, language)
-            _by_label[entry.label] = entry
-            _by_id[entry.id] = entry
+        # However, this simple set of values has a reference table attached
+        # to it in the final XML table, which requires a set of reference
+        # ids and a set of reference names
 
-        table = xml.xpath("./table")[0]
-
-        # First pass to pick off reference tables
-        tables = []
-        for child in table:
-            entry = Entry(child, language)
+        # The RefOrLovId slots in the final table
+        # correspond to the ids referenced in the first couple lines of values
+        table_ids = []
+        
+        for child in self.xml.xpath("table/value"):
+            
+            entry = XML(child, self.language)
+            
             if entry.id != "-1":
                 break
 
             label_type = re.sub(".*?\((.*?)\).*", r"\1", entry.label)
             label = re.sub("[ ]*\(.*?\)", "", entry.label)
+            
             if label_type == "List Of Values":
-                entry = LOV.from_label(label)
+                entry = LOV(label)
             elif label_type == "Reference Table":
-                entry = RefTable.from_label(label)
+                entry = Reference(label)
 
-            tables.append(entry)
+            # But all we want is the id
+            table_ids.append(entry.id)
 
-        # Second pass to pick off values
-        _values = {}
-        for _, xml in etree.iterwalk(table, tag="value"):
+        # The final id is the id of this active Reference
+        table_ids.append(self.id)
 
-            entry = Entry(xml, language)
-            _values[entry.id] = entry
+        # And the values of the table are split up into two parts,
+        # the values themselves and a lookup table, so start by reading
+        # off the lookup table
 
-        # Third pass to pick off table elements
-        for _, xml in etree.iterwalk(table, tag="field"):
+        lookup = {}
+        
+        for child in self.xml.xpath("table/value"):
 
-            entry = Entry(xml, language)
-            references = [_values[i.get("id")] for i in xml.getchildren()]
-            _by_id[entry.id].references = references
-            _values[entry.id] = entry
+            entry = XML(child, self.language)
+            lookup[entry.id] = entry.label
 
-        self.tables = tables
-        self._by_label = _by_label
-        self._by_id = _by_id
+        values_list = []
 
-        # So at the end of the day, the refTable codes will correspond to the
-        # general self.tables entries, while the labels will correspond to the
-        # individual entry.references list stored in _by_label or _by_id
+        # Then go through the tables and convery ids to labels
+        for i, child in enumerate(self.xml.xpath("table/field")):
 
-        self.values = sorted(list(_by_label.keys()), key=locale.strxfrm)
-        self.prompt = ", ".join(self.values)
+            table_values = [lookup[i.get("id")] for i in child.getchildren()]
 
-    # ----------------------------------------
-    def has_id(self, id_):
+            # And finally tack on this list of values (and previous ids)
+            # to the original XML entry
+            entry = XML(child, self.language)
+            
+            entry = values[entry.id]
+            entry.ids = table_ids
+            entry.values = table_values
 
-        return id_ in self._by_id
+            # And store this element in a final list
+            values_list.append(entry)
 
-    # ----------------------------------------
-    def has_label(self, label):
-
-        return label in self._by_label
-
-    # ----------------------------------------
-    def by_id(self, id_):
-
-        if not self.has_id(id_):
-            err = '"{}" is not a valid value for "{}"'
-            err = err.format(label, self.label)
-            raise SchemaError(err)
-        else:
-            return self._by_id[id_]
-
-    # ----------------------------------------
-    def by_label(self, label):
-
-        if not self.has_label(label):
-            err = '"{}" is not a valid value for "{}"'
-            err = err.format(label, self.label)
-            raise SchemaError(err)
-        else:
-            return self._by_label[label]
+        return values_list
 
     # ----------------------------------------
     def to_xml(self, value):
 
-        value = self.by_label(value)
+        value = self.get_value(value)
 
-        ids = self.tables + [self]
-        values = value.references + [value]
+        ids = value.ids 
+        values = value.values
+        values.append(value.label)
 
-        elem = etree.Element("refTable", refValueId=value.id)
+        elem = etree.Element("refTable", refValueId = value.id)
 
         for i in range(len(ids)):
             link = etree.Element(
                 "linkedWith",
                 label="x",
-                value=values[i].label,
-                refOrLovId=ids[i].id,
+                value=values[i],
+                refOrLovId=ids[i],
             )
             elem.append(link)
 
         return elem
-
-
-# ===============================================================================
-class Rule(XML, metaclass = Schema):
-    """
-    Validation rule that can be used to assess Field entries.
-    """
-
-    _cache = {}
-
-    # ----------------------------------------
-    def __init__(self, xml, parameters, language="english"):
-
-        super().__init__(xml, language)
-
-        # Since only a small fraction of rules are used in practice,
-        # only generating validations for these
-
-        self.parameters = parameters
-
-        rule_id = int(self.id)
-
-        # Default validation
-        def validate(self, value, entries=None):
-            return ""
-
-        prompt = '"{}" -- not currently checked'.format(self.label)
-
-        # Specific rules
-        if rule_id == 8:
-
-            def validate(self, value, entries=None):
-                if len(value) > int(parameters):
-                    return "too long"
-
-            prompt = "Must be fewer than {} characters long.".format(
-                parameters
-            )
-
-        elif rule_id == 11:
-
-            def validate(self, value, entries=None):
-                if len(value) == 0:
-                    return "null entries not allowed"
-
-            prompt = "Must not be left blank."
-
-        elif rule_id == 15:
-            # Validate Unique Value -- unclear rule
-            pass
-
-        elif rule_id == 18:
-
-            def validate(self, value, entries=None):
-                if len(value) > int(parameters):
-                    return "too many entries"
-
-            prompt = "Must have {} entries or fewer.".format(parameters)
-
-        elif rule_id == 19:
-            # Validate Primary Record Chosen -- unclear rule
-            pass
-
-        elif rule_id == 20:
-
-            # Requires parsing parameters
-            lines = parameters.split(";")
-
-            field_id = re.sub(":.*", "", lines[1])
-            field = Field.from_id(field_id, language)
-
-            lov_id = re.sub(":.*", "", lines[2])
-            lov = LOV.from_id(lov_id, language)
-
-            other_id = lines[-1]
-            other = lov.by_id(other_id)
-
-            op = re.sub(":.*", "", lines[-2])
-
-            if int(op) == 359:
-                op = operator.eq
-                prompt = "Required if {} is {}"
-                prompt = prompt.format(field.label, other.label)
-
-                msg = "entry required if {} is {}"
-                msg = msg.format(field.label, other.label)
-            else:
-                op = operator.ne
-                prompt = "Required if {} is not {}"
-                prompt = prompt.format(field.label, other.label)
-
-                msg = "entry required if {} is not {}"
-                msg = msg.format(field.label, other.label)
-
-            def validate(self, value, entries):
-                other_value = entries[field.label]
-                if len(value) == 0 and op(other_value, other.label):
-                    return msg
-
-        elif rule_id == 24:
-
-            # Requires parsing parameters
-            field_id = re.sub(":.*", "", parameters)
-            field = Field.from_id(field_id, language)
-
-            def validate(self, value, entries):
-                other_value = entries[field.label]
-                if len(other_value) > 0 and len(value) > 0:
-                    msg = "Must be left blank if using {}"
-                    msg = msg.format(field.label)
-                    return msg
-
-            prompt = "Mutually exclusive with {}.".format(field.label)
-
-        elif rule_id == 25:
-            # PubMed, leaving for now
-            pass
-
-        elif rule_id == 28:
-            # Birthday, too limited to implement now
-            pass
-
-        self.validate = validate
-        self.prompt = prompt
-
-    # ----------------------------------------
-    @classmethod
-    def from_id(cls, id_, parameters, language="english"):
-
-        xml = cls.lookup(cls, ["rule", "id", id_], cls._cache)
-        return cls(xml, parameters, language)
-
-    # ----------------------------------------
-    @classmethod
-    def from_label(cls, label, parameters, language="english"):
-
-        xml = cls.lookup(cls, ["rule", "label", label], cls._cache)
-        return cls(xml, parameters, language)
-
 
 # ===============================================================================
 class Section(XML, metaclass = Schema):
@@ -851,14 +696,14 @@ class Section(XML, metaclass = Schema):
     @cached_property
     def rules(self):
 
-        children = {}
+        rules = []
 
         for child in self.xml.iterchildren(tag = "constraint"):
-            section = Rule(child.get("id"))
-            children[parents.label] = section
+            rule = Rule.from_id(child.get("validatorRule"))
+            rule._parameters = child.get("parameters")
+            rules.append(rule)
 
-        return children
-
+        return rules
 
     # ----------------------------------------
     def field(self, label):
@@ -869,7 +714,6 @@ class Section(XML, metaclass = Schema):
             err = err.format(label, self.label)
             raise SchemaError(err)
 
-
     # ----------------------------------------
     def to_xml(self):
 
@@ -878,75 +722,57 @@ class Section(XML, metaclass = Schema):
         return section
 
     # ----------------------------------------
-    def yaml_template(
-        self,
-        sep="\n",
-        width=80,
-        max_lines=2,
-        indent_char="    ",
-        indent_level=0,
-        add_description=True,
-        add_type=True,
-        add_constraint=True,
-        join=True,
-    ):
+    def yaml_template(self, sep = "\n", indent_level = 0, add_description = True,
+                      add_type = True, add_constraint = True, join = True):
+
+        global _wrapper
+        wrapper = copy.deepcopy(_wrapper)
 
         lines = []
 
-        def format_line(line, comment=False):
+        initial_indent = _wrapper.initial_indent
+        subsequent_indent = _wrapper.subsequent_indent
 
-            indent = indent_char * indent_level
-            if comment:
-                indent = indent + "#"
+        wrapper.initial_indent = initial_indent * indent_level
+        wrapper.subsequent_indent = subsequent_indent * indent_level
 
-            wrapper = TextWrapper(
-                initial_indent=indent,
-                subsequent_indent=indent,
-                width=width,
-                max_lines=max_lines,
-                placeholder=" ...",
-                drop_whitespace=False,
-            )
-            lines = wrapper.wrap(line)
 
-            return lines
-
-        for field in XML.sort(self.fields):
+        for field in XML.to_list(list(self.fields.values()), sort = "order"):
 
             if add_description:
-                line = "[Description] " + field.description
-                lines.extend(format_line(line, True))
+                line = "# [Description] " + field.description
+                lines.extend(wrapper.wrap(line))
 
             if add_type:
-                line = "[Type] " + field.type.label
+                line = "# [Type] " + field.type.label
+                
                 if field.type.prompt != "":
                     line = line + " -- " + field.type.prompt
 
-                lines.extend(format_line(line, True))
+                if field.reference is not None:
+                    line = line + " -- " + field.reference.prompt
+
+                lines.extend(wrapper.wrap(line))
 
             if add_constraint:
                 for rule in field.rules:
-                    line = "[Constraint] " + rule.prompt
-                    lines.extend(format_line(line, True))
+                    line = "# [Constraint] " + rule.prompt
+                    lines.extend(wrapper.wrap(line))
 
             line = field.label + ":"
-            lines.extend(format_line(line))
+            lines.extend(wrapper.wrap(line))
             lines[-1] = lines[-1] + sep
 
-        for section in self.section_list():
+        for section in XML.to_list(list(self.sections.values()), sort = "order"):
 
             line = section.label + ":"
-            lines.extend(format_line(line))
+            lines.extend(wrapper.wrap(line))
             lines[-1] = lines[-1] + sep
 
             lines.extend(
                 section.yaml_template(
-                    sep,
-                    width,
-                    max_lines,
-                    indent_char,
-                    indent_level + 1,
-                    join=False,
+                    sep, indent_level + 1, add_description,
+                    add_type, add_constraint, join = False
                 )
             )
 
@@ -955,46 +781,48 @@ class Section(XML, metaclass = Schema):
         else:
             return lines
 
-
 # ===============================================================================
 class Field(XML, metaclass = Schema):
 
-    _cache = {}
-
     # ----------------------------------------
-    def __init__(self, xml, language="english"):
+    def __init__(self, *args, xml = None, language = "english"):
 
-        # Default parsing
         super().__init__(xml, language)
 
-        self.type = Type.from_id(self.type_id, self.lookup_id)
-
-        # Double checking in case lookup was none while it should have a value
-        if self.type.label == "LOV":
-            lov = LOV.from_label(self.label)
-            self.type = Type.from_id(self.type_id, lov.id)
-        elif self.type.label == "Reference":
-            ref = RefTable.from_label(self.label)
-            self.type = Type.from_id(self.type_id, ref.id)
-
-        # And adding rules
-        self.rules = []
-
-        for child in xml.xpath("constraint"):
-            entry = Entry(child, language)
-            self.rules.append(
-                Rule.from_id(entry.validator, entry.parameters, language)
-            )
-
     # ----------------------------------------
     @classmethod
-    def from_id(cls, id_, language="english"):
-        return cls.from_lookup(["field", "id", id_], language, cls._cache)
-
-    # ----------------------------------------
-    @classmethod
-    def from_label(cls, label, section):
+    def from_section(cls, label, *args):
+        section = Section(*args)
         return section.field(label)
+
+    # ----------------------------------------
+    @property
+    def type(self):
+        return Type(self.type_id)
+
+    # ----------------------------------------
+    @property
+    def reference(self):
+
+        lookup = self.lookup_id if self.lookup_id is not None else self.label
+        
+        if self.type.label == "LOV":
+            return LOV(lookup)
+        elif self.type.label == "Reference":
+            return Reference(lookup)
+
+    # ----------------------------------------
+    @cached_property
+    def rules(self):
+
+        rules = []
+
+        for child in self.xml.iterchildren(tag = "constraint"):
+            rule = Rule.from_id(child.get("validatorRule"))
+            rule._parameters = child.get("parameters")
+            rules.append(rule)
+
+        return rules
 
     # ----------------------------------------
     def validate(self, value, entries):
@@ -1002,7 +830,7 @@ class Field(XML, metaclass = Schema):
         msgs = []
 
         for rule in self.rules:
-            msg = rule.validate(rule, value, entries)
+            msg = rule.validate(value, entries)
             if msg is not None:
                 msgs.append(msg)
 
@@ -1012,12 +840,166 @@ class Field(XML, metaclass = Schema):
     # ----------------------------------------
     def to_xml(self, value):
 
-        field = etree.Element("field", id=self.id, label=self.label)
+        field = etree.Element("field", id = self.id, label = self.label)
 
         # Adding on the actual value based on type
-        field.append(self.type.to_xml(value))
+        if field.reference is not None:
+            field.append(self.reference.to_xml(value))
+        else:
+            field.append(self.type.to_xml(value))
 
         return field
+
+# ===============================================================================
+class Rule(XML):
+    """
+    Validation rule that can be used to assess Field entries.
+    """
+
+    # ----------------------------------------
+    def __init__(self, *args, xml = None, language = "english"):
+
+        super().__init__(xml, language)
+
+    # ----------------------------------------
+    @classmethod
+    def from_id(cls, id_):
+
+        return copy.deepcopy(_get_schema(cls.__name__, [id_]))
+
+    # ----------------------------------------
+    @cached_property
+    def parameters(self):
+
+        par = self._parameters
+        id_ = int(self.id)
+
+        if id_ == 8 or id_ == 18:
+
+            return int(par)
+        
+        elif id_ == 20:
+            # Requires parsing parameters
+            lines = par.split(";")
+
+            field_id = re.sub(":.*", "", lines[1])
+            field = Field(field_id)
+
+            lov_id = re.sub(":.*", "", lines[2])
+            lov = LOV(lov_id)
+
+            other_id = lines[-1]
+            other = XML.to_dict(lov.values_list, "id")[other_id]
+
+            out = {
+                "field":field.label,
+                "value":other.label,
+            }
+
+            op = re.sub(":.*", "", lines[-2])
+            if int(op) == 359:
+                out["is"] = True
+                out["op"] = operator.eq
+                out["err"] = "entry required if {} is {}"
+            else:
+                out["is"] = False
+                out["op"] = operator.neq
+                out["err"] = "entry required if {} is not {}"
+
+            return out
+        
+        elif id_ == 24:
+            
+            field_id = re.sub(":.*", "", par)
+            field = Field(field_id)
+
+            return field.label
+
+    # ----------------------------------------
+    @property
+    def prompt(self):
+
+        id_ = int(self.id)
+
+        # Only covering a fraction of the more common rules
+        if id_ == 8:
+
+            msg = "Must be fewer than {} characters long."
+            return msg.format(self.parameters)
+        
+        elif id_ == 11:
+
+            msg = "Must not be left blank."
+            return msg
+
+        elif id_ == 18:
+
+            msg = "Must have {} entries or fewer."
+            return msg.format(parameters)
+
+        elif id_ == 20:
+
+            if self.parameters["is"]:
+                msg = "Required if {} is {}"
+            else:
+                msg = "Required if {} is not {}"
+
+            return msg
+
+        elif id_ == 24:
+            
+            msg = "Mutually exclusive with {}."
+            return msg.format(self.parameters)
+
+        return '"{}" -- not currently checked'.format(self.label)
+
+    # ----------------------------------------
+    def validate(self, value, entries = None):
+
+        # Rules technically used but not implemented
+        # 15 -- Unclear
+        # 19 -- Unclear
+        # 25 -- PubMed
+        # 28 -- Birthday
+
+        id_ = int(self.id)
+
+        # Only covering a fraction of the more common rules
+        if id_ == 8:
+
+            if len(value) > self.parameters:
+                return "too long"
+        
+        elif id_ == 11:
+
+            if len(value) == 0:
+                return "null entries not allowed"
+
+        elif id_ == 18:
+
+            if len(value) > self.parameters:
+                return "too many entries"
+
+        elif id_ == 20:
+
+            # This rule has two parts: the virst part asks if the value is nil
+            # The second asks whether another value is something or not
+            # The error is parsed accordingly
+            pars = self.parameters
+            test = pars["op"](entries[pars["field"]], pars["other"])
+
+            if len(value) == 0 and test:
+                err = pars["err"]
+                err.format(pars["field"], pars["other"])
+                return err
+
+        elif rule_id == 24:
+
+            # Requires parsing parameters
+            if len(entries[self.parameters]) > 0 and len(value) > 0:
+                err = '"{}" must be left blank if using "{}"'
+                err = msg.format(self.label, field.label)
+                return msg
 
 
 # Generating default schema

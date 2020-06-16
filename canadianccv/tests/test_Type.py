@@ -5,7 +5,7 @@ from unittest import TestCase
 import warnings
 
 import canadianccv
-from canadianccv import _schema, Type, LOV
+from canadianccv import _schema, XML, Type, LOV, Reference
 
 class TestType(TestCase):
 
@@ -27,23 +27,20 @@ class TestType(TestCase):
         assert country.label == "Country"
         assert country.id == "00000000000000000000000000002000"
 
-        country.value_labels
-        country.value_labels
+        assert ( XML.to_list(country.values_list, "label")[:2] ==
+                ['Afghanistan', 'Aland Islands'])
 
-        """
-        # Using id lookup
-        year = GenericType.from_id(year.id)
+        assert ( XML.to_list(country.values_list, "label", sort = "id")[:2] ==
+                ['Afghanistan', 'Albania'])
 
-        assert year.__class__.__name__ == "GenericType"
-        assert year.label == "Year"
-        assert year.id == "00000000000000000000000000000014"
+    def test_ref_types(self):
 
-        # Using label lookup
-        year = GenericType.from_label(year.label)
+        # On its own
+        org = Reference("Organization")
 
-        assert year.__class__.__name__ == "GenericType"
-        assert year.label == "Year"
-        assert year.id == "00000000000000000000000000000014"
-        """
+        assert org.__class__.__name__ == "Reference"
+        assert org.label == "Organization"
+        assert org.id == "ee597e9073b6479b94f903ca08f81903"
 
-
+        assert ( XML.to_list(org.values_list, "label")[:2] ==
+                ['Aachen Technical University', 'Aalborg Universitet'])

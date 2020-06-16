@@ -38,4 +38,4 @@ class TestSection(TestCase):
 
         assert course2 is course
 
-        # XML.sort_elements(course.sections, attr = "label")
+        #print(course.yaml_template())
