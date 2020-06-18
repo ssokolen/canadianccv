@@ -658,6 +658,18 @@ class Section(XML, metaclass = Schema):
 
     # ----------------------------------------
     @cached_property
+    def parent_list(self):
+
+        parents = []
+
+        for parent in self.xml.iterancestors(tag = "section"):
+            section = Section(parent.get("id"))
+            parents.append(section)
+
+        return parents
+
+    # ----------------------------------------
+    @cached_property
     def parents(self):
 
         parents = {}
@@ -704,6 +716,37 @@ class Section(XML, metaclass = Schema):
             rules.append(rule)
 
         return rules
+
+    # ----------------------------------------
+    @cached_property
+    def sorting(self):
+
+        sorting = []
+
+        i = 1
+        while True:
+            field = self.xml.get("sortOnField" + str(i))
+            direction = self.xml.get("sortOnFieldDirection" + str(i))
+            i += 1
+            if field is not None:
+                field = Field(field)
+                direction.lower()
+                sorting.append((field.label, direction))
+            else:
+                break
+
+        return sorting
+
+    # ----------------------------------------
+    @cached_property
+    def is_dependent(self):
+        """True if any parent section has fields"""
+
+        for key in self.parents:
+            if len(self.parents[key].fields) > 0:
+                return True
+
+        return False
 
     # ----------------------------------------
     def field(self, label):
@@ -843,7 +886,7 @@ class Field(XML, metaclass = Schema):
         field = etree.Element("field", id = self.id, label = self.label)
 
         # Adding on the actual value based on type
-        if field.reference is not None:
+        if self.reference is not None:
             field.append(self.reference.to_xml(value))
         else:
             field.append(self.type.to_xml(value))
@@ -993,7 +1036,7 @@ class Rule(XML):
                 err.format(pars["field"], pars["other"])
                 return err
 
-        elif rule_id == 24:
+        elif id_ == 24:
 
             # Requires parsing parameters
             if len(entries[self.parameters]) > 0 and len(value) > 0:

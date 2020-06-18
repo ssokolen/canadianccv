@@ -14,3 +14,9 @@ Role: Sessional Instructor
 Organization: Dalhousie University
 Department: Department of CCV
 Section: CCV
+
+Co-instructors:
+    - Family Name: Test
+      First Name: Test
+    - Family Name: Test2
+      First Name: Test2

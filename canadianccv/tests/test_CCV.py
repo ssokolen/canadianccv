@@ -5,19 +5,25 @@ from unittest import TestCase
 import warnings
 
 import canadianccv
-from canadianccv import CCV
+from canadianccv import CCV, Section
 
 class TestCCV(TestCase):
 
     ccv = CCV(log_level = logging.DEBUG)
 
-    def test_add_entries_from_yaml(self):
+    def test_entry_addition(self):
     
-        #path = os.path.join(os.path.dirname(__file__), 'yaml_files')
-        #path = os.path.join(path, "course.yaml")
-        #self.ccv.add_file(path)
+        dirpath = os.path.join(os.path.dirname(__file__), 'yaml_files')
+        
+        path = os.path.join(dirpath, "course.yaml")
+        self.ccv.add_file(path)
 
-        #self.ccv.write_xml("test.xml", pretty_print = True)
-        pass
+        path = os.path.join(dirpath, "course2.yaml")
+        self.ccv.add_file(path)
+
+        self.ccv.to_xml("test.xml", pretty_print = True)
+
+        #print(self.ccv._index)
+        #print(self.ccv._content)
 
 

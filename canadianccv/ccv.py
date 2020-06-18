@@ -1,3 +1,4 @@
+from collections import namedtuple
 from datetime import datetime
 import fnmatch
 from lxml import etree
@@ -10,15 +11,21 @@ import yaml
 
 from .schema import *
 
-class CCVWarning(UserWarning):
+class CCVError(Exception):
     pass
+
 
 #===============================================================================
 class CCV(object):
 
+    Entry = namedtuple("Entry", ["schema", "contents"])
+
     #---------------------------------------------------------------------------
     def __init__(self, xml_path = None, language = "english",
                  log_path = "ccv.log", log_level = "INFO"):
+
+        self._index = {}
+        self._content = {}
 
         self.language = language
 
@@ -38,14 +45,6 @@ class CCV(object):
 
         self.log = logger
 
-        self._sections = {}
-
-        nsmap = {'generic-cv': 'http://www.cihr-irsc.gc.ca/generic-cv/1.0.0'}
-        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        self.xml = etree.Element('{%s}generic-cv' % nsmap['generic-cv'], 
-                nsmap = nsmap, lang = "en", dateTimeGenerated = timestamp,
-        )
-
         if xml_path is not None:
 
             f = open(xml_path, 'rb')
@@ -57,78 +56,86 @@ class CCV(object):
             self.log.info(msg, xml_path)
             
             # Re-mapping existing sections according to specified schema
-            for _, section in etree.iterwalk(xml, tag="section"):
+            for _, section in etree.iterwalk(xml, tag = "section"):
 
                 # If any parents have fields, do not move
-                move = True
-                section = Section(section, language)
+                section = Section(section.get("id"))
                 
-                for parent_id in section.parent_ids:
-                    parent = Section.from_id(parent_id, language)
-
-                    if len(parent.fields) > 0:
-                        move = False
-                        break
-
                 if move:
                     pass 
 
     #---------------------------------------------------------------------------
-    # Main parsing function
+    # Function for adding new elements to CCV
 
-    #----------------------------------------
-    def add_dict(self, dct):
-        """Add content of dictionary"""
+    # ----------------------------------------
+    def get_container(self, section):
 
-        # First, determine what section this is
-        section = Section.from_entries(list(dct.keys()), language = self.language)
-        self.log.info("Section identified as %s", section.label)
+        # If index already exists, return container
+        if section.id in self._index:
+            return self._index[section.id]
 
-        # Ensure parents have been generated (in reverse order)
-        parent_ids = section.parent_ids.copy()
-        parent_ids.reverse()
+        # Get container of parent or specify main dict as parent
+        parents = section.parent_list
+        if len(parents) > 0:
+            parent = self.get_container(parents[0])
+        else:
+            parent = self._content
 
-        xml = self.xml
-        for parent_id in parent_ids:
-            if parent_id not in self._sections:
-                parent_section = Section.from_id(parent_id, language = self.language)
-                new_xml = parent_section.to_xml()
+        # Add new section to content and index
+        if len(section.fields) > 0 and not section.is_dependent:
+            parent[section.label] = container = []
+        else:
+            parent[section.label] = container = {}
 
-                self._sections[parent_id] = new_xml
-                xml.append(new_xml)
-                xml = new_xml
-            else:
-                xml = self._section[parent_id]
+        self._index[section.id] = container
 
-        # Generate empty template (making validation more consistent)
-        entries = {}
+        return container
 
+    # ----------------------------------------
+    def validate_content(self, section, entries):
+
+        out = {}
+
+        # Filling in blank fields to make validation easier
         for field in section.fields:
-            entries[field] = ""
+            
+            out[field] = ""      
 
-        # Then adding new entries if they are valid
-        for entry in list(dct.keys()):
+        # Basic parsing cleanup
+        for entry in list(entries.keys()):
 
-            # Cleaning up string entries a little
-            value = dct[entry]
-
-            try:
-                value.strip(" \n\t")
-            except AttributeError:
-                pass
+            value = entries[entry]
 
             if entry in section.fields:
-                entries[entry] = value
+
+                if isinstance(value, str):
+                    value.strip(" \n\t")
+                elif isinstance(value, dict):
+                    [values[item].strip(" \n\t") for item in values]
+
+            elif entry in section.sections:
+
+                if isinstance(value, dict):
+                    value = [value]
+
+                subsection = Section(entry)
+                for i, item in enumerate(value):
+                    value[i] = self.validate_content(subsection, item)
+                
             else:
                 err = '"%s" is not a valid field or subsection in "%s"'
-                self.log.warning(entry, section.label)
+                self.log.warning(err, entry, section.label)
 
-        # Final loop to validate and generate xml
-        for field in section.field_list():
+            out[entry] = value
 
-            value = entries[field.label]
+        # Only validating fields for now
+        for entry in section.fields:
 
+            value = out[entry]
+
+            field = section.field(entry)
             errors = field.validate(value, entries)
+            
             if errors is not None:
                 err = 'Errors validating "%s": %s'
                 self.log.warning(err, field.label, errors)
@@ -136,16 +143,146 @@ class CCV(object):
 
             # After validation, if the value is blank, there is no need to add it
             if value is None or value == "":
-                continue
+                del out[entry]
 
-            try:
-                new_xml = field.to_xml(value)
-            except SchemaError as e:
-                err = 'Errors validating "%s": %s'
-                self.log.warning(err, field.label, str(e))
-                continue
+        return out
 
-            xml.append(new_xml)
+    # ----------------------------------------
+    def add_content(self, entries, validate = True):
+
+        # First, determine what section this is
+        try:
+            section = Section.from_entries(list(entries.keys()))
+        except SchemaError as e:
+            self.log.warning(e)
+            section = Section.from_entries(list(entries.keys()), error = False)
+
+        if section is None:
+            return
+
+        self.log.info("Section identified as %s", section.label)
+
+        # The section must be a top-level section (not a subsection)
+        if section.is_dependent:
+            err = 'A subsection like "{}" cannot be added on its own'
+            raise CCVError(err)
+
+        # Validate if required
+        if validate:
+            entries = self.validate_content(section, entries)
+
+        # Then get container to put the content in
+        container = self.get_container(section)
+
+        container.append(entries)
+
+    #---------------------------------------------------------------------------
+    # Main content generation
+
+    # ----------------------------------------
+    def content_to_list(self, parent = None, entries = None):
+        """Convenience function that flattens content dictionary"""
+
+        # If there is no parent, then we are starting at root
+        if parent is None:
+            entries = self._content
+            sections = {key:Section(key, str(None)) for key in entries}
+            fields = {}
+        else:
+            sections = parent.sections
+            fields = parent.fields
+            parent_label = parent.label
+
+        field_list = []
+        section_list = []
+
+        # First, iterate through fields
+        for key in fields:
+            if key in entries:
+                field_list.append(self.Entry(fields[key], entries[key]))
+
+        # Then sections
+        for key in sections:
+            if key in entries:
+                section_list.append(self.Entry(sections[key], entries[key]))
+
+        # External sort
+        field_list.sort(key = lambda x: x.schema.order)
+        section_list.sort(key = lambda x: x.schema.order)
+
+        # Recurse into the sections
+        for i, section in enumerate(section_list):
+
+            schema = section.schema
+            contents = entries[schema.label]
+            
+            if isinstance(contents, dict):
+                section = section._replace(
+                    contents = 
+                        self.content_to_list(schema, contents)
+                )
+            else:
+                sorting = reversed(schema.sorting)
+
+                for field, direction in sorting:
+                    reverse = True if direction != "asc" else False
+                    section.contents.sort(
+                        key = lambda x: x[field], reverse = reverse
+                    )
+
+                section = section._replace( 
+                    contents = 
+                        [self.content_to_list(schema, item) for item in contents]
+                )
+
+            
+            section_list[i] = section
+
+        return field_list + section_list
+
+    # ----------------------------------------
+    def content_to_xml(self, parent = None, entries = None):
+        """Convenience function that flattens content dictionary"""
+
+        Entry = namedtuple("Entry", ["schema", "contents"])
+
+        # If there is no parent, then generate whole list
+        if parent is None:
+            entries = self.content_to_list(None, None)
+
+            nsmap = {
+                'generic-cv': 'http://www.cihr-irsc.gc.ca/generic-cv/1.0.0'
+            }
+            
+            timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            
+            parent = etree.Element(
+                '{%s}generic-cv' % nsmap['generic-cv'], 
+                nsmap = nsmap, lang = "en", dateTimeGenerated = timestamp
+            )
+
+        # Otherwise, generate new parents
+        for entry in entries:
+            
+            schema, content = entry
+
+            # If we are dealing with a field, just append xml to parent
+            if isinstance(schema, Field):
+                parent.append(schema.to_xml(content))
+
+            # Otherwise, initialize new container and fill it
+            elif isinstance(schema, Section):
+                
+                # If we have a list of lists, the same schema is reused
+                if isinstance(content[0], self.Entry):
+                    content = [content]
+
+                for item in content:
+                    container = schema.to_xml()
+                    container = self.content_to_xml(container, item)
+                    parent.append(container)
+
+        return parent
 
     #---------------------------------------------------------------------------
     # User functions
@@ -167,14 +304,14 @@ class CCV(object):
             path_check = lambda x: fnmatch.fnmatch(x, pattern)
 
         if os.path.isfile(path) and path_check(path):
-            self.add_dict_entry(self.read_file(path))
+            self.add_content(self.read_file(path))
             return
 
         for root, dirs, files in os.walk(path):
             for name in files:
                 name = os.path.join(root, name)
                 if path_check(name):
-                    self.add_dict_entry(self.read_file(name))
+                    self.add_content(self.read_file(name))
 
     #----------------------------------------
     def add_file(self, path):
@@ -198,21 +335,23 @@ class CCV(object):
     def add_yaml(self, text):
         """Add contents of YAML formatted string"""
 
-        self.add_dict(yaml.safe_load(text))
+        self.add_content(yaml.safe_load(text))
 
     #----------------------------------------
     def add_toml(self, text):
         """Add contents of TOML formatted string"""
 
-        self.add_dict(toml.load(text))
+        self.add_content(toml.load(text))
 
     #----------------------------------------
-    def write_xml(self, path, pretty_print = False):
+    def to_xml(self, path, pretty_print = False, sort = True):
         """Write xml file to path (adds .xml extension if none provided)"""
+
+        xml = self.content_to_xml()
 
         if not path.endswith(".xml"):
             path = path + ".xml"
 
         f = open(path, 'wb')
         with f:
-            f.write(etree.tostring(self.xml, pretty_print = pretty_print))
+            f.write(etree.tostring(xml, pretty_print = pretty_print))
