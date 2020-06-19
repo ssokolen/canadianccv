@@ -597,6 +597,10 @@ class Section(XML, metaclass = Schema):
 
         # First, check if the full set of fields has been previously stored
         name = "".join(entries)
+
+        # If we are only looking up by 1 field, add some qualifiers
+        if len(entries) == 1:
+            name = name + "--"
         
         try:
             return _get_schema("Section", [name])
@@ -749,6 +753,20 @@ class Section(XML, metaclass = Schema):
         return False
 
     # ----------------------------------------
+    @cached_property
+    def is_container(self):
+        """True if neither this section nor parent sections have fields"""
+
+        if len(self.fields) > 0:
+            return False
+
+        for key in self.parents:
+            if len(self.parents[key].fields) > 0:
+                return False
+
+        return True
+
+    # ----------------------------------------
     def field(self, label):
         if label in self.fields:
             return self.fields[label]
@@ -761,6 +779,13 @@ class Section(XML, metaclass = Schema):
     def to_xml(self):
 
         section = etree.Element("section", id = self.id, label = self.label)
+
+        return section
+
+    # ----------------------------------------
+    def to_yaml(self):
+
+        section = self.label + ": "
 
         return section
 
@@ -778,7 +803,6 @@ class Section(XML, metaclass = Schema):
 
         wrapper.initial_indent = initial_indent * indent_level
         wrapper.subsequent_indent = subsequent_indent * indent_level
-
 
         for field in XML.to_list(list(self.fields.values()), sort = "order"):
 
@@ -892,6 +916,32 @@ class Field(XML, metaclass = Schema):
             field.append(self.type.to_xml(value))
 
         return field
+
+    # ----------------------------------------
+    def to_yaml(self, value):
+
+        global _wrapper
+
+        field = self.label + ": "
+
+        # The only field that needs spectial formatting is bilingual
+        if self.type.label == "Bilingual":
+            content = {"english": "", "french": ""}
+            if isinstance(value, str):
+                content[self.language] = value
+            elif isinstance(value, dict):
+                content.update(value)
+            else:
+                err = '"Bilingual" field value must be str or dict' 
+                raise SchemaError(err)
+
+            field += "\n" + _wrapper["subsequent_indent"] + content["english"]
+            field += "\n" + _wrapper["subsequent_indent"] + content["french"]
+
+        else:
+            field += str(value)
+
+        return field 
 
 # ===============================================================================
 class Rule(XML):

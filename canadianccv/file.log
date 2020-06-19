@@ -1,7 +1,0 @@
-CCV - INFO: ## Parsing course.yaml ##
-CCV - INFO: Section identified as Courses Taught
-CCV - INFO: ## Parsing course2.yaml ##
-CCV - WARNING: "Courses Taught" section matched with 14 of 15 entries
-CCV - INFO: Section identified as Courses Taught
-CCV - WARNING: "CCVSection" is not a valid field or subsection in "Courses Taught"
-CCV - WARNING: "Program Name" is not a valid field or subsection in "Courses Taught"

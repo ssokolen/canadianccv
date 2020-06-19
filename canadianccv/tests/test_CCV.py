@@ -5,7 +5,7 @@ from unittest import TestCase
 import warnings
 
 import canadianccv
-from canadianccv import CCV, Section
+from canadianccv import CCV, Section, _schema
 
 class TestCCV(TestCase):
 
@@ -21,7 +21,13 @@ class TestCCV(TestCase):
         path = os.path.join(dirpath, "course2.yaml")
         self.ccv.add_file(path)
 
-        self.ccv.to_xml("test.xml", pretty_print = True)
+        self.ccv.to_xml("test1.xml", pretty_print = True)
+        self.ccv.to_yaml("test.yaml", id_ = "Teaching Activities")
+
+        ccv = CCV(log_level = logging.DEBUG)
+        ccv.add_file("test.yaml")
+        ccv.to_xml("test2.xml", pretty_print = True)
+
 
         #print(self.ccv._index)
         #print(self.ccv._content)

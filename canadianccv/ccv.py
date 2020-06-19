@@ -10,6 +10,7 @@ import warnings
 import yaml
 
 from .schema import *
+from .schema import _wrapper
 
 class CCVError(Exception):
     pass
@@ -174,24 +175,27 @@ class CCV(object):
         # Then get container to put the content in
         container = self.get_container(section)
 
-        container.append(entries)
+        if isinstance(container, list):
+            container.append(entries)
+        else: 
+            container.update(entries)
 
     #---------------------------------------------------------------------------
     # Main content generation
 
     # ----------------------------------------
-    def content_to_list(self, parent = None, entries = None):
+    def content_to_list(self, schema = None, entries = None):
         """Convenience function that flattens content dictionary"""
 
         # If there is no parent, then we are starting at root
-        if parent is None:
+        if schema is None:
             entries = self._content
             sections = {key:Section(key, str(None)) for key in entries}
             fields = {}
         else:
-            sections = parent.sections
-            fields = parent.fields
-            parent_label = parent.label
+            sections = schema.sections
+            fields = schema.fields
+            parent_label = schema.label
 
         field_list = []
         section_list = []
@@ -241,13 +245,10 @@ class CCV(object):
         return field_list + section_list
 
     # ----------------------------------------
-    def content_to_xml(self, parent = None, entries = None):
-        """Convenience function that flattens content dictionary"""
-
-        Entry = namedtuple("Entry", ["schema", "contents"])
+    def content_to_xml(self, xml = None, entries = None):
 
         # If there is no parent, then generate whole list
-        if parent is None:
+        if xml is None:
             entries = self.content_to_list(None, None)
 
             nsmap = {
@@ -256,7 +257,7 @@ class CCV(object):
             
             timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             
-            parent = etree.Element(
+            xml = etree.Element(
                 '{%s}generic-cv' % nsmap['generic-cv'], 
                 nsmap = nsmap, lang = "en", dateTimeGenerated = timestamp
             )
@@ -268,7 +269,7 @@ class CCV(object):
 
             # If we are dealing with a field, just append xml to parent
             if isinstance(schema, Field):
-                parent.append(schema.to_xml(content))
+                xml.append(schema.to_xml(content))
 
             # Otherwise, initialize new container and fill it
             elif isinstance(schema, Section):
@@ -280,12 +281,78 @@ class CCV(object):
                 for item in content:
                     container = schema.to_xml()
                     container = self.content_to_xml(container, item)
-                    parent.append(container)
+                    xml.append(container)
 
-        return parent
+        return xml 
+
+    # ----------------------------------------
+    def content_to_yaml(self, yaml = [], entries = None, **kwargs):
+
+        global _wrapper
+        wrapper = copy.deepcopy(_wrapper)
+
+        # Unpacking kwargs
+        defaults = {
+            "indent_level": 0,
+            "prefix": ""
+        }
+        opts = dict(defaults, **kwargs) 
+
+        initial_indent = _wrapper.initial_indent
+        subsequent_indent = _wrapper.subsequent_indent
+
+        wrapper.initial_indent = initial_indent * opts["indent_level"]
+        wrapper.subsequent_indent = subsequent_indent * opts["indent_level"]
+
+        # If there is no parent, then generate whole list
+        if entries is None:
+            entries = self.content_to_list(None, None)
+
+        # Otherwise, generate new parents
+        for entry in entries:
+            
+            schema, content = entry
+
+            # If we are dealing with a field add it
+            if isinstance(schema, Field):
+                yaml.extend(wrapper.wrap(
+                    opts["prefix"] + schema.to_yaml(content))
+                )
+
+            # Otherwise, initialize new container and fill it
+            elif isinstance(schema, Section):
+                
+                yaml.extend(wrapper.wrap(
+                    opts["prefix"] + schema.to_yaml())
+                )
+
+                opts["indent_level"] = opts["indent_level"] + 1
+
+                # If we have a list of lists, then add yaml dashes 
+                if isinstance(content[0], self.Entry):
+                    self.content_to_yaml(
+                        yaml, content, **opts
+                    )
+                else: 
+                    for item in content:
+                        lines = [] 
+
+                        opts["prefix"] = "- "
+                        self.content_to_yaml(
+                                lines, item[:1],  **opts
+                        )
+
+                        opts["prefix"] = "  "
+                        self.content_to_yaml(
+                                lines, item[1:],  **opts
+                        )
+                        yaml.extend([""] + lines)
+
+        return yaml
+
 
     #---------------------------------------------------------------------------
-    # User functions
+    # User functions for content addition
 
     #----------------------------------------
     def add_files(self, path, pattern = None):
@@ -343,11 +410,33 @@ class CCV(object):
 
         self.add_content(toml.load(text))
 
+    #---------------------------------------------------------------------------
+    # User functions for output
+
     #----------------------------------------
-    def to_xml(self, path, pretty_print = False, sort = True):
+    def to_xml(self, path, id_ = None, pretty_print = False):
         """Write xml file to path (adds .xml extension if none provided)"""
 
-        xml = self.content_to_xml()
+        if id_ is None:
+            xml = None
+            entries = None
+        else:
+            schema = Section(id_)
+            
+            if not schema.is_container:
+                err = '"{}" may refer to multiple entries, select a container'
+                err = err.format(id_)
+                raise CCVError(err)
+
+            if schema.id not in self._index:
+                err = 'CCV does not contain "{}" section'
+                err = err.format(id_)
+                raise CCVError(err)
+
+            entries = self.content_to_list(schema, self._index[schema.id])
+            xml = schema.to_xml()
+
+        xml = self.content_to_xml(xml, entries)
 
         if not path.endswith(".xml"):
             path = path + ".xml"
@@ -355,3 +444,35 @@ class CCV(object):
         f = open(path, 'wb')
         with f:
             f.write(etree.tostring(xml, pretty_print = pretty_print))
+
+    #----------------------------------------
+    def to_yaml(self, path, id_ = None):
+        """Write yaml file to path (adds .yaml extension if none provided)"""
+
+        if id_ is None:
+            yaml = None
+            entries = None
+        else:
+            schema = Section(id_)
+            
+            if not schema.is_container:
+                err = '"{}" may refer to multiple entries, select a container'
+                err = err.format(id_)
+                raise CCVError(err)
+
+            if schema.id not in self._index:
+                err = 'CCV does not contain "{}" section'
+                err = err.format(id_)
+                raise CCVError(err)
+
+            entries = self.content_to_list(schema, self._index[schema.id])
+            yaml = []
+
+        self.content_to_yaml(yaml, entries)
+
+        if not path.endswith(".yaml"):
+            path = path + ".yaml"
+
+        f = open(path, 'w')
+        with f:
+            f.write("\n".join(yaml))
