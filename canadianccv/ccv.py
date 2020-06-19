@@ -10,7 +10,7 @@ import warnings
 import yaml
 
 from .schema import *
-from .schema import _wrapper
+from .schema import _wrapper, _schema
 
 class CCVError(Exception):
     pass
@@ -57,13 +57,68 @@ class CCV(object):
             self.log.info(msg, xml_path)
             
             # Re-mapping existing sections according to specified schema
-            for _, section in etree.iterwalk(xml, tag = "section"):
+            for _, section_xml in etree.iterwalk(xml, tag = "section"):
 
                 # If any parents have fields, do not move
-                section = Section(section.get("id"))
-                
-                if move:
-                    pass 
+                section = XML(section_xml, language)
+                section = Section(section.id)
+
+                if section.is_container:
+                    self.get_container(section)
+                if not section.is_dependent:
+                    self.add_content(self.parse_xml(section_xml), section)
+
+            msg = '# Finished importing #'
+            self.log.info(msg)
+
+    #---------------------------------------------------------------------------
+    # Function for parsing exising xml
+
+    # ----------------------------------------
+    def parse_xml(self, xml, content = None):
+
+        if content is None:
+            content = {}
+
+        entry = XML(xml, self.language)
+        entry = Section(entry.id)
+
+        for field_xml in xml.iterchildren("field"):
+
+            field = XML(field_xml, self.language)
+            field = Field(field.id)
+
+            # Bilingual and Reference require special parsing
+            if field.type.label == "Reference":
+                reference = field_xml.getchildren()[0].getchildren()[-1]
+                value = field.reference.get_value(reference.get("value"))
+                value = value.label
+            elif field.type.label == "Bilingual":
+                value = {}
+                for component_xml in field.getchildren():
+                    value[component.tag] = component_xml.text
+            else:
+                value = field_xml.getchildren()[0].text
+
+            content[field.label] = value
+
+        # Most sections, the question is whether there is one or multiple
+        for section_xml in xml.iterchildren("section"):
+
+            section = XML(section_xml, self.language)
+            section = Section(section.id)
+
+            if section.label in content:
+
+                if isinstance(content[section.label], dict):
+                    content[section.label] = [content[section.label]]
+                    
+                content[section.label].append(self.parse_xml(section_xml))
+
+            else:
+                content[section.label] = self.parse_xml(section_xml)
+
+        return content
 
     #---------------------------------------------------------------------------
     # Function for adding new elements to CCV
@@ -149,14 +204,15 @@ class CCV(object):
         return out
 
     # ----------------------------------------
-    def add_content(self, entries, validate = True):
+    def add_content(self, entries, section = None, validate = True):
 
         # First, determine what section this is
-        try:
-            section = Section.from_entries(list(entries.keys()))
-        except SchemaError as e:
-            self.log.warning(e)
-            section = Section.from_entries(list(entries.keys()), error = False)
+        if section is None:
+            try:
+                section = Section.from_entries(list(entries.keys()))
+            except SchemaError as e:
+                self.log.warning(e)
+                section = Section.from_entries(list(entries.keys()), error = False)
 
         if section is None:
             return
