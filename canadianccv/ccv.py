@@ -95,8 +95,8 @@ class CCV(object):
                 value = value.label
             elif field.type.label == "Bilingual":
                 value = {}
-                for component_xml in field.getchildren():
-                    value[component.tag] = component_xml.text
+                for component_xml in field_xml.getchildren()[1].getchildren():
+                    value[component_xml.tag] = component_xml.text
             else:
                 value = field_xml.getchildren()[0].text
 
@@ -167,14 +167,19 @@ class CCV(object):
                 if isinstance(value, str):
                     value.strip(" \n\t")
                 elif isinstance(value, dict):
-                    [values[item].strip(" \n\t") for item in values]
+                    values = []
+                    for key in value:
+                        if value[key] is None:
+                            value[key] = ""
+                        
+                        values.append(value[key].strip(" \n\t"))
 
             elif entry in section.sections:
 
                 if isinstance(value, dict):
                     value = [value]
 
-                subsection = Section(entry)
+                subsection = Section(entry, section.label)
                 for i, item in enumerate(value):
                     value[i] = self.validate_content(subsection, item)
                 
@@ -189,16 +194,21 @@ class CCV(object):
 
             value = out[entry]
 
+            # Hack as some entries still sneak through None
+            if value is None:
+                out[entry] = value = ""
+
             field = section.field(entry)
-            errors = field.validate(value, entries)
+            errors = field.validate(value, out)
             
             if errors is not None:
                 err = 'Errors validating "%s": %s'
                 self.log.warning(err, field.label, errors)
                 continue
 
-            # After validation, if the value is blank, there is no need to add it
-            if value is None or value == "":
+        # After validation, if the value is blank, there is no need to add it
+        for entry in section.fields:
+            if out[entry] is None or out[entry] == "":
                 del out[entry]
 
         return out
@@ -221,8 +231,8 @@ class CCV(object):
 
         # The section must be a top-level section (not a subsection)
         if section.is_dependent:
-            err = 'A subsection like "{}" cannot be added on its own'
-            raise CCVError(err)
+            err = 'A subsection like "%s" cannot be added on its own'
+            raise CCVError(err, section.label)
 
         # Validate if required
         if validate:
@@ -287,7 +297,8 @@ class CCV(object):
                 for field, direction in sorting:
                     reverse = True if direction != "asc" else False
                     section.contents.sort(
-                        key = lambda x: x[field], reverse = reverse
+                        key = lambda x: x[field] if field in x else "", 
+                        reverse = reverse
                     )
 
                 section = section._replace( 
@@ -343,6 +354,10 @@ class CCV(object):
 
     # ----------------------------------------
     def content_to_yaml(self, yaml = [], entries = None, **kwargs):
+
+        # Hack as it's unclear how yaml ends up as None
+        if yaml is None:
+            yaml = []
 
         global _wrapper
         wrapper = copy.deepcopy(_wrapper)
@@ -524,7 +539,7 @@ class CCV(object):
             entries = self.content_to_list(schema, self._index[schema.id])
             yaml = []
 
-        self.content_to_yaml(yaml, entries)
+        yaml = self.content_to_yaml(yaml, entries)
 
         if not path.endswith(".yaml"):
             path = path + ".yaml"

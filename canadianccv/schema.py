@@ -935,8 +935,8 @@ class Field(XML, metaclass = Schema):
                 err = '"Bilingual" field value must be str or dict' 
                 raise SchemaError(err)
 
-            field += "\n" + _wrapper["subsequent_indent"] + content["english"]
-            field += "\n" + _wrapper["subsequent_indent"] + content["french"]
+            field += "\n" + _wrapper.subsequent_indent + content["english"]
+            field += "\n" + _wrapper.subsequent_indent + content["french"]
 
         else:
             field += str(value)
@@ -996,7 +996,7 @@ class Rule(XML):
                 out["err"] = "entry required if {} is {}"
             else:
                 out["is"] = False
-                out["op"] = operator.neq
+                out["op"] = operator.ne
                 out["err"] = "entry required if {} is not {}"
 
             return out
@@ -1079,11 +1079,11 @@ class Rule(XML):
             # The second asks whether another value is something or not
             # The error is parsed accordingly
             pars = self.parameters
-            test = pars["op"](entries[pars["field"]], pars["other"])
+            test = pars["op"](entries[pars["field"]], pars["value"])
 
             if len(value) == 0 and test:
                 err = pars["err"]
-                err.format(pars["field"], pars["other"])
+                err = err.format(pars["field"], pars["value"])
                 return err
 
         elif id_ == 24:
@@ -1091,7 +1091,7 @@ class Rule(XML):
             # Requires parsing parameters
             if len(entries[self.parameters]) > 0 and len(value) > 0:
                 err = '"{}" must be left blank if using "{}"'
-                err = msg.format(self.label, field.label)
+                err = msg.format(self.parameters, value)
                 return msg
 
 
