@@ -355,10 +355,6 @@ class CCV(object):
     # ----------------------------------------
     def content_to_yaml(self, yaml = [], entries = None, **kwargs):
 
-        # Hack as it's unclear how yaml ends up as None
-        if yaml is None:
-            yaml = []
-
         global _wrapper
         wrapper = copy.deepcopy(_wrapper)
 
@@ -367,13 +363,15 @@ class CCV(object):
             "indent_level": 0,
             "prefix": ""
         }
-        opts = dict(defaults, **kwargs) 
+        opts = dict(defaults, **kwargs)
+        prefix = opts["prefix"]
+        indent = opts["indent_level"]
 
         initial_indent = _wrapper.initial_indent
         subsequent_indent = _wrapper.subsequent_indent
 
-        wrapper.initial_indent = initial_indent * opts["indent_level"]
-        wrapper.subsequent_indent = subsequent_indent * opts["indent_level"]
+        wrapper.initial_indent = initial_indent * indent 
+        wrapper.subsequent_indent = subsequent_indent * indent
 
         # If there is no parent, then generate whole list
         if entries is None:
@@ -381,33 +379,41 @@ class CCV(object):
 
         # Otherwise, generate new parents
         for entry in entries:
+
+            # Special handling for a plain bilingual list
+            if len(entry) != 2:
+                yaml.extend(wrapper.wrap(
+                    prefix + entry
+                ))
+                continue
             
             schema, content = entry
 
             # If we are dealing with a field add it
             if isinstance(schema, Field):
-                yaml.extend(wrapper.wrap(
-                    opts["prefix"] + schema.to_yaml(content))
-                )
+                yaml.extend(schema.to_yaml(content, wrapper))
 
             # Otherwise, initialize new container and fill it
             elif isinstance(schema, Section):
                 
                 yaml.extend(wrapper.wrap(
-                    opts["prefix"] + schema.to_yaml())
+                    prefix + schema.to_yaml())
                 )
 
-                opts["indent_level"] = opts["indent_level"] + 1
+                opts["indent_level"] = indent + 1
 
                 # If we have a list of lists, then add yaml dashes 
                 if isinstance(content[0], self.Entry):
                     self.content_to_yaml(
                         yaml, content, **opts
                     )
+                elif len(content) == 1:
+                    self.content_to_yaml(
+                        yaml, content[0],  **opts
+                    )
                 else: 
                     for item in content:
-                        lines = [] 
-
+                        lines = []
                         opts["prefix"] = "- "
                         self.content_to_yaml(
                                 lines, item[:1],  **opts
@@ -520,8 +526,15 @@ class CCV(object):
     def to_yaml(self, path, id_ = None):
         """Write yaml file to path (adds .yaml extension if none provided)"""
 
+        # Prevent wrapping from losing information
+        global _wrapper
+        wrapper = copy.deepcopy(_wrapper)
+        _wrapper.max_lines = 100
+        _wrapper.drop_whitespace = False
+        _wrapper.replace_whitespace = False
+
         if id_ is None:
-            yaml = None
+            yaml = []
             entries = None
         else:
             schema = Section(id_)
@@ -540,6 +553,8 @@ class CCV(object):
             yaml = []
 
         yaml = self.content_to_yaml(yaml, entries)
+
+        _wrapper = wrapper
 
         if not path.endswith(".yaml"):
             path = path + ".yaml"

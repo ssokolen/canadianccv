@@ -918,11 +918,9 @@ class Field(XML, metaclass = Schema):
         return field
 
     # ----------------------------------------
-    def to_yaml(self, value):
+    def to_yaml(self, value, wrapper = _wrapper):
 
         global _wrapper
-
-        field = self.label + ": "
 
         # The only field that needs spectial formatting is bilingual
         if self.type.label == "Bilingual":
@@ -935,11 +933,17 @@ class Field(XML, metaclass = Schema):
                 err = '"Bilingual" field value must be str or dict' 
                 raise SchemaError(err)
 
-            field += "\n" + _wrapper.subsequent_indent + content["english"]
-            field += "\n" + _wrapper.subsequent_indent + content["french"]
+            field = wrapper.wrap(self.label + ":")
 
+            wrapper = copy.deepcopy(wrapper)
+            wrapper.initial_indent += _wrapper.initial_indent
+            wrapper.subsequent_indent += _wrapper.subsequent_indent
+
+            field += wrapper.wrap("english: " + content["english"])
+            field += wrapper.wrap("french: " + content["french"])
+            
         else:
-            field += str(value)
+            field = wrapper.wrap(self.label + ": " + value)
 
         return field 
 
