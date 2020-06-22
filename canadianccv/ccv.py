@@ -224,6 +224,9 @@ class CCV(object):
                 self.log.warning(e)
                 section = Section.from_entries(list(entries.keys()), error = False)
 
+        print(entries.keys())
+        print(section)
+
         if section is None:
             return
 
@@ -312,22 +315,7 @@ class CCV(object):
         return field_list + section_list
 
     # ----------------------------------------
-    def content_to_xml(self, xml = None, entries = None):
-
-        # If there is no parent, then generate whole list
-        if xml is None:
-            entries = self.content_to_list(None, None)
-
-            nsmap = {
-                'generic-cv': 'http://www.cihr-irsc.gc.ca/generic-cv/1.0.0'
-            }
-            
-            timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            
-            xml = etree.Element(
-                '{%s}generic-cv' % nsmap['generic-cv'], 
-                nsmap = nsmap, lang = "en", dateTimeGenerated = timestamp
-            )
+    def content_to_xml(self, xml, entries):
 
         # Otherwise, generate new parents
         for entry in entries:
@@ -367,11 +355,14 @@ class CCV(object):
         prefix = opts["prefix"]
         indent = opts["indent_level"]
 
-        initial_indent = _wrapper.initial_indent
-        subsequent_indent = _wrapper.subsequent_indent
+        indent1 = _wrapper.initial_indent
+        indent2 = _wrapper.subsequent_indent
 
-        wrapper.initial_indent = initial_indent * indent 
-        wrapper.subsequent_indent = subsequent_indent * indent
+        prefix1 = prefix
+        prefix2 = ' ' * len(prefix) 
+
+        wrapper.initial_indent = indent1 * indent + prefix1
+        wrapper.subsequent_indent = indent2 * indent + prefix2
 
         # If there is no parent, then generate whole list
         if entries is None:
@@ -380,13 +371,6 @@ class CCV(object):
         # Otherwise, generate new parents
         for entry in entries:
 
-            # Special handling for a plain bilingual list
-            if len(entry) != 2:
-                yaml.extend(wrapper.wrap(
-                    prefix + entry
-                ))
-                continue
-            
             schema, content = entry
 
             # If we are dealing with a field add it
@@ -396,33 +380,24 @@ class CCV(object):
             # Otherwise, initialize new container and fill it
             elif isinstance(schema, Section):
                 
-                yaml.extend(wrapper.wrap(
-                    prefix + schema.to_yaml())
-                )
+                yaml.extend(schema.to_yaml(wrapper))
 
                 opts["indent_level"] = indent + 1
 
                 # If we have a list of lists, then add yaml dashes 
                 if isinstance(content[0], self.Entry):
-                    self.content_to_yaml(
-                        yaml, content, **opts
-                    )
+                    self.content_to_yaml(yaml, content, **opts)
                 elif len(content) == 1:
-                    self.content_to_yaml(
-                        yaml, content[0],  **opts
-                    )
+                    self.content_to_yaml(yaml, content[0], **opts)
                 else: 
                     for item in content:
                         lines = []
                         opts["prefix"] = "- "
-                        self.content_to_yaml(
-                                lines, item[:1],  **opts
-                        )
+                        self.content_to_yaml(lines, item[:1],  **opts)
 
                         opts["prefix"] = "  "
-                        self.content_to_yaml(
-                                lines, item[1:],  **opts
-                        )
+                        self.content_to_yaml(lines, item[1:],  **opts)
+
                         yaml.extend([""] + lines)
 
         return yaml
@@ -495,8 +470,18 @@ class CCV(object):
         """Write xml file to path (adds .xml extension if none provided)"""
 
         if id_ is None:
-            xml = None
-            entries = None
+            entries = self.content_to_list(None, None)
+
+            nsmap = {
+                'generic-cv': 'http://www.cihr-irsc.gc.ca/generic-cv/1.0.0'
+            }
+            
+            timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            
+            xml = etree.Element(
+                '{%s}generic-cv' % nsmap['generic-cv'], 
+                nsmap = nsmap, lang = "en", dateTimeGenerated = timestamp
+            )
         else:
             schema = Section(id_)
             
@@ -530,8 +515,6 @@ class CCV(object):
         global _wrapper
         wrapper = copy.deepcopy(_wrapper)
         _wrapper.max_lines = 100
-        _wrapper.drop_whitespace = False
-        _wrapper.replace_whitespace = False
 
         if id_ is None:
             yaml = []

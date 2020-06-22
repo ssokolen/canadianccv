@@ -28,6 +28,7 @@ _wrapper = TextWrapper(
     max_lines = 2,
     placeholder = " ...",
     drop_whitespace = False,
+    replace_whitespace = True,
 )
 
 def load_wrapper(wrapper = None):
@@ -783,9 +784,9 @@ class Section(XML, metaclass = Schema):
         return section
 
     # ----------------------------------------
-    def to_yaml(self):
+    def to_yaml(self, wrapper = _wrapper):
 
-        section = self.label + ": "
+        section = wrapper.wrap(self.label + ": ")
 
         return section
 
@@ -922,7 +923,7 @@ class Field(XML, metaclass = Schema):
 
         global _wrapper
 
-        # The only field that needs spectial formatting is bilingual
+        # The only field that needs special formatting is bilingual
         if self.type.label == "Bilingual":
             content = {"english": "", "french": ""}
             if isinstance(value, str):
@@ -939,13 +940,31 @@ class Field(XML, metaclass = Schema):
             wrapper.initial_indent += _wrapper.initial_indent
             wrapper.subsequent_indent += _wrapper.subsequent_indent
 
-            field += wrapper.wrap("english: " + content["english"])
-            field += wrapper.wrap("french: " + content["french"])
+            field += Field.text_to_yaml("english", content["english"], wrapper)
+            field += Field.text_to_yaml("french", content["french"], wrapper)
             
         else:
-            field = wrapper.wrap(self.label + ": " + value)
+            field = Field.text_to_yaml(self.label, value, wrapper)
 
         return field 
+
+    # ----------------------------------------
+    def text_to_yaml(header, content, wrapper = _wrapper):
+
+        # First pass, wrap as normal
+        lines = wrapper.wrap(header + ": " + content)
+
+        # If this results in multiple lines, then we need an extra indent
+        if ( len(lines) > 1 ):
+            lines = wrapper.wrap(header + ": >-")
+            wrapper = copy.deepcopy(wrapper)
+
+            # Blanking out indents to make sure there are no list dashes
+            wrapper.initial_indent = " " * (len(wrapper.initial_indent) + 2)
+            wrapper.subsequent_indent = " " * (len(wrapper.initial_indent) + 2)
+            lines = lines + wrapper.wrap(content)
+
+        return lines
 
 # ===============================================================================
 class Rule(XML):
