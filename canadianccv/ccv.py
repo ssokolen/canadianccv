@@ -8,6 +8,7 @@ import re
 import toml
 import warnings
 import yaml
+from yaml.constructor import SafeConstructor
 
 from .schema import *
 from .schema import _wrapper, _schema
@@ -16,35 +17,43 @@ class CCVError(Exception):
     pass
 
 
+
+# Hack to avoid Yes -> True Yaml conversion
+def _add_bool(self, node):
+    return self.construct_scalar(node)
+
+SafeConstructor.add_constructor(u'tag:yaml.org,2002:bool', _add_bool)
+
+# Setting up logger
+def _add_logger():
+    logger = logging.getLogger("CCV")
+    log_format = logging.Formatter('CCV - %(levelname)s: %(message)s')
+
+    log_handler = logging.FileHandler('ccv.log', mode = 'w')
+    log_handler.setFormatter(log_format)
+    logger.addHandler(log_handler)
+
+    log_handler = logging.StreamHandler()
+    log_handler.setFormatter(log_format)
+    logger.addHandler(log_handler)
+    logger.setLevel("INFO")
+
+_add_logger()
+
+
 #===============================================================================
 class CCV(object):
 
     Entry = namedtuple("Entry", ["schema", "contents"])
 
     #---------------------------------------------------------------------------
-    def __init__(self, xml_path = None, language = "english",
-                 log_path = "ccv.log", log_level = "INFO"):
+    def __init__(self, xml_path = None, language = "english"):
 
         self._index = {}
         self._content = {}
 
         self.language = language
-
-        # Setting up logger
-        logger = logging.getLogger(__name__)
-        log_format = logging.Formatter('CCV - %(levelname)s: %(message)s')
-
-        if log_path is not None:
-            log_handler = logging.FileHandler('file.log', mode = 'w')
-            log_handler.setFormatter(log_format)
-            logger.addHandler(log_handler)
-
-        log_handler = logging.StreamHandler()
-        log_handler.setFormatter(log_format)
-        logger.addHandler(log_handler)
-        logger.setLevel(log_level)
-
-        self.log = logger
+        self.log = logging.getLogger("CCV")
 
         if xml_path is not None:
 
@@ -164,15 +173,18 @@ class CCV(object):
 
             if entry in section.fields:
 
-                if isinstance(value, str):
-                    value.strip(" \n\t")
-                elif isinstance(value, dict):
+                # Essentially, values can be strings or dicts
+                if isinstance(value, dict):
                     values = []
                     for key in value:
                         if value[key] is None:
                             value[key] = ""
                         
+                        value[key] = str(value[key])
                         values.append(value[key].strip(" \n\t"))
+                else:
+                    value = str(value)
+                    value.strip(" \n\t")
 
             elif entry in section.sections:
 
@@ -224,10 +236,19 @@ class CCV(object):
                 self.log.warning(e)
                 section = Section.from_entries(list(entries.keys()), error = False)
 
-        print(entries.keys())
-        print(section)
-
+        # If section is none, then we are at the root, and it would be easier
+        # to iterate through each component manually
         if section is None:
+            for key in entries:
+                self.add_content(entries[key], Section(key, str(None)), validate)
+
+            return
+
+        # If entries is a list, then split up the additions
+        if isinstance(entries, list):
+            for item in entries:
+                self.add_content(item, section, validate)
+
             return
 
         self.log.info("Section identified as %s", section.label)
@@ -258,13 +279,25 @@ class CCV(object):
 
         # If there is no parent, then we are starting at root
         if schema is None:
-            entries = self._content
+            if entries is None:
+                entries = self._content
             sections = {key:Section(key, str(None)) for key in entries}
             fields = {}
         else:
             sections = schema.sections
             fields = schema.fields
             parent_label = schema.label
+
+        # If entries is actually a list, the move one level up in hierarchy
+        if isinstance(entries, list):
+            parent_label = schema.parent_label 
+            entries = {schema.label: entries}
+            if parent_label is None:
+                sections = {schema.label:schema}
+                fields = {}
+            else:
+                sections = Section(schema.label, parent_label).sections
+                fields = Section(schema.label, parent_label).fields
 
         field_list = []
         section_list = []
@@ -423,32 +456,35 @@ class CCV(object):
             path_check = lambda x: fnmatch.fnmatch(x, pattern)
 
         if os.path.isfile(path) and path_check(path):
-            self.add_content(self.read_file(path))
+            self.add_file(path)
             return
 
         for root, dirs, files in os.walk(path):
             for name in files:
                 name = os.path.join(root, name)
                 if path_check(name):
-                    self.add_content(self.read_file(name))
+                    self.add_file(name)
 
     #----------------------------------------
     def add_file(self, path):
         """Add contents of a single file"""
 
-        def read_path():
-            f = open(path)
-            with f:
-                return f.read()
-
         self.log.info("## Parsing %s ##", os.path.basename(path))
+
+        f = open(path)
+        with f:
+            content = f.read()
         
-        if path.endswith(".yml") or path.endswith(".yaml"):
-            self.add_yaml(read_path())
-        elif path.endswith(".toml"):
-            self.add_toml(read_path())
+        if len(content) < 1:
+            self.log.info("No content found, ignoring...")
         else:
-            self.log.info("Ignoring %s", os.path.basename(path))
+            
+            if path.endswith(".yml") or path.endswith(".yaml"):
+                self.add_yaml(content)
+            elif path.endswith(".toml"):
+                self.add_toml(content)
+            else:
+                self.log.info("Ignoring %s", os.path.basename(path))
 
     #----------------------------------------
     def add_yaml(self, text):
@@ -485,8 +521,8 @@ class CCV(object):
         else:
             schema = Section(id_)
             
-            if not schema.is_container:
-                err = '"{}" may refer to multiple entries, select a container'
+            if not schema.is_dependent:
+                err = '"{}" may refer to multiple entries'
                 err = err.format(id_)
                 raise CCVError(err)
 
@@ -505,6 +541,7 @@ class CCV(object):
 
         f = open(path, 'wb')
         with f:
+            f.write(b'<?xml version="1.0" encoding="UTF-8"?>\n')
             f.write(etree.tostring(xml, pretty_print = pretty_print))
 
     #----------------------------------------
@@ -523,7 +560,7 @@ class CCV(object):
             schema = Section(id_)
             
             if not schema.is_container:
-                err = '"{}" may refer to multiple entries, select a container'
+                err = '"{}" may refer to multiple entries'
                 err = err.format(id_)
                 raise CCVError(err)
 

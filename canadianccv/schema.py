@@ -372,6 +372,10 @@ class Type(XML, metaclass = Schema):
             "Integer":etree.Element("value", type="Number"),
         }
 
+        # Removing all single newlines
+        if isinstance(value, str):
+            value = re.sub("[ \t]*\n{1}[ \t]*", " ", value)
+
         if self.label in basic_types:
 
             elem = basic_types[self.label]
@@ -392,9 +396,11 @@ class Type(XML, metaclass = Schema):
 
             elem.append(etree.Element("english"))
             elem[0].text = str(value_dct["english"])
+            elem[0].text = re.sub("[ \t]*\n{1}[ \t]*", " ", elem[0].text)
 
             elem.append(etree.Element("french"))
             elem[1].text = str(value_dct["french"])
+            elem[1].text = re.sub("[ \t]*\n{1}[ \t]*", " ", elem[1].text)
 
         elif self.label in ["Datetime", "Pubmed", "Elapsed-Time"]:
 
@@ -1014,11 +1020,11 @@ class Rule(XML):
 
             op = re.sub(":.*", "", lines[-2])
             if int(op) == 359:
-                out["is"] = True
+                out["is"] = True 
                 out["op"] = operator.eq
                 out["err"] = "entry required if {} is {}"
             else:
-                out["is"] = False
+                out["is"] = False 
                 out["op"] = operator.ne
                 out["err"] = "entry required if {} is not {}"
 
