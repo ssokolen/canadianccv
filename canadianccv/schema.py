@@ -1,5 +1,6 @@
 from cached_property import cached_property
 import copy
+from datetime import datetime
 from flatten_dict import flatten
 import importlib.resources
 import locale
@@ -141,6 +142,8 @@ def load_schema(language="english", cv = None, lov = None, ref = None):
 
     global _schema
 
+    _schema["Root"] = {}
+
     cv = _read_xml(cv, "cv.xml")
     lov = _read_xml(lov, "cv-lov.xml")
     ref = _read_xml(ref, "cv-ref-table.xml")
@@ -151,6 +154,9 @@ def load_schema(language="english", cv = None, lov = None, ref = None):
         section = Section(xml = xml, language = language)
         _add_schema("Section", [section.id], section)
         _add_schema("Section", [section.label, str(section.parent_label)], section)
+
+        if section.parent_label is None:
+            _schema["Root"][section.label] = section 
 
         # Section by entry
         for child in xml.iterchildren("section", "field"):
@@ -692,6 +698,17 @@ class Section(XML, metaclass = Schema):
         return parents
 
     # ----------------------------------------
+    @property
+    def parent(self):
+
+        parent_list = self.parent_list
+
+        if len(parent_list) == 0:
+            return Root
+        else:
+            return parent_list[0]
+
+    # ----------------------------------------
     @cached_property
     def sections(self):
 
@@ -797,63 +814,111 @@ class Section(XML, metaclass = Schema):
         return section
 
     # ----------------------------------------
-    def yaml_template(self, sep = "\n", indent_level = 0, add_description = True,
-                      add_type = True, add_constraint = True, join = True):
+    def template(self, path = None, **kwargs):
 
         global _wrapper
         wrapper = copy.deepcopy(_wrapper)
 
+        # Unpacking kwargs
+        defaults = {
+            "indent_level": 0,
+            "prefix": "",
+            "join": True
+        }
+        opts = dict(defaults, **kwargs)
+        indent = opts["indent_level"]
+        join = opts["join"]
+
+        indent1 = _wrapper.initial_indent
+        indent2 = _wrapper.subsequent_indent
+
+        prefix1 = ""
+        prefix2 = "# "
+
+        # All subsequent lines are comments
+        wrapper.initial_indent = indent1 * indent + prefix1
+        wrapper.subsequent_indent = indent2 * indent + prefix2
+
         lines = []
-
-        initial_indent = _wrapper.initial_indent
-        subsequent_indent = _wrapper.subsequent_indent
-
-        wrapper.initial_indent = initial_indent * indent_level
-        wrapper.subsequent_indent = subsequent_indent * indent_level
 
         for field in XML.to_list(list(self.fields.values()), sort = "order"):
 
-            if add_description:
-                line = "# [Description] " + field.description
-                lines.extend(wrapper.wrap(line))
+            line = "# [Description] " + field.description
+            lines.extend(wrapper.wrap(line))
 
-            if add_type:
-                line = "# [Type] " + field.type.label
+            line = "# [Type] " + field.type.label
                 
-                if field.type.prompt != "":
-                    line = line + " -- " + field.type.prompt
+            if field.type.prompt != "":
+                line = line + " -- " + field.type.prompt
 
-                if field.reference is not None:
-                    line = line + " -- " + field.reference.prompt
+            if field.reference is not None:
+                line = line + " -- " + field.reference.prompt
 
+            lines.extend(wrapper.wrap(line))
+
+            for rule in field.rules:
+                line = "# [Constraint] " + rule.prompt
                 lines.extend(wrapper.wrap(line))
-
-            if add_constraint:
-                for rule in field.rules:
-                    line = "# [Constraint] " + rule.prompt
-                    lines.extend(wrapper.wrap(line))
 
             line = field.label + ":"
             lines.extend(wrapper.wrap(line))
-            lines[-1] = lines[-1] + sep
+            lines[-1] = lines[-1] + "\n"
 
         for section in XML.to_list(list(self.sections.values()), sort = "order"):
 
             line = section.label + ":"
             lines.extend(wrapper.wrap(line))
-            lines[-1] = lines[-1] + sep
+            lines[-1] = lines[-1] + "\n"
 
             lines.extend(
-                section.yaml_template(
-                    sep, indent_level + 1, add_description,
-                    add_type, add_constraint, join = False
+                section.template(
+                    path = None, indent_level = indent + 1, join = False
                 )
             )
 
+        joined = "\n".join(lines)
+
+        if path is not None:
+            f = open(path, 'w')
+
+            with f:
+                f.write(joined)
+
         if join:
-            return "\n".join(lines)
+            return joined
         else:
             return lines
+
+# ===============================================================================
+class Root():
+    """
+    A class shell that behaves similarly to Section that represents CCV root.
+    """
+
+    def __init__(self):
+
+        global _schema
+
+        self.parents = {}
+        self.sections = _schema["Root"]
+        self.fields = {}
+
+        nsmap = {
+            'generic-cv': 'http://www.cihr-irsc.gc.ca/generic-cv/1.0.0'
+        }
+        
+        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        
+        xml = etree.Element(
+            '{%s}generic-cv' % nsmap['generic-cv'], 
+            nsmap = nsmap, lang = "en", dateTimeGenerated = timestamp
+        )
+
+        self.xml = xml
+
+    def to_xml(self):
+
+        return self.xml
 
 # ===============================================================================
 class Field(XML, metaclass = Schema):
@@ -1066,7 +1131,8 @@ class Rule(XML):
             else:
                 msg = "Required if {} is not {}"
 
-            return msg
+            pars = self.parameters
+            return  msg.format(pars["field"], pars["value"])
 
         elif id_ == 24:
             
@@ -1119,10 +1185,9 @@ class Rule(XML):
 
             # Requires parsing parameters
             if len(entries[self.parameters]) > 0 and len(value) > 0:
-                err = '"{}" must be left blank if using "{}"'
-                err = msg.format(self.parameters, value)
-                return msg
-
+                err = 'must be left blank if using "{}"'
+                err = err.format(self.parameters)
+                return err
 
 # Generating default schema
 load_schema()

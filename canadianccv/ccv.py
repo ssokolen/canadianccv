@@ -1,5 +1,4 @@
 from collections import namedtuple
-from datetime import datetime
 import fnmatch
 from lxml import etree
 import logging
@@ -98,17 +97,24 @@ class CCV(object):
             field = Field(field.id)
 
             # Bilingual and Reference require special parsing
-            if field.type.label == "Reference":
-                reference = field_xml.getchildren()[0].getchildren()[-1]
+            xml_children = field_xml.getchildren()
+            if len(xml_children) == 0:
+                wrn = '"%s" does not have a value, ignoring.'
+                self.log.warning(wrn, field.label)
+                continue
+            elif field.type.label == "Reference":
+                reference = xml_children[0].getchildren()[-1]
                 value = field.reference.get_value(reference.get("value"))
                 value = value.label
             elif field.type.label == "Bilingual":
                 value = {}
-                for component_xml in field_xml.getchildren()[1].getchildren():
+                for component_xml in xml_children[1].getchildren():
                     value[component_xml.tag] = component_xml.text
             else:
                 value = field_xml.getchildren()[0].text
 
+            if value is None:
+                value = ""
             content[field.label] = value
 
         # Most sections, the question is whether there is one or multiple
@@ -274,40 +280,43 @@ class CCV(object):
     # Main content generation
 
     # ----------------------------------------
-    def content_to_list(self, schema = None, entries = None):
-        """Convenience function that flattens content dictionary"""
+    def get_content(self, schema):
 
-        # If there is no parent, then we are starting at root
-        if schema is None:
-            if entries is None:
-                entries = self._content
-            sections = {key:Section(key, str(None)) for key in entries}
-            fields = {}
-        else:
-            sections = schema.sections
-            fields = schema.fields
-            parent_label = schema.label
+        if isinstance(schema, Root):
+            return self.content_to_list(Root(), self._content)
+
+        if not schema.is_container:
+            err = 'Invalid section -- "{}" may refer to multiple entries'
+            err = err.format(schema.label)
+            raise CCVError(err)
+
+        if schema.id not in self._index:
+            err = 'Invalid section -- CCV does not contain "{}"'
+            err = err.format(schema.label)
+            raise CCVError(err)
+
+        return self.content_to_list(schema, self._index[schema.id])
+
+    # ----------------------------------------
+    def content_to_list(self, schema, entries):
+        """Convenience function that flattens content dictionary"""
 
         # If entries is actually a list, the move one level up in hierarchy
         if isinstance(entries, list):
-            parent_label = schema.parent_label 
             entries = {schema.label: entries}
-            if parent_label is None:
-                sections = {schema.label:schema}
-                fields = {}
-            else:
-                sections = Section(schema.label, parent_label).sections
-                fields = Section(schema.label, parent_label).fields
+            schema = schema.parent 
 
         field_list = []
         section_list = []
 
         # First, iterate through fields
+        fields = schema.fields
         for key in fields:
             if key in entries:
                 field_list.append(self.Entry(fields[key], entries[key]))
 
         # Then sections
+        sections = schema.sections
         for key in sections:
             if key in entries:
                 section_list.append(self.Entry(sections[key], entries[key]))
@@ -374,7 +383,7 @@ class CCV(object):
         return xml 
 
     # ----------------------------------------
-    def content_to_yaml(self, yaml = [], entries = None, **kwargs):
+    def content_to_yaml(self, yaml, entries, **kwargs):
 
         global _wrapper
         wrapper = copy.deepcopy(_wrapper)
@@ -396,10 +405,6 @@ class CCV(object):
 
         wrapper.initial_indent = indent1 * indent + prefix1
         wrapper.subsequent_indent = indent2 * indent + prefix2
-
-        # If there is no parent, then generate whole list
-        if entries is None:
-            entries = self.content_to_list(None, None)
 
         # Otherwise, generate new parents
         for entry in entries:
@@ -502,39 +507,16 @@ class CCV(object):
     # User functions for output
 
     #----------------------------------------
-    def to_xml(self, path, id_ = None, pretty_print = False):
+    def to_xml(self, path, *args, **kwargs):
         """Write xml file to path (adds .xml extension if none provided)"""
 
-        if id_ is None:
-            entries = self.content_to_list(None, None)
-
-            nsmap = {
-                'generic-cv': 'http://www.cihr-irsc.gc.ca/generic-cv/1.0.0'
-            }
-            
-            timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            
-            xml = etree.Element(
-                '{%s}generic-cv' % nsmap['generic-cv'], 
-                nsmap = nsmap, lang = "en", dateTimeGenerated = timestamp
-            )
+        if len(args) == 0:
+            schema = Root()
         else:
-            schema = Section(id_)
-            
-            if not schema.is_dependent:
-                err = '"{}" may refer to multiple entries'
-                err = err.format(id_)
-                raise CCVError(err)
+            schema = Section(*args)
 
-            if schema.id not in self._index:
-                err = 'CCV does not contain "{}" section'
-                err = err.format(id_)
-                raise CCVError(err)
-
-            entries = self.content_to_list(schema, self._index[schema.id])
-            xml = schema.to_xml()
-
-        xml = self.content_to_xml(xml, entries)
+        entries = self.get_content(schema)
+        xml = self.content_to_xml(schema.to_xml(), entries)
 
         if not path.endswith(".xml"):
             path = path + ".xml"
@@ -542,37 +524,24 @@ class CCV(object):
         f = open(path, 'wb')
         with f:
             f.write(b'<?xml version="1.0" encoding="UTF-8"?>\n')
-            f.write(etree.tostring(xml, pretty_print = pretty_print))
+            f.write(etree.tostring(xml, **kwargs))
 
     #----------------------------------------
-    def to_yaml(self, path, id_ = None):
+    def to_yaml(self, path, *args):
         """Write yaml file to path (adds .yaml extension if none provided)"""
 
         # Prevent wrapping from losing information
         global _wrapper
         wrapper = copy.deepcopy(_wrapper)
-        _wrapper.max_lines = 100
+        wrapper.max_lines = 100
 
-        if id_ is None:
-            yaml = []
-            entries = None
+        if len(args) == 0:
+            schema = Root()
         else:
-            schema = Section(id_)
-            
-            if not schema.is_container:
-                err = '"{}" may refer to multiple entries'
-                err = err.format(id_)
-                raise CCVError(err)
-
-            if schema.id not in self._index:
-                err = 'CCV does not contain "{}" section'
-                err = err.format(id_)
-                raise CCVError(err)
-
-            entries = self.content_to_list(schema, self._index[schema.id])
-            yaml = []
-
-        yaml = self.content_to_yaml(yaml, entries)
+            schema = Section(*args)
+        
+        entries = self.get_content(schema)
+        yaml = self.content_to_yaml([], entries)
 
         _wrapper = wrapper
 
