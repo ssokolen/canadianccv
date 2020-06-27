@@ -5,7 +5,7 @@ The aim of this package is to facilitate filling out the Canadian Common CV ([CC
 [CCV]: https://ccv-cvc.ca/indexresearcher-eng.frm
 
 ### Disclaimer
-I am in no way affiliated with the CCV Network or any funding agency. I created this project out of a personal preference to keep local records in a text format. I cannot guarantee that the generated xml files will not break something so please back up your existing CV and use this package at your own risk.
+I am in no way affiliated with the CCV Network or any funding agency. I created this project out of a personal preference to keep local records in a text format. I cannot guarantee that the generated XML files will not break something so please back up your existing CV and use this package at your own risk.
 
 ### Data source
 The package uses publically available XML schemas from the [CCV website], so the XML definitions should be relatively sound.
@@ -102,7 +102,7 @@ ccv.add_yaml(text)
 ccv.to_xml("/path/to/ccv_export.xml")
 ```
 
-Template files can be generated from any valid section label or id:
+Template files can be generated from any valid Section label or id:
 
 ```python
 
