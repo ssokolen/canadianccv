@@ -17,6 +17,8 @@ I'm still in the process of moving my own CCV entirely to YAML files and debuggi
 
 The basic implementation seems like its working (at least on Linux) but small issues are likely to creep up. A couple of field types that I have not yet encountered in my own CV have not been properly implemented: `Datetime`, `Elapsed-Time`, and `PubMed`. Similarly, the code has technically been written for both English and French entries but I have not tested French input at all.
 
+The 2020 RTI competition served as a bit of a trial by fire. I realized that a couple of things I thought were working based on isolated tests didn't actually work when combined with everything else. However, the most recent update served me well for updating Publications, Teaching Activities, and Supervisory Activities.
+
 ## Installation
 
 Install directly from GitHub (or clone and install locally):
@@ -98,7 +100,7 @@ Specialization:
 """
 
 # Add the entries and export
-ccv.add_yaml(text)
+ccv.add_yaml(yaml_text)
 ccv.to_xml("/path/to/ccv_export.xml")
 ```
 
