@@ -388,7 +388,7 @@ class Type(XML, metaclass = Schema):
             elem.text = str(value)
         
         elif self.label == "Bilingual":
-            
+
             if isinstance(value, str):
                 value_dct = {"english":"", "french":""}
                 value_dct[self.language] = value
@@ -397,6 +397,12 @@ class Type(XML, metaclass = Schema):
             else:
                 err = "Bilingual data type value must be a string or dictionary."
                 raise SchemaError(err)
+
+            if "english" not in value_dct:
+                value_dct["english"] = ""
+
+            if "french" not in value_dct:
+                value_dct["french"] = ""
 
             elem = etree.Element("value", type="Bilingual")
 
@@ -488,7 +494,7 @@ class LOV(ReferenceType, metaclass = Schema):
 
         value = self.get_value(value)
 
-        elem = etree.Element("lov", id = self.id)
+        elem = etree.Element("lov", id = value.id)
         elem.text = value.label
 
         return elem

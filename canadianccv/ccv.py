@@ -73,7 +73,7 @@ class CCV(object):
 
                 if section.is_container:
                     self.get_container(section)
-                if not section.is_dependent:
+                elif not section.is_dependent:
                     self.add_content(self.parse_xml(section_xml), section)
 
             msg = '# Finished importing #'
@@ -188,6 +188,8 @@ class CCV(object):
                         
                         value[key] = str(value[key])
                         values.append(value[key].strip(" \n\t"))
+                elif value is None:
+                    value = ""
                 else:
                     value = str(value)
                     value.strip(" \n\t")
@@ -271,10 +273,20 @@ class CCV(object):
         # Then get container to put the content in
         container = self.get_container(section)
 
-        if isinstance(container, list):
-            container.append(entries)
-        else: 
-            container.update(entries)
+        # If the section is in itself a container, add entries individually
+        if section.is_container:
+            keys = [i for i in entries.keys()]
+
+            for key in keys:
+                subsection = Section(key, section.label)
+                self.add_content(entries[key], section = subsection, validate = validate)
+
+        else:
+
+            if isinstance(container, list):
+                container.append(entries)
+            else: 
+                container.update(entries)
 
     #---------------------------------------------------------------------------
     # Main content generation
@@ -294,7 +306,7 @@ class CCV(object):
             err = 'Invalid section -- CCV does not contain "{}"'
             err = err.format(schema.label)
             raise CCVError(err)
-
+        
         return self.content_to_list(schema, self._index[schema.id])
 
     # ----------------------------------------
@@ -517,6 +529,24 @@ class CCV(object):
 
         entries = self.get_content(schema)
         xml = self.content_to_xml(schema.to_xml(), entries)
+
+        # Bilingual fields are structured extremely weird and have to be post-processed
+        for _, field_xml in etree.iterwalk(xml, tag = "field"):
+            child = list(field_xml)[0]
+            if child.get("type") == "Bilingual":
+                english = child[0].text
+                french = child[1].text
+
+                child.remove(child[1])
+                child.remove(child[0])
+                child.text = english
+
+                field_xml.append(etree.Element("bilingual"))
+                field_xml[1].append(etree.Element("french"))
+                field_xml[1][0].text = french
+                field_xml[1].append(etree.Element("english"))
+                field_xml[1][1].text = english
+
 
         if not path.endswith(".xml"):
             path = path + ".xml"
