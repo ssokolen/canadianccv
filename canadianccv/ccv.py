@@ -4,7 +4,7 @@ from lxml import etree
 import logging
 import os
 import re
-import toml
+import tomlkit
 import warnings
 import yaml
 from yaml.constructor import SafeConstructor
@@ -423,6 +423,10 @@ class CCV(object):
 
             schema, content = entry
 
+            # If content is empty, skip
+            if len(content) == 0:
+                continue
+
             # If we are dealing with a field add it
             if isinstance(schema, Field):
                 yaml.extend(schema.to_yaml(content, wrapper))
@@ -451,6 +455,29 @@ class CCV(object):
                         yaml.extend([""] + lines)
 
         return yaml
+
+
+    #---------------------------------------------------------------------------
+    # User functions for content clearing
+
+    # ----------------------------------------
+    def clear_section(self, section):
+
+        section = Section.from_label(section)
+
+        if isinstance(self._index[section.id], dict):
+            keys = [key for key in self._index[section.id].keys()]
+            for key in keys:
+                del self._index[section.id][key]
+        elif isinstance(self._index[section.id], list):
+            del self._index[section.id][:]
+        else:
+            return
+
+        del self._index[section.parent.id][section.label]
+        
+        print(section.parent)
+        #pprint.pp(self._content['Activities'])
 
 
     #---------------------------------------------------------------------------
@@ -513,7 +540,7 @@ class CCV(object):
     def add_toml(self, text):
         """Add contents of TOML formatted string"""
 
-        self.add_content(toml.load(text))
+        self.add_content(tomlkit.parse(text))
 
     #---------------------------------------------------------------------------
     # User functions for output

@@ -7,6 +7,7 @@ import locale
 import logging
 from lxml import etree
 import operator
+import pprint
 import re
 from textwrap import TextWrapper
 
@@ -609,6 +610,13 @@ class Section(XML, metaclass = Schema):
 
     # ----------------------------------------
     @classmethod
+    def from_label(cls, label):
+
+        section = _get_schema("Section", [label])
+        return section 
+
+    # ----------------------------------------
+    @classmethod
     def from_entries(cls, entries, error = True):
 
         # Parsing fields in alphabetical order for consistency
@@ -624,6 +632,8 @@ class Section(XML, metaclass = Schema):
         try:
             return _get_schema("Section", [name])
         except SchemaError:
+            if error:
+                raise
             pass
 
         numbers = [0]
