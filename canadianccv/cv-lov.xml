@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<dataset-cv:dataset-cv dateProduced="2020-01-22 13:16:16" xmlns:dataset-cv="http://www.cihr-irsc.gc.ca/dataset-cv/1.0.0">
+<dataset-cv:dataset-cv dateProduced="2024-05-13 11:51:08" xmlns:dataset-cv="http://www.cihr-irsc.gc.ca/dataset-cv/1.0.0">
     <lov>
         <table id="00000000000000000000000000001000" englishName="System Role" frenchName="Rôle Système" isSystem="true" status="Enabled">
             <code id="00000000000000000000000000000306" englishName="Helpdesk" frenchName="Support" status="Enabled"/>
@@ -15,10 +15,10 @@
             <code id="00000000000000000000000000002008" englishName="Albania" frenchName="Albanie" status="Enabled"/>
             <code id="00000000000000000000000000002010" englishName="Antarctica" frenchName="Antarctique" status="Enabled"/>
             <code id="00000000000000000000000000002012" englishName="Algeria" frenchName="Algérie" status="Enabled"/>
-            <code id="00000000000000000000000000002016" englishName="American Samoa" frenchName="Samoa Américaines" status="Enabled"/>
+            <code id="00000000000000000000000000002016" englishName="American Samoa" frenchName="Samoa américaines" status="Enabled"/>
             <code id="00000000000000000000000000002020" englishName="Andorra" frenchName="Andorre" status="Enabled"/>
             <code id="00000000000000000000000000002024" englishName="Angola" frenchName="Angola" status="Enabled"/>
-            <code id="00000000000000000000000000002028" englishName="Antigua and Barbuda" frenchName="Antigua et Barbuda" status="Enabled"/>
+            <code id="00000000000000000000000000002028" englishName="Antigua and Barbuda" frenchName="Antigua-et-Barbuda" status="Enabled"/>
             <code id="00000000000000000000000000002031" englishName="Azerbaijan" frenchName="Azerbaïdjan" status="Enabled"/>
             <code id="00000000000000000000000000002032" englishName="Argentina" frenchName="Argentine" status="Enabled"/>
             <code id="00000000000000000000000000002036" englishName="Australia" frenchName="Australie" status="Enabled"/>
@@ -31,16 +31,16 @@
             <code id="00000000000000000000000000002056" englishName="Belgium" frenchName="Belgique" status="Enabled"/>
             <code id="00000000000000000000000000002060" englishName="Bermuda" frenchName="Bermudes" status="Enabled"/>
             <code id="00000000000000000000000000002064" englishName="Bhutan" frenchName="Bhoutan" status="Enabled"/>
-            <code id="00000000000000000000000000002068" englishName="Bolivia, Plurinational State Of" frenchName="Bolivie, L'état Plurinational De" status="Enabled"/>
+            <code id="00000000000000000000000000002068" englishName="Bolivia" frenchName="Bolivie" status="Enabled"/>
             <code id="00000000000000000000000000002070" englishName="Bosnia and Herzegovina" frenchName="Bosnie-Herzégovine" status="Enabled"/>
             <code id="00000000000000000000000000002072" englishName="Botswana" frenchName="Botswana" status="Enabled"/>
             <code id="00000000000000000000000000002074" englishName="Bouvet Island" frenchName="Bouvet, Île" status="Enabled"/>
             <code id="00000000000000000000000000002076" englishName="Brazil" frenchName="Brésil" status="Enabled"/>
             <code id="00000000000000000000000000002084" englishName="Belize" frenchName="Belize" status="Enabled"/>
-            <code id="00000000000000000000000000002086" englishName="British Indian Ocean Territory" frenchName="Océan Indien, Territoire Britannique De L'" status="Enabled"/>
+            <code id="00000000000000000000000000002086" englishName="British Indian Ocean Territory" frenchName="Territoire britannique de l'océan Indien" status="Enabled"/>
             <code id="00000000000000000000000000002090" englishName="Solomon Islands" frenchName="Salomon, Îles" status="Enabled"/>
-            <code id="00000000000000000000000000002092" englishName="Virgin Islands, British" frenchName="Îles Vierges Britanniques" status="Enabled"/>
-            <code id="00000000000000000000000000002096" englishName="Brunei Darussalam" frenchName="Brunei Darussalam" status="Enabled"/>
+            <code id="00000000000000000000000000002092" englishName="Virgin Islands, British" frenchName="Vierges britanniques, Îles" status="Enabled"/>
+            <code id="00000000000000000000000000002096" englishName="Brunei Darussalam" frenchName="Brunéi Darussalam" status="Enabled"/>
             <code id="00000000000000000000000000002100" englishName="Bulgaria" frenchName="Bulgarie" status="Enabled"/>
             <code id="00000000000000000000000000002104" englishName="Myanmar" frenchName="Myanmar" status="Enabled"/>
             <code id="00000000000000000000000000002108" englishName="Burundi" frenchName="Burundi" status="Enabled"/>
@@ -48,34 +48,34 @@
             <code id="00000000000000000000000000002116" englishName="Cambodia" frenchName="Cambodge" status="Enabled"/>
             <code id="00000000000000000000000000002120" englishName="Cameroon" frenchName="Cameroun" status="Enabled"/>
             <code id="00000000000000000000000000002124" englishName="Canada" frenchName="Canada" status="Enabled"/>
-            <code id="00000000000000000000000000002132" englishName="Cape Verde" frenchName="Cap Vert" status="Enabled"/>
+            <code id="00000000000000000000000000002132" englishName="Cabo Verde" frenchName="Cabo Verde" status="Enabled"/>
             <code id="00000000000000000000000000002136" englishName="Cayman Islands" frenchName="Caïmans, Îles" status="Enabled"/>
             <code id="00000000000000000000000000002140" englishName="Central African Republic" frenchName="Centrafricaine, République" status="Enabled"/>
             <code id="00000000000000000000000000002144" englishName="Sri Lanka" frenchName="Sri Lanka" status="Enabled"/>
             <code id="00000000000000000000000000002148" englishName="Chad" frenchName="Tchad" status="Enabled"/>
             <code id="00000000000000000000000000002152" englishName="Chile" frenchName="Chili" status="Enabled"/>
             <code id="00000000000000000000000000002156" englishName="China" frenchName="Chine" status="Enabled"/>
-            <code id="00000000000000000000000000002158" englishName="Taiwan, Province of China" frenchName="Taïwan, Province de Chine" status="Enabled"/>
+            <code id="00000000000000000000000000002158" englishName="Taiwan" frenchName="Taïwan" status="Enabled"/>
             <code id="00000000000000000000000000002162" englishName="Christmas Island" frenchName="Christmas, Île" status="Enabled"/>
-            <code id="00000000000000000000000000002166" englishName="Cocos (keeling) Islands" frenchName="Cocos (keeling), Îles" status="Enabled"/>
+            <code id="00000000000000000000000000002166" englishName="Cocos (Keeling) Islands" frenchName="Cocos (Keeling), Îles" status="Enabled"/>
             <code id="00000000000000000000000000002170" englishName="Colombia" frenchName="Colombie" status="Enabled"/>
             <code id="00000000000000000000000000002174" englishName="Comoros" frenchName="Comores" status="Enabled"/>
             <code id="00000000000000000000000000002175" englishName="Mayotte" frenchName="Mayotte" status="Enabled"/>
             <code id="00000000000000000000000000002178" englishName="Congo" frenchName="Congo" status="Enabled"/>
-            <code id="00000000000000000000000000002180" englishName="Congo, The Democratic Republic of the" frenchName="Congo, La République Démocratique du" status="Enabled"/>
+            <code id="00000000000000000000000000002180" englishName="Congo, Democratic Republic of the" frenchName="Congo, République démocratique du" status="Enabled"/>
             <code id="00000000000000000000000000002184" englishName="Cook Islands" frenchName="Cook, Îles" status="Enabled"/>
             <code id="00000000000000000000000000002188" englishName="Costa Rica" frenchName="Costa Rica" status="Enabled"/>
             <code id="00000000000000000000000000002191" englishName="Croatia" frenchName="Croatie" status="Enabled"/>
             <code id="00000000000000000000000000002192" englishName="Cuba" frenchName="Cuba" status="Enabled"/>
             <code id="00000000000000000000000000002196" englishName="Cyprus" frenchName="Chypre" status="Enabled"/>
-            <code id="00000000000000000000000000002203" englishName="Czech Republic" frenchName="Tchèque, République" status="Enabled"/>
+            <code id="00000000000000000000000000002203" englishName="Czechia" frenchName="Tchéquie" status="Enabled"/>
             <code id="00000000000000000000000000002204" englishName="Benin" frenchName="Bénin" status="Enabled"/>
             <code id="00000000000000000000000000002208" englishName="Denmark" frenchName="Danemark" status="Enabled"/>
             <code id="00000000000000000000000000002212" englishName="Dominica" frenchName="Dominique" status="Enabled"/>
             <code id="00000000000000000000000000002214" englishName="Dominican Republic" frenchName="Dominicaine, République" status="Enabled"/>
             <code id="00000000000000000000000000002218" englishName="Ecuador" frenchName="Équateur" status="Enabled"/>
             <code id="00000000000000000000000000002222" englishName="El Salvador" frenchName="El Salvador" status="Enabled"/>
-            <code id="00000000000000000000000000002226" englishName="Equatorial Guinea" frenchName="Guinée Équatoriale" status="Enabled"/>
+            <code id="00000000000000000000000000002226" englishName="Equatorial Guinea" frenchName="Guinée équatoriale" status="Enabled"/>
             <code id="00000000000000000000000000002231" englishName="Ethiopia" frenchName="Éthiopie" status="Enabled"/>
             <code id="00000000000000000000000000002232" englishName="Eritrea" frenchName="Érythrée" status="Enabled"/>
             <code id="00000000000000000000000000002233" englishName="Estonia" frenchName="Estonie" status="Enabled"/>
@@ -84,16 +84,16 @@
             <code id="00000000000000000000000000002239" englishName="South Georgia and the South Sandwich Islands" frenchName="Géorgie du Sud-et-les Îles Sandwich du Sud" status="Enabled"/>
             <code id="00000000000000000000000000002242" englishName="Fiji" frenchName="Fidji" status="Enabled"/>
             <code id="00000000000000000000000000002246" englishName="Finland" frenchName="Finlande" status="Enabled"/>
-            <code id="00000000000000000000000000002248" englishName="Aland Islands" frenchName="Aland, Îles" status="Enabled"/>
+            <code id="00000000000000000000000000002248" englishName="Åland Islands" frenchName="Åland, Îles" status="Enabled"/>
             <code id="00000000000000000000000000002250" englishName="France" frenchName="France" status="Enabled"/>
-            <code id="00000000000000000000000000002254" englishName="French Guiana" frenchName="Guyane Française" status="Enabled"/>
-            <code id="00000000000000000000000000002258" englishName="French Polynesia" frenchName="Polynésie Française" status="Enabled"/>
-            <code id="00000000000000000000000000002260" englishName="French Southern Territories" frenchName="Terres Australes Françaises" status="Enabled"/>
+            <code id="00000000000000000000000000002254" englishName="French Guiana" frenchName="Guyane française" status="Enabled"/>
+            <code id="00000000000000000000000000002258" englishName="French Polynesia" frenchName="Polynésie française" status="Enabled"/>
+            <code id="00000000000000000000000000002260" englishName="French Southern Territories" frenchName="Terres australes françaises" status="Enabled"/>
             <code id="00000000000000000000000000002262" englishName="Djibouti" frenchName="Djibouti" status="Enabled"/>
             <code id="00000000000000000000000000002266" englishName="Gabon" frenchName="Gabon" status="Enabled"/>
             <code id="00000000000000000000000000002268" englishName="Georgia" frenchName="Géorgie" status="Enabled"/>
             <code id="00000000000000000000000000002270" englishName="Gambia" frenchName="Gambie" status="Enabled"/>
-            <code id="00000000000000000000000000002275" englishName="Palestinian Territory, Occupied" frenchName="Palestinien Occupé, Territoire" status="Enabled"/>
+            <code id="00000000000000000000000000002275" englishName="West Bank and Gaza Strip" frenchName="Cisjordanie et bande de Gaza" status="Enabled"/>
             <code id="00000000000000000000000000002276" englishName="Germany" frenchName="Allemagne" status="Enabled"/>
             <code id="00000000000000000000000000002288" englishName="Ghana" frenchName="Ghana" status="Enabled"/>
             <code id="00000000000000000000000000002292" englishName="Gibraltar" frenchName="Gibraltar" status="Enabled"/>
@@ -107,15 +107,15 @@
             <code id="00000000000000000000000000002324" englishName="Guinea" frenchName="Guinée" status="Enabled"/>
             <code id="00000000000000000000000000002328" englishName="Guyana" frenchName="Guyana" status="Enabled"/>
             <code id="00000000000000000000000000002332" englishName="Haiti" frenchName="Haïti" status="Enabled"/>
-            <code id="00000000000000000000000000002334" englishName="Heard Island and Mcdonald Islands" frenchName="Heard et île Mcdonald, Île" status="Enabled"/>
-            <code id="00000000000000000000000000002336" englishName="Vatican City State" frenchName="État de la Cité du Vatican" status="Enabled"/>
+            <code id="00000000000000000000000000002334" englishName="Heard Island and McDonald Islands" frenchName="Heard-et-Îles MacDonald, Île" status="Enabled"/>
+            <code id="00000000000000000000000000002336" englishName="Holy See (Vatican City State)" frenchName="Saint-Siège (État de la Cité du Vatican)" status="Enabled"/>
             <code id="00000000000000000000000000002340" englishName="Honduras" frenchName="Honduras" status="Enabled"/>
             <code id="00000000000000000000000000002344" englishName="Hong Kong" frenchName="Hong Kong" status="Enabled"/>
             <code id="00000000000000000000000000002348" englishName="Hungary" frenchName="Hongrie" status="Enabled"/>
             <code id="00000000000000000000000000002352" englishName="Iceland" frenchName="Islande" status="Enabled"/>
             <code id="00000000000000000000000000002356" englishName="India" frenchName="Inde" status="Enabled"/>
             <code id="00000000000000000000000000002360" englishName="Indonesia" frenchName="Indonésie" status="Enabled"/>
-            <code id="00000000000000000000000000002364" englishName="Iran, Islamic Republic of" frenchName="Iran, République Islamique d'" status="Enabled"/>
+            <code id="00000000000000000000000000002364" englishName="Iran" frenchName="Iran" status="Enabled"/>
             <code id="00000000000000000000000000002368" englishName="Iraq" frenchName="Iraq" status="Enabled"/>
             <code id="00000000000000000000000000002372" englishName="Ireland" frenchName="Irlande" status="Enabled"/>
             <code id="00000000000000000000000000002376" englishName="Israel" frenchName="Israël" status="Enabled"/>
@@ -126,16 +126,16 @@
             <code id="00000000000000000000000000002398" englishName="Kazakhstan" frenchName="Kazakhstan" status="Enabled"/>
             <code id="00000000000000000000000000002400" englishName="Jordan" frenchName="Jordanie" status="Enabled"/>
             <code id="00000000000000000000000000002404" englishName="Kenya" frenchName="Kenya" status="Enabled"/>
-            <code id="00000000000000000000000000002408" englishName="Korea, Democratic People's Republic of" frenchName="Corée, République Populaire Démocratique de" status="Enabled"/>
-            <code id="00000000000000000000000000002410" englishName="Korea, Republic of" frenchName="Corée, République de" status="Enabled"/>
+            <code id="00000000000000000000000000002408" englishName="Korea, North" frenchName="Corée du Nord" status="Enabled"/>
+            <code id="00000000000000000000000000002410" englishName="Korea, South" frenchName="Corée du Sud" status="Enabled"/>
             <code id="00000000000000000000000000002414" englishName="Kuwait" frenchName="Koweït" status="Enabled"/>
             <code id="00000000000000000000000000002417" englishName="Kyrgyzstan" frenchName="Kirghizistan" status="Enabled"/>
-            <code id="00000000000000000000000000002418" englishName="Lao People's Democratic Republic" frenchName="Lao, République Démocratique Populaire" status="Enabled"/>
+            <code id="00000000000000000000000000002418" englishName="Laos" frenchName="Laos" status="Enabled"/>
             <code id="00000000000000000000000000002422" englishName="Lebanon" frenchName="Liban" status="Enabled"/>
             <code id="00000000000000000000000000002426" englishName="Lesotho" frenchName="Lesotho" status="Enabled"/>
             <code id="00000000000000000000000000002428" englishName="Latvia" frenchName="Lettonie" status="Enabled"/>
             <code id="00000000000000000000000000002430" englishName="Liberia" frenchName="Libéria" status="Enabled"/>
-            <code id="00000000000000000000000000002434" englishName="Libyan Arab Jamahiriya" frenchName="Libyenne, Jamahiriya Arabe" status="Enabled"/>
+            <code id="00000000000000000000000000002434" englishName="Libya" frenchName="Libye" status="Enabled"/>
             <code id="00000000000000000000000000002438" englishName="Liechtenstein" frenchName="Liechtenstein" status="Enabled"/>
             <code id="00000000000000000000000000002440" englishName="Lithuania" frenchName="Lituanie" status="Enabled"/>
             <code id="00000000000000000000000000002442" englishName="Luxembourg" frenchName="Luxembourg" status="Enabled"/>
@@ -152,7 +152,7 @@
             <code id="00000000000000000000000000002484" englishName="Mexico" frenchName="Mexique" status="Enabled"/>
             <code id="00000000000000000000000000002492" englishName="Monaco" frenchName="Monaco" status="Enabled"/>
             <code id="00000000000000000000000000002496" englishName="Mongolia" frenchName="Mongolie" status="Enabled"/>
-            <code id="00000000000000000000000000002498" englishName="Moldova, Republic of" frenchName="Moldova, République de" status="Enabled"/>
+            <code id="00000000000000000000000000002498" englishName="Moldova" frenchName="Moldova" status="Enabled"/>
             <code id="00000000000000000000000000002499" englishName="Montenegro" frenchName="Monténégro" status="Enabled"/>
             <code id="00000000000000000000000000002500" englishName="Montserrat" frenchName="Montserrat" status="Enabled"/>
             <code id="00000000000000000000000000002504" englishName="Morocco" frenchName="Maroc" status="Enabled"/>
@@ -165,7 +165,7 @@
             <code id="00000000000000000000000000002531" englishName="Curaçao" frenchName="Curaçao" status="Enabled"/>
             <code id="00000000000000000000000000002533" englishName="Aruba" frenchName="Aruba" status="Enabled"/>
             <code id="00000000000000000000000000002534" englishName="Sint Maarten (Dutch part)" frenchName="Saint-Martin (partie néerlandaise)" status="Enabled"/>
-            <code id="00000000000000000000000000002535" englishName="Bonaire, Saint Eustatius and Saba" frenchName="Bonaire, Saint-eustache et Saba" status="Enabled"/>
+            <code id="00000000000000000000000000002535" englishName="Bonaire, Sint Eustatius and Saba" frenchName="Bonaire, Saint-Eustache et Saba" status="Enabled"/>
             <code id="00000000000000000000000000002540" englishName="New Caledonia" frenchName="Nouvelle-Calédonie" status="Enabled"/>
             <code id="00000000000000000000000000002548" englishName="Vanuatu" frenchName="Vanuatu" status="Enabled"/>
             <code id="00000000000000000000000000002554" englishName="New Zealand" frenchName="Nouvelle-Zélande" status="Enabled"/>
@@ -175,9 +175,9 @@
             <code id="00000000000000000000000000002570" englishName="Niue" frenchName="Niue" status="Enabled"/>
             <code id="00000000000000000000000000002574" englishName="Norfolk Island" frenchName="Norfolk, Île" status="Enabled"/>
             <code id="00000000000000000000000000002578" englishName="Norway" frenchName="Norvège" status="Enabled"/>
-            <code id="00000000000000000000000000002580" englishName="Northern Mariana Islands" frenchName="Mariannes Du Nord, Îles" status="Enabled"/>
-            <code id="00000000000000000000000000002581" englishName="United States Minor Outlying Islands" frenchName="Îles Mineures Éloignées des États-unis" status="Enabled"/>
-            <code id="00000000000000000000000000002583" englishName="Micronesia, Federated States of" frenchName="Micronésie, États Fédérés de" status="Enabled"/>
+            <code id="00000000000000000000000000002580" englishName="Northern Mariana Islands" frenchName="Mariannes du Nord, Îles" status="Enabled"/>
+            <code id="00000000000000000000000000002581" englishName="United States Minor Outlying Islands" frenchName="Îles mineures éloignées des États-Unis" status="Enabled"/>
+            <code id="00000000000000000000000000002583" englishName="Micronesia, Federated States of" frenchName="Micronésie, États fédérés de" status="Enabled"/>
             <code id="00000000000000000000000000002584" englishName="Marshall Islands" frenchName="Marshall, Îles" status="Enabled"/>
             <code id="00000000000000000000000000002585" englishName="Palau" frenchName="Palaos" status="Enabled"/>
             <code id="00000000000000000000000000002586" englishName="Pakistan" frenchName="Pakistan" status="Enabled"/>
@@ -197,15 +197,16 @@
             <code id="00000000000000000000000000002642" englishName="Romania" frenchName="Roumanie" status="Enabled"/>
             <code id="00000000000000000000000000002643" englishName="Russian Federation" frenchName="Russie, Fédération de" status="Enabled"/>
             <code id="00000000000000000000000000002646" englishName="Rwanda" frenchName="Rwanda" status="Enabled"/>
-            <code id="00000000000000000000000000002654" englishName="Saint Helena, Ascension and Tristan Da Cunha" frenchName="Sainte-hélène, Ascension et Tristan Da Cunha" status="Enabled"/>
+            <code id="00000000000000000000000000002654" englishName="Saint Helena, Ascension and Tristan da Cunha" frenchName="Sainte-Hélène, Ascension et Tristan da Cunha" status="Enabled"/>
             <code id="00000000000000000000000000002659" englishName="Saint Kitts and Nevis" frenchName="Saint-Kitts-et-Nevis" status="Enabled"/>
             <code id="00000000000000000000000000002660" englishName="Anguilla" frenchName="Anguilla" status="Enabled"/>
             <code id="00000000000000000000000000002662" englishName="Saint Lucia" frenchName="Sainte-Lucie" status="Enabled"/>
             <code id="00000000000000000000000000002666" englishName="Saint Pierre and Miquelon" frenchName="Saint-Pierre-et-Miquelon" status="Enabled"/>
-            <code id="00000000000000000000000000002670" englishName="Saint Vincent and the Grenadines" frenchName="Saint-Vincent-et-les-Grenadines" status="Enabled"/>
+            <code id="00000000000000000000000000002670" englishName="Saint Vincent and the Grenadines" frenchName="Saint-Vincent-et-les Grenadines" status="Enabled"/>
             <code id="00000000000000000000000000002674" englishName="San Marino" frenchName="Saint-Marin" status="Enabled"/>
             <code id="00000000000000000000000000002678" englishName="Sao Tome and Principe" frenchName="Sao Tomé-et-Principe" status="Enabled"/>
-            <code id="00000000000000000000000000002682" englishName="Saudi Arabia" frenchName="Arabie Saoudite" status="Enabled"/>
+            <code id="00000000000000000000000000002680" englishName="Sark" frenchName="Sercq" status="Enabled"/>
+            <code id="00000000000000000000000000002682" englishName="Saudi Arabia" frenchName="Arabie saoudite" status="Enabled"/>
             <code id="00000000000000000000000000002686" englishName="Senegal" frenchName="Sénégal" status="Enabled"/>
             <code id="00000000000000000000000000002688" englishName="Serbia" frenchName="Serbie" status="Enabled"/>
             <code id="00000000000000000000000000002690" englishName="Seychelles" frenchName="Seychelles" status="Enabled"/>
@@ -215,24 +216,24 @@
             <code id="00000000000000000000000000002704" englishName="Viet Nam" frenchName="Viet Nam" status="Enabled"/>
             <code id="00000000000000000000000000002705" englishName="Slovenia" frenchName="Slovénie" status="Enabled"/>
             <code id="00000000000000000000000000002706" englishName="Somalia" frenchName="Somalie" status="Enabled"/>
-            <code id="00000000000000000000000000002710" englishName="South Africa" frenchName="Afrique du Sud" status="Enabled"/>
+            <code id="00000000000000000000000000002710" englishName="South Africa, Republic of" frenchName="Afrique du Sud, République d'" status="Enabled"/>
             <code id="00000000000000000000000000002716" englishName="Zimbabwe" frenchName="Zimbabwe" status="Enabled"/>
             <code id="00000000000000000000000000002724" englishName="Spain" frenchName="Espagne" status="Enabled"/>
-            <code id="00000000000000000000000000002732" englishName="Western Sahara" frenchName="Sahara Occidental" status="Enabled"/>
+            <code id="00000000000000000000000000002732" englishName="Western Sahara" frenchName="Sahara occidental" status="Enabled"/>
             <code id="00000000000000000000000000002736" englishName="Sudan" frenchName="Soudan" status="Enabled"/>
             <code id="00000000000000000000000000002740" englishName="Suriname" frenchName="Suriname" status="Enabled"/>
-            <code id="00000000000000000000000000002744" englishName="Svalbard and Jan Mayen" frenchName="Svalbard et Île Jan Mayen" status="Enabled"/>
-            <code id="00000000000000000000000000002748" englishName="Swaziland" frenchName="Swaziland" status="Enabled"/>
+            <code id="00000000000000000000000000002744" englishName="Svalbard and Jan Mayen" frenchName="Svalbard et l'Île Jan Mayen" status="Enabled"/>
+            <code id="00000000000000000000000000002748" englishName="Eswatini" frenchName="Eswatini" status="Enabled"/>
             <code id="00000000000000000000000000002752" englishName="Sweden" frenchName="Suède" status="Enabled"/>
             <code id="00000000000000000000000000002756" englishName="Switzerland" frenchName="Suisse" status="Enabled"/>
-            <code id="00000000000000000000000000002760" englishName="Syrian Arab Republic" frenchName="Syrienne, République Arabe" status="Enabled"/>
+            <code id="00000000000000000000000000002760" englishName="Syria" frenchName="Syrie" status="Enabled"/>
             <code id="00000000000000000000000000002762" englishName="Tajikistan" frenchName="Tadjikistan" status="Enabled"/>
             <code id="00000000000000000000000000002764" englishName="Thailand" frenchName="Thaïlande" status="Enabled"/>
             <code id="00000000000000000000000000002768" englishName="Togo" frenchName="Togo" status="Enabled"/>
-            <code id="00000000000000000000000000002772" englishName="Tokelau" frenchName="Tokelau" status="Enabled"/>
+            <code id="00000000000000000000000000002772" englishName="Tokelau" frenchName="Tokélaou" status="Enabled"/>
             <code id="00000000000000000000000000002776" englishName="Tonga" frenchName="Tonga" status="Enabled"/>
             <code id="00000000000000000000000000002780" englishName="Trinidad and Tobago" frenchName="Trinité-et-Tobago" status="Enabled"/>
-            <code id="00000000000000000000000000002784" englishName="United Arab Emirates" frenchName="Émirats Arabes Unis" status="Enabled"/>
+            <code id="00000000000000000000000000002784" englishName="United Arab Emirates" frenchName="Émirats arabes unis" status="Enabled"/>
             <code id="00000000000000000000000000002788" englishName="Tunisia" frenchName="Tunisie" status="Enabled"/>
             <code id="00000000000000000000000000002792" englishName="Turkey" frenchName="Turquie" status="Enabled"/>
             <code id="00000000000000000000000000002795" englishName="Turkmenistan" frenchName="Turkménistan" status="Enabled"/>
@@ -240,25 +241,26 @@
             <code id="00000000000000000000000000002798" englishName="Tuvalu" frenchName="Tuvalu" status="Enabled"/>
             <code id="00000000000000000000000000002800" englishName="Uganda" frenchName="Ouganda" status="Enabled"/>
             <code id="00000000000000000000000000002804" englishName="Ukraine" frenchName="Ukraine" status="Enabled"/>
-            <code id="00000000000000000000000000002807" englishName="Macedonia, The Former Yugoslav Republic of" frenchName="Macédoine, L'ex-république Yougoslave de" status="Enabled"/>
+            <code id="00000000000000000000000000002807" englishName="North Macedonia" frenchName="Macédoine du Nord" status="Enabled"/>
             <code id="00000000000000000000000000002818" englishName="Egypt" frenchName="Égypte" status="Enabled"/>
             <code id="00000000000000000000000000002826" englishName="United Kingdom" frenchName="Royaume-Uni" status="Enabled"/>
             <code id="00000000000000000000000000002831" englishName="Guernsey" frenchName="Guernesey" status="Enabled"/>
             <code id="00000000000000000000000000002832" englishName="Jersey" frenchName="Jersey" status="Enabled"/>
             <code id="00000000000000000000000000002833" englishName="Isle of Man" frenchName="Île de Man" status="Enabled"/>
-            <code id="00000000000000000000000000002834" englishName="Tanzania, United Republic of" frenchName="Tanzanie, République-Unie de" status="Enabled"/>
-            <code id="00000000000000000000000000002840" englishName="United States" frenchName="États-Unis" status="Enabled"/>
-            <code id="00000000000000000000000000002850" englishName="Virgin Islands, U.S." frenchName="Îles Vierges des États-Unis" status="Enabled"/>
+            <code id="00000000000000000000000000002834" englishName="Tanzania" frenchName="Tanzanie" status="Enabled"/>
+            <code id="00000000000000000000000000002840" englishName="United States of America" frenchName="États-Unis d'Amérique" status="Enabled"/>
+            <code id="00000000000000000000000000002850" englishName="Virgin Islands, United States" frenchName="Vierges des États-Unis, Îles" status="Enabled"/>
             <code id="00000000000000000000000000002854" englishName="Burkina Faso" frenchName="Burkina Faso" status="Enabled"/>
             <code id="00000000000000000000000000002858" englishName="Uruguay" frenchName="Uruguay" status="Enabled"/>
             <code id="00000000000000000000000000002860" englishName="Uzbekistan" frenchName="Ouzbékistan" status="Enabled"/>
-            <code id="00000000000000000000000000002862" englishName="Venezuela, Bolivarian Republic of" frenchName="Venezuela, République Bolivarienne du" status="Enabled"/>
+            <code id="00000000000000000000000000002862" englishName="Venezuela" frenchName="Venezuela" status="Enabled"/>
             <code id="00000000000000000000000000002876" englishName="Wallis and Futuna" frenchName="Wallis-et-Futuna" status="Enabled"/>
             <code id="00000000000000000000000000002882" englishName="Samoa" frenchName="Samoa" status="Enabled"/>
             <code id="00000000000000000000000000002887" englishName="Yemen" frenchName="Yémen" status="Enabled"/>
             <code id="00000000000000000000000000002894" englishName="Zambia" frenchName="Zambie" status="Enabled"/>
             <code id="00000000000000000000000000002898" englishName="Saint Barthélemy" frenchName="Saint-Barthélemy" status="Enabled"/>
             <code id="00000000000000000000000000002899" englishName="Saint Martin (French part)" frenchName="Saint-Martin (partie française)" status="Enabled"/>
+            <code id="00000000000000000000000000002983" englishName="Kosovo" frenchName="Kosovo" status="Enabled"/>
             <code id="33689cd0ac9b468f8820700dcfac7bd5" englishName="South Sudan" frenchName="Soudan du Sud" status="Enabled"/>
         </table>
         <table id="00000000000000000000000000003000" englishName="Language" frenchName="Langage" isSystem="false" status="Enabled">
@@ -377,7 +379,7 @@
             <code id="00000000000000000000000000003113" englishName="Dogrib" frenchName="dogrib" status="Enabled"/>
             <code id="00000000000000000000000000003114" englishName="Dravidian languages" frenchName="dravidiennes, langues" status="Enabled"/>
             <code id="00000000000000000000000000003115" englishName="Duala" frenchName="douala" status="Enabled"/>
-            <code id="00000000000000000000000000003116" englishName="Dutch, Middle (ca.1050-1350)" frenchName="néerlandais moyen (ca. 1050-1350)" status="Enabled"/>
+            <code id="00000000000000000000000000003116" englishName="Dutch, Middle (ca.1050-1350)" frenchName="néerlandais moyen (c. 1050-1350)" status="Enabled"/>
             <code id="00000000000000000000000000003117" englishName="Dutch; Flemish" frenchName="néerlandais; flamand" status="Enabled"/>
             <code id="00000000000000000000000000003118" englishName="Dyula" frenchName="dioula" status="Enabled"/>
             <code id="00000000000000000000000000003119" englishName="Dzongkha" frenchName="dzongkha" status="Enabled"/>
@@ -388,7 +390,7 @@
             <code id="00000000000000000000000000003124" englishName="Elamite" frenchName="élamite" status="Enabled"/>
             <code id="00000000000000000000000000003125" englishName="English" frenchName="anglais" status="Enabled"/>
             <code id="00000000000000000000000000003126" englishName="English, Middle (1100-1500)" frenchName="anglais moyen (1100-1500)" status="Enabled"/>
-            <code id="00000000000000000000000000003127" englishName="English, Old (ca.450-1100)" frenchName="anglo-saxon (ca.450-1100)" status="Enabled"/>
+            <code id="00000000000000000000000000003127" englishName="English, Old (ca.450-1100)" frenchName="anglo-saxon (c. 450-1100)" status="Enabled"/>
             <code id="00000000000000000000000000003128" englishName="Erzya" frenchName="erza" status="Enabled"/>
             <code id="00000000000000000000000000003129" englishName="Esperanto" frenchName="espéranto" status="Enabled"/>
             <code id="00000000000000000000000000003130" englishName="Estonian" frenchName="estonien" status="Enabled"/>
@@ -403,8 +405,8 @@
             <code id="00000000000000000000000000003139" englishName="Finno-Ugrian languages" frenchName="finno-ougriennes, langues" status="Enabled"/>
             <code id="00000000000000000000000000003140" englishName="Fon" frenchName="fon" status="Enabled"/>
             <code id="00000000000000000000000000003141" englishName="French" frenchName="français" status="Enabled"/>
-            <code id="00000000000000000000000000003142" englishName="French, Middle (ca.1400-1600)" frenchName="français moyen (1400-1600)" status="Enabled"/>
-            <code id="00000000000000000000000000003143" englishName="French, Old (842-ca.1400)" frenchName="français ancien (842-ca.1400)" status="Enabled"/>
+            <code id="00000000000000000000000000003142" englishName="French, Middle (ca.1400-1600)" frenchName="français moyen (c. 1400-1600)" status="Enabled"/>
+            <code id="00000000000000000000000000003143" englishName="French, Old (842-ca.1400)" frenchName="français ancien (842-c. 1400)" status="Enabled"/>
             <code id="00000000000000000000000000003144" englishName="Friulian" frenchName="frioulan" status="Enabled"/>
             <code id="00000000000000000000000000003145" englishName="Fulah" frenchName="peul" status="Enabled"/>
             <code id="00000000000000000000000000003146" englishName="Ga" frenchName="ga" status="Enabled"/>
@@ -417,8 +419,8 @@
             <code id="00000000000000000000000000003153" englishName="Geez" frenchName="guèze" status="Enabled"/>
             <code id="00000000000000000000000000003154" englishName="Georgian" frenchName="géorgien" status="Enabled"/>
             <code id="00000000000000000000000000003155" englishName="German" frenchName="allemand" status="Enabled"/>
-            <code id="00000000000000000000000000003156" englishName="German, Middle High (ca.1050-1500)" frenchName="allemand, moyen haut (ca. 1050-1500)" status="Enabled"/>
-            <code id="00000000000000000000000000003157" englishName="German, Old High (ca.750-1050)" frenchName="allemand, vieux haut (ca. 750-1050)" status="Enabled"/>
+            <code id="00000000000000000000000000003156" englishName="German, Middle High (ca.1050-1500)" frenchName="allemand, moyen haut (c. 1050-1500)" status="Enabled"/>
+            <code id="00000000000000000000000000003157" englishName="German, Old High (ca.750-1050)" frenchName="allemand, vieux haut (c. 750-1050)" status="Enabled"/>
             <code id="00000000000000000000000000003158" englishName="Germanic languages" frenchName="germaniques, langues" status="Enabled"/>
             <code id="00000000000000000000000000003159" englishName="Gilbertese" frenchName="kiribati" status="Enabled"/>
             <code id="00000000000000000000000000003160" englishName="Gondi" frenchName="gond" status="Enabled"/>
@@ -591,7 +593,7 @@
             <code id="00000000000000000000000000003327" englishName="Nyoro" frenchName="nyoro" status="Enabled"/>
             <code id="00000000000000000000000000003328" englishName="Nzima" frenchName="nzema" status="Enabled"/>
             <code id="00000000000000000000000000003329" englishName="Occitan (post 1500)" frenchName="occitan (après 1500)" status="Enabled"/>
-            <code id="00000000000000000000000000003330" englishName="Official Aramaic (700-300 BCE); Imperial Aramaic (700-300 BCE)" frenchName="araméen d'empire (700-300 BCE)" status="Enabled"/>
+            <code id="00000000000000000000000000003330" englishName="Official Aramaic (700-300 BCE); Imperial Aramaic (700-300 BCE)" frenchName="araméen d’empire (700-300 av. J.-C.)" status="Enabled"/>
             <code id="00000000000000000000000000003331" englishName="Ojibwa" frenchName="ojibwa" status="Enabled"/>
             <code id="00000000000000000000000000003332" englishName="Oriya" frenchName="oriya" status="Enabled"/>
             <code id="00000000000000000000000000003333" englishName="Oromo" frenchName="galla" status="Enabled"/>
@@ -608,7 +610,7 @@
             <code id="00000000000000000000000000003344" englishName="Papuan languages" frenchName="papoues, langues" status="Enabled"/>
             <code id="00000000000000000000000000003345" englishName="Pedi; Sepedi; Northern Sotho" frenchName="pedi; sepedi; sotho du Nord" status="Enabled"/>
             <code id="00000000000000000000000000003346" englishName="Persian" frenchName="persan" status="Enabled"/>
-            <code id="00000000000000000000000000003347" englishName="Persian, Old (ca.600-400 B.C.)" frenchName="perse, vieux (ca. 600-400 av. J.-C.)" status="Enabled"/>
+            <code id="00000000000000000000000000003347" englishName="Persian, Old (ca.600-400 B.C.)" frenchName="perse, vieux (c. 600-400 av. J.-C.)" status="Enabled"/>
             <code id="00000000000000000000000000003348" englishName="Philippine languages" frenchName="philippines, langues" status="Enabled"/>
             <code id="00000000000000000000000000003349" englishName="Phoenician" frenchName="phénicien" status="Enabled"/>
             <code id="00000000000000000000000000003350" englishName="Pohnpeian" frenchName="pohnpei" status="Enabled"/>
@@ -747,6 +749,10 @@
             <code id="00000000000000000000000000003484" englishName="Zhuang; Chuang" frenchName="zhuang; chuang" status="Enabled"/>
             <code id="00000000000000000000000000003485" englishName="Zulu" frenchName="zoulou" status="Enabled"/>
             <code id="00000000000000000000000000003486" englishName="Zuni" frenchName="zuni" status="Enabled"/>
+            <code id="048017ad85394fdba745a3e4a931d172" englishName="Judeo-Tat" frenchName="Judeo-Tat" status="Enabled"/>
+            <code id="684c3b7bcad04d6fa5daf7ce21810356" englishName="Michif" frenchName="Mitchif" status="Enabled"/>
+            <code id="f33b255ccf2a4188911471464402de21" englishName="Tsuut'ina" frenchName="Tsuut'ina" status="Enabled"/>
+            <code id="f38d9626fe894e848042c5115564261c" englishName="Saraiki" frenchName="Saraiki" status="Enabled"/>
         </table>
         <table id="00000000000000000000000000003500" englishName="Researcher Database Status" frenchName="Statut de base de données chercheur" isSystem="true" status="Enabled">
             <code id="00000000000000000000000000003500" englishName="Change" frenchName="Changement" status="Enabled"/>
@@ -760,20 +766,26 @@
             <code id="00000000000000000000000000003702" englishName="SOCKS5" frenchName="SOCKS5" status="Enabled"/>
         </table>
         <table id="00000000000000000000000000005000" englishName="System Account Title" frenchName="Compte salutation Système" isSystem="true" status="Enabled">
-            <code id="00000000000000000000000000005000" englishName="Dr." frenchName="Dr." status="Enabled"/>
-            <code id="00000000000000000000000000005001" englishName="Mr." frenchName="M." status="Enabled"/>
-            <code id="00000000000000000000000000005002" englishName="Mrs." frenchName="Mme" status="Enabled"/>
-            <code id="00000000000000000000000000005003" englishName="Ms." frenchName="Mlle" status="Enabled"/>
-            <code id="00000000000000000000000000005004" englishName="Professor" frenchName="Professeur" status="Enabled"/>
-            <code id="00000000000000000000000000005005" englishName="Reverend" frenchName="Révérend" status="Enabled"/>
+            <code id="00000000000000000000000000005000" englishName="Dr." frenchName="Dr/e." code="1" status="Enabled"/>
+            <code id="00000000000000000000000000005001" englishName="Mr." frenchName="M." code="2" status="Enabled"/>
+            <code id="00000000000000000000000000005002" englishName="Mrs." frenchName="Mme" code="3" status="Enabled"/>
+            <code id="00000000000000000000000000005003" englishName="Ms." frenchName="Mlle" code="4" status="Enabled"/>
+            <code id="00000000000000000000000000005004" englishName="Professor" frenchName="Professeur/e" code="6" status="Enabled"/>
+            <code id="00000000000000000000000000005005" englishName="Reverend" frenchName="Révérend" code="7" status="Enabled"/>
+            <code id="00000000000000000000000000005006" englishName="Mx" frenchName="Mx" code="5" status="Enabled"/>
+            <code id="00000000000000000000000000005007" englishName="Prefer not to answer" frenchName="Préfère ne pas répondre" code="8" status="Enabled"/>
+            <code id="00000000000000000000000000005008" englishName="None of the above" frenchName="Aucune de ces réponses" code="9" status="Enabled"/>
         </table>
         <table id="00000000000000000000000000006000" englishName="Title" frenchName="Salutation" isSystem="false" status="Enabled">
-            <code id="00000000000000000000000000000317" englishName="Dr." frenchName="Dr" status="Enabled"/>
+            <code id="00000000000000000000000000000317" englishName="Dr." frenchName="Dr/e." status="Enabled"/>
             <code id="00000000000000000000000000000318" englishName="Mr." frenchName="Monsieur" status="Enabled"/>
             <code id="00000000000000000000000000000319" englishName="Mrs." frenchName="Madame" status="Enabled"/>
             <code id="00000000000000000000000000000320" englishName="Ms." frenchName="Mademoiselle" status="Enabled"/>
-            <code id="00000000000000000000000000000321" englishName="Professor" frenchName="Professeur" status="Enabled"/>
+            <code id="00000000000000000000000000000321" englishName="Professor" frenchName="Professeur/e" status="Enabled"/>
             <code id="00000000000000000000000000000322" englishName="Reverend" frenchName="Révérend" status="Enabled"/>
+            <code id="00000000000000000000000000000366" englishName="Mx" frenchName="Mx" status="Enabled"/>
+            <code id="00000000000000000000000000000367" englishName="Prefer not to answer" frenchName="Préfère ne pas répondre" status="Enabled"/>
+            <code id="00000000000000000000000000000368" englishName="None of the above" frenchName="Aucune de ces réponses" status="Enabled"/>
         </table>
         <table id="00000000000000000000000000007000" englishName="System Birth Month" frenchName="Mois de naissance Système" isSystem="true" status="Enabled">
             <code id="00000000000000000000000000000323" englishName="January" frenchName="Janvier" code="1" status="Enabled"/>
@@ -862,7 +874,7 @@
             <code id="00000000000000000000000000018006" englishName="First Author Name" frenchName="Premier nom d'auteur" status="Enabled"/>
             <code id="00000000000000000000000000018007" englishName="All other authors" frenchName="Tous les autres auteurs" status="Enabled"/>
         </table>
-        <table id="00000000000000000000000000019000" englishName="Degree Status" frenchName="Statut du diplôme" isSystem="false" status="Enabled">
+        <table id="00000000000000000000000000019000" englishName="Degree Status" frenchName="État du diplôme" isSystem="false" status="Enabled">
             <code id="00000000000000000000000000000067" englishName="Withdrawn" frenchName="Interrompu" status="Enabled"/>
             <code id="00000000000000000000000000000068" englishName="Completed" frenchName="Terminé" status="Enabled"/>
             <code id="00000000000000000000000000000069" englishName="All But Degree" frenchName="Tout sauf diplôme" status="Enabled"/>
@@ -878,14 +890,14 @@
             <code id="00000000000000000000000000000077" englishName="Habilitation" frenchName="Habilitation" code="12" status="Enabled"/>
             <code id="00000000000000000000000000000081" englishName="Master's non-Thesis" frenchName="Maîtrise sans mémoire" code="5" status="Enabled"/>
             <code id="00000000000000000000000000000082" englishName="Research Associate" frenchName="Attaché de recherche" code="13" status="Enabled"/>
-            <code id="00000000000000000000000000000083" englishName="Bachelor's Honours" frenchName="Baccalauréat avec distinctions" code="3" status="Enabled"/>
-            <code id="00000000000000000000000000000084" englishName="Bachelor's Equivalent" frenchName="Equivalent au baccalauréat" code="2" status="Enabled"/>
-            <code id="00000000000000000000000000000085" englishName="Master's Equivalent" frenchName="Equivalent à la maîtrise" code="4" status="Enabled"/>
-            <code id="00000000000000000000000000000086" englishName="Doctorate Equivalent" frenchName="Equivalent au doctorat" code="8" status="Enabled"/>
+            <code id="00000000000000000000000000000083" englishName="Bachelor's Honours" frenchName="Baccalauréat spécialisé" code="3" status="Enabled"/>
+            <code id="00000000000000000000000000000084" englishName="Bachelor's Equivalent" frenchName="Équivalent du baccalauréat" code="2" status="Enabled"/>
+            <code id="00000000000000000000000000000085" englishName="Master's Equivalent" frenchName="Équivalent de la maîtrise" code="4" status="Enabled"/>
+            <code id="00000000000000000000000000000086" englishName="Doctorate Equivalent" frenchName="Équivalent du doctorat" code="8" status="Enabled"/>
         </table>
         <table id="00000000000000000000000000021000" englishName="Designated Group" frenchName="Groupe désigné" isSystem="false" status="Enabled">
             <code id="00000000000000000000000000000078" englishName="Aboriginal" frenchName="Autochtones" status="Enabled"/>
-            <code id="00000000000000000000000000000079" englishName="Disabled" frenchName="Mobilité réduite" status="Enabled"/>
+            <code id="00000000000000000000000000000079" englishName="Disabled" frenchName="Situation de handicap" status="Enabled"/>
             <code id="00000000000000000000000000000080" englishName="Visible Minority" frenchName="Minorité visible" status="Enabled"/>
         </table>
         <table id="00000000000000000000000000022000" englishName="System Batch Status" frenchName="Statut du traitement en lot Système" isSystem="true" status="Enabled">
@@ -914,30 +926,55 @@
             <code id="00000000000000000000000000026004" englishName="Downloaded by Agency" frenchName="Téléchargé par l'agence" status="Enabled"/>
         </table>
         <table id="00000000000000000000000000027000" englishName="System Reminder Questions" frenchName="Question de rappel Système" isSystem="true" status="Enabled">
-            <code id="00000000000000000000000000027000" englishName="Your mother's maiden name" frenchName="Nom de jeune fille de votre mère" status="Enabled"/>
-            <code id="00000000000000000000000000027001" englishName="Your pet's name" frenchName="Nom de votre animal de compagnie" status="Enabled"/>
-            <code id="00000000000000000000000000027002" englishName="Your place of birth" frenchName="Votre lieu de naissance" status="Enabled"/>
-            <code id="00000000000000000000000000027003" englishName="Your second middle name" frenchName="Votre deuxième prénom" status="Enabled"/>
-            <code id="00000000000000000000000000027004" englishName="Your favourite colour" frenchName="Votre couleur préférée" status="Enabled"/>
-            <code id="00000000000000000000000000027005" englishName="Your high school name" frenchName="Nom de votre établissement secondaire" status="Enabled"/>
+            <code id="00000000000000000000000000027000" englishName="Your mother's maiden name" frenchName="Nom de jeune fille de votre mère" status="Disabled"/>
+            <code id="00000000000000000000000000027001" englishName="Your pet's name" frenchName="Nom de votre animal de compagnie" status="Disabled"/>
+            <code id="00000000000000000000000000027002" englishName="Your place of birth" frenchName="Votre lieu de naissance" status="Disabled"/>
+            <code id="00000000000000000000000000027003" englishName="Your second middle name" frenchName="Votre deuxième prénom" status="Disabled"/>
+            <code id="00000000000000000000000000027004" englishName="Your favourite colour" frenchName="Votre couleur préférée" status="Disabled"/>
+            <code id="00000000000000000000000000027005" englishName="Your high school name" frenchName="Nom de votre établissement secondaire" status="Disabled"/>
+            <code id="00000000000000000000000000027006" englishName="What is your maternal grandmother's maiden name?" frenchName="Quel est le nom de jeune fille de votre grand-mère maternelle?" code="01" status="Enabled"/>
+            <code id="00000000000000000000000000027007" englishName="What is your paternal grandmother's maiden name?" frenchName="Quel est le nom de jeune fille de votre grand-mère paternelle?" code="02" status="Enabled"/>
+            <code id="00000000000000000000000000027008" englishName="What is the name of a college you applied to but did not attend?" frenchName="À quelle université avez-vous soumis une demande d’admission sans toutefois y avoir étudié?" code="03" status="Enabled"/>
+            <code id="00000000000000000000000000027009" englishName="What was the name of the first school you remember attending?" frenchName="Quel était le nom de la première école que vous avez fréquentée?" code="04" status="Enabled"/>
+            <code id="00000000000000000000000000027010" englishName="Where was the destination of your most memorable school field trip?" frenchName="Quelle était la destination de votre sortie scolaire la plus mémorable?" code="05" status="Enabled"/>
+            <code id="00000000000000000000000000027011" englishName="What was your Math teacher's surname in eighth grade?" frenchName="Quel était le nom de famille de votre professeur de mathématiques en 8e année (2e année du secondaire)?" code="06" status="Enabled"/>
+            <code id="00000000000000000000000000027012" englishName="What was the name of your first stuffed toy?" frenchName="Quel était le nom de votre première peluche?" code="07" status="Enabled"/>
+            <code id="00000000000000000000000000027013" englishName="What was your driving instructor's first name?" frenchName="Quel était le prénom de votre instructeur de conduite?" code="08" status="Enabled"/>
+            <code id="00000000000000000000000000027014" englishName="What was your childhood nickname?" frenchName="Quel était votre surnom durant votre enfance?" code="09" status="Enabled"/>
+            <code id="00000000000000000000000000027015" englishName="In what city did you meet your spouse/significant other?" frenchName="Dans quelle ville avez-vous rencontré votre conjoint(e)?" code="10" status="Enabled"/>
+            <code id="00000000000000000000000000027016" englishName="What is the name of your favorite childhood friend?" frenchName="Quel est le nom de votre meilleur ami d'enfance?" code="11" status="Enabled"/>
+            <code id="00000000000000000000000000027017" englishName="What street did you live on in third grade?" frenchName="Dans quelle rue habitiez-vous en 3e année?" code="12" status="Enabled"/>
+            <code id="00000000000000000000000000027018" englishName="What is the middle name of your youngest child?" frenchName="Quel est le deuxième prénom de votre plus jeune enfant?" code="13" status="Enabled"/>
+            <code id="00000000000000000000000000027019" englishName="What is your oldest sibling's middle name?" frenchName="Quel est le deuxième prénom de votre frère ou sœur aîné(e)?" code="14" status="Enabled"/>
+            <code id="00000000000000000000000000027020" englishName="What school did you attend for sixth grade?" frenchName="Quelle école avez-vous fréquentée en 6e année?" code="15" status="Enabled"/>
+            <code id="00000000000000000000000000027021" englishName="What is your oldest cousin's first and last name?" frenchName="Quels sont le prénom et le nom de famille de votre cousin le plus âgé?" code="16" status="Enabled"/>
+            <code id="00000000000000000000000000027022" englishName="In what city or town did your mother and father meet?" frenchName="Dans quelle ville ou quel village votre mère et votre père se sont-ils rencontrés?" code="17" status="Enabled"/>
+            <code id="00000000000000000000000000027023" englishName="What was the last name of your third grade teacher?" frenchName="Quel était le nom de famille de votre professeur de 3e année?" code="18" status="Enabled"/>
+            <code id="00000000000000000000000000027024" englishName="In what city does your nearest sibling live?" frenchName="Dans quelle ville habite votre plus proche frère ou sœur?" code="19" status="Enabled"/>
+            <code id="00000000000000000000000000027025" englishName="Where was the destination of your most memorable vacation?" frenchName="Quelle était la destination de vos vacances les plus mémorables?" code="20" status="Enabled"/>
+            <code id="00000000000000000000000000027026" englishName="What is the name, breed, and color of your grandparent’s pet you remember most?" frenchName="Quels sont le nom, la race et la couleur de l'animal de compagnie de vos grands-parents dont vous vous souvenez le mieux?" code="21" status="Enabled"/>
+            <code id="00000000000000000000000000027027" englishName="What is your maternal grandmother's home address (street name and city)?" frenchName="Quelle est l'adresse du domicile de votre grand-mère maternelle (rue et ville)?" code="22" status="Enabled"/>
+            <code id="00000000000000000000000000027028" englishName="What is the name of the first concert you attended?" frenchName="Quel était le premier concert auquel vous avez assisté?" code="23" status="Enabled"/>
+            <code id="00000000000000000000000000027029" englishName="What is the name of your childhood hero?" frenchName="Qui est le héros ou l'héroïne de votre enfance?" code="24" status="Enabled"/>
+            <code id="00000000000000000000000000027030" englishName="What is the last name of your favorite high school teacher?" frenchName="Quel est le nom de famille de votre enseignante ou enseignant préféré du secondaire?" code="25" status="Enabled"/>
         </table>
         <table id="00000000000000000000000000028000" englishName="XML Template Transformation" frenchName="Cadre de transformation du XML" isSystem="true" status="Enabled">
             <code id="00000000000000000000000000028000" englishName="FRSQ" frenchName="FRSQ" status="Enabled"/>
             <code id="00000000000000000000000000028001" englishName="HEALTH" frenchName="SANTE" status="Enabled"/>
         </table>
         <table id="00000000000000000000000000029000" englishName="Email Type" frenchName="Type de courriel" isSystem="false" status="Enabled">
-            <code id="00000000000000000000000000000124" englishName="Work" frenchName="Adresse de courriel au travail" status="Enabled"/>
-            <code id="00000000000000000000000000000127" englishName="Personal" frenchName="Adresse de courriel personnelle" status="Enabled"/>
-            <code id="00000000000000000000000000000128" englishName="Temporary" frenchName="Adresse de courriel temporaire" status="Enabled"/>
+            <code id="00000000000000000000000000000124" englishName="Work" frenchName="Travail" status="Enabled"/>
+            <code id="00000000000000000000000000000127" englishName="Personal" frenchName="Personnel" status="Enabled"/>
+            <code id="00000000000000000000000000000128" englishName="Temporary" frenchName="Temporaire" status="Enabled"/>
         </table>
         <table id="00000000000000000000000000030000" englishName="Organization Type" frenchName="Type d'organisation" isSystem="false" status="Enabled">
             <code id="00000000000000000000000000000129" englishName="Federal Government" frenchName="Gouvernement fédéral" status="Enabled"/>
-            <code id="00000000000000000000000000000130" englishName="Municipal Government" frenchName="Gouvernement municipal" status="Enabled"/>
+            <code id="00000000000000000000000000000130" englishName="Municipal Government" frenchName="Administration municipale" status="Enabled"/>
             <code id="00000000000000000000000000000131" englishName="Provincial Government" frenchName="Gouvernement provincial" status="Enabled"/>
             <code id="00000000000000000000000000000132" englishName="Territorial Government" frenchName="Gouvernement territorial" status="Enabled"/>
             <code id="00000000000000000000000000000133" englishName="Not for Profit" frenchName="Organisme sans but lucratif" status="Enabled"/>
             <code id="00000000000000000000000000000134" englishName="Private Sector" frenchName="Secteur privé" status="Enabled"/>
-            <code id="00000000000000000000000000000406" englishName="Academic" frenchName="Académique" status="Enabled"/>
+            <code id="00000000000000000000000000000406" englishName="Academic" frenchName="Milieu universitaire" status="Enabled"/>
             <code id="00000000000000000000000000000407" englishName="Health" frenchName="Santé" status="Enabled"/>
             <code id="00000000000000000000000000000408" englishName="Research" frenchName="Recherche" status="Enabled"/>
         </table>
@@ -952,52 +989,52 @@
             <code id="00000000000000000000000000031008" englishName="Australian dollar" frenchName="Dollar australien" status="Enabled"/>
             <code id="00000000000000000000000000031009" englishName="Azerbaijani manat" frenchName="Manat azerbaidjanais" status="Enabled"/>
             <code id="00000000000000000000000000031010" englishName="Bahamian dollar" frenchName="Dollar bahamien" status="Enabled"/>
-            <code id="00000000000000000000000000031011" englishName="Bahraini dinar" frenchName="Dinar bahrëini" status="Enabled"/>
+            <code id="00000000000000000000000000031011" englishName="Bahraini dinar" frenchName="Dinar bahreïni" status="Enabled"/>
             <code id="00000000000000000000000000031012" englishName="Bangladeshi taka" frenchName="Taka bangladeshi" status="Enabled"/>
             <code id="00000000000000000000000000031013" englishName="Barbados dollar" frenchName="Dollar barbadien" status="Enabled"/>
             <code id="00000000000000000000000000031014" englishName="Belarusian ruble" frenchName="Rouble biélorusse" status="Enabled"/>
             <code id="00000000000000000000000000031015" englishName="Belize dollar" frenchName="Dollar bélizien" status="Enabled"/>
             <code id="00000000000000000000000000031016" englishName="Bermudian dollar" frenchName="Dollar bermudien" status="Enabled"/>
             <code id="00000000000000000000000000031017" englishName="Bhutanese ngultrum" frenchName="Ngultrum bhoutanais" status="Enabled"/>
-            <code id="00000000000000000000000000031018" englishName="Boliviano" frenchName="Boliviano bolivien" status="Enabled"/>
-            <code id="00000000000000000000000000031019" englishName="Bosnia and Herzegovina convertible mark" frenchName="Marka bosniaque" status="Enabled"/>
+            <code id="00000000000000000000000000031018" englishName="Boliviano" frenchName="Boliviano" status="Enabled"/>
+            <code id="00000000000000000000000000031019" englishName="Bosnia and Herzegovina convertible mark" frenchName="Mark convertible de Bosnie-Herzégovine" status="Enabled"/>
             <code id="00000000000000000000000000031020" englishName="Botswana pula" frenchName="Pula botswanéen" status="Enabled"/>
-            <code id="00000000000000000000000000031021" englishName="Brazilian real" frenchName="Real brésilien" status="Enabled"/>
+            <code id="00000000000000000000000000031021" englishName="Brazilian real" frenchName="Réal brésilien" status="Enabled"/>
             <code id="00000000000000000000000000031022" englishName="Brunei dollar" frenchName="Dollar brunéin" status="Enabled"/>
             <code id="00000000000000000000000000031023" englishName="Bulgarian lev" frenchName="Lev bulgare" status="Enabled"/>
             <code id="00000000000000000000000000031024" englishName="Burundian franc" frenchName="Franc burundais" status="Enabled"/>
             <code id="00000000000000000000000000031025" englishName="Cambodian riel" frenchName="Rien cambodgien" status="Enabled"/>
             <code id="00000000000000000000000000031026" englishName="Canadian dollar" frenchName="Dollar canadien" code="1" status="Enabled"/>
-            <code id="00000000000000000000000000031027" englishName="Cape Verde escudo" frenchName="Escudo capverdien" status="Enabled"/>
-            <code id="00000000000000000000000000031028" englishName="Cayman Islands dollar" frenchName="Dollar des îles caïmans" status="Enabled"/>
+            <code id="00000000000000000000000000031027" englishName="Cape Verde escudo" frenchName="Escudo cap-verdien" status="Enabled"/>
+            <code id="00000000000000000000000000031028" englishName="Cayman Islands dollar" frenchName="Dollar des îles Caïmans" status="Enabled"/>
             <code id="00000000000000000000000000031029" englishName="Chilean peso" frenchName="Peso chilien" status="Enabled"/>
             <code id="00000000000000000000000000031030" englishName="Chinese yuan" frenchName="Yuan chinois" status="Enabled"/>
             <code id="00000000000000000000000000031031" englishName="Colombian peso" frenchName="Peso colombien" status="Enabled"/>
             <code id="00000000000000000000000000031032" englishName="Comoro franc" frenchName="Franc comorien" status="Enabled"/>
             <code id="00000000000000000000000000031033" englishName="Congolese franc" frenchName="Franc congolais" status="Enabled"/>
             <code id="00000000000000000000000000031034" englishName="Cordoba oro" frenchName="Oro de Cordoba" status="Enabled"/>
-            <code id="00000000000000000000000000031035" englishName="Costa Rican colon" frenchName="Colon costaricain" status="Enabled"/>
+            <code id="00000000000000000000000000031035" englishName="Costa Rican colon" frenchName="Colon costaricien" status="Enabled"/>
             <code id="00000000000000000000000000031036" englishName="Croatian kuna" frenchName="Kuna croate" status="Enabled"/>
             <code id="00000000000000000000000000031037" englishName="Cuban peso" frenchName="Peso cubain" status="Enabled"/>
             <code id="00000000000000000000000000031038" englishName="Czech koruna" frenchName="Couronne tchèque" status="Enabled"/>
             <code id="00000000000000000000000000031039" englishName="Danish krone" frenchName="Couronne danoise" status="Enabled"/>
             <code id="00000000000000000000000000031040" englishName="Djiboutian franc" frenchName="Franc djiboutien" status="Enabled"/>
             <code id="00000000000000000000000000031041" englishName="Dominican peso" frenchName="Peso dominicain" status="Enabled"/>
-            <code id="00000000000000000000000000031042" englishName="East Caribbean dollar" frenchName="Dollar des caraïbes" status="Enabled"/>
+            <code id="00000000000000000000000000031042" englishName="East Caribbean dollar" frenchName="Dollar des Caraïbes orientales" status="Enabled"/>
             <code id="00000000000000000000000000031043" englishName="Egyptian pound" frenchName="Livre égyptienne" status="Enabled"/>
             <code id="00000000000000000000000000031044" englishName="Eritrean nakfa" frenchName="Nafka erythréen" status="Enabled"/>
             <code id="00000000000000000000000000031045" englishName="Ethiopian birr" frenchName="Birr éthiopien" status="Enabled"/>
             <code id="00000000000000000000000000031046" englishName="Euro" frenchName="Euro" status="Enabled"/>
-            <code id="00000000000000000000000000031047" englishName="Falkland Islands pound" frenchName="Livre des îles malouines" status="Enabled"/>
+            <code id="00000000000000000000000000031047" englishName="Falkland Islands pound" frenchName="Livre des îles Malouines" status="Enabled"/>
             <code id="00000000000000000000000000031048" englishName="Fiji dollar" frenchName="Dollar fidjien" status="Enabled"/>
             <code id="00000000000000000000000000031049" englishName="Gambian dalasi" frenchName="Dalasi gambien" status="Enabled"/>
-            <code id="00000000000000000000000000031050" englishName="Georgian lari" frenchName="Lari georgien" status="Enabled"/>
+            <code id="00000000000000000000000000031050" englishName="Georgian lari" frenchName="Lari géorgien" status="Enabled"/>
             <code id="00000000000000000000000000031051" englishName="Ghanaian cedi" frenchName="Cedi ghanéen" status="Enabled"/>
             <code id="00000000000000000000000000031052" englishName="Gibraltar pound" frenchName="Livre de gibraltar" status="Enabled"/>
             <code id="00000000000000000000000000031053" englishName="Guatemalan quetzal" frenchName="Quetzal guatémaltèque" status="Enabled"/>
             <code id="00000000000000000000000000031054" englishName="Guinean franc" frenchName="Franc guinéen" status="Enabled"/>
             <code id="00000000000000000000000000031055" englishName="Guyanese dollar" frenchName="Dollar guyannais" status="Enabled"/>
-            <code id="00000000000000000000000000031056" englishName="Haitian gourde" frenchName="Gourde haïtien" status="Enabled"/>
+            <code id="00000000000000000000000000031056" englishName="Haitian gourde" frenchName="Gourde haïtienne" status="Enabled"/>
             <code id="00000000000000000000000000031057" englishName="Honduran lempira" frenchName="Lempira hondurien" status="Enabled"/>
             <code id="00000000000000000000000000031058" englishName="Hong Kong dollar" frenchName="Dollar hongkongais" status="Enabled"/>
             <code id="00000000000000000000000000031059" englishName="Hungarian forint" frenchName="Forint hongrois" status="Enabled"/>
@@ -1007,25 +1044,25 @@
             <code id="00000000000000000000000000031063" englishName="Iranian rial" frenchName="Rial iranien" status="Enabled"/>
             <code id="00000000000000000000000000031064" englishName="Iraqi dinar" frenchName="Dinar irakien" status="Enabled"/>
             <code id="00000000000000000000000000031065" englishName="Israeli new sheqel" frenchName="Nouveau shekel israélien" status="Enabled"/>
-            <code id="00000000000000000000000000031066" englishName="Jamaican dollar" frenchName="Dollar jamaicain" status="Enabled"/>
+            <code id="00000000000000000000000000031066" englishName="Jamaican dollar" frenchName="Gourde haïtienne" status="Enabled"/>
             <code id="00000000000000000000000000031067" englishName="Japanese yen" frenchName="Yen japonais" status="Enabled"/>
             <code id="00000000000000000000000000031068" englishName="Jordanian dinar" frenchName="Dinar jordanien" status="Enabled"/>
             <code id="00000000000000000000000000031069" englishName="Kazakhstani tenge" frenchName="Tenge kazakh" status="Enabled"/>
-            <code id="00000000000000000000000000031070" englishName="Kenyan shilling" frenchName="Shilling kenian" status="Enabled"/>
-            <code id="00000000000000000000000000031071" englishName="Kuwaiti dinar" frenchName="Dinar koweitien" status="Enabled"/>
+            <code id="00000000000000000000000000031070" englishName="Kenyan shilling" frenchName="Shilling kényan" status="Enabled"/>
+            <code id="00000000000000000000000000031071" englishName="Kuwaiti dinar" frenchName="Dinar koweïtien" status="Enabled"/>
             <code id="00000000000000000000000000031072" englishName="Kyrgyzstani som" frenchName="Som kirghiz" status="Enabled"/>
             <code id="00000000000000000000000000031073" englishName="Lao kip" frenchName="Kip laotien" status="Enabled"/>
             <code id="00000000000000000000000000031074" englishName="Latvian lats" frenchName="Lats letton" status="Enabled"/>
             <code id="00000000000000000000000000031075" englishName="Lebanese pound" frenchName="Livre libanaise" status="Enabled"/>
-            <code id="00000000000000000000000000031076" englishName="Lesotho loti" frenchName="Loti lésothan" status="Enabled"/>
+            <code id="00000000000000000000000000031076" englishName="Lesotho loti" frenchName="Loti du Lesotho" status="Enabled"/>
             <code id="00000000000000000000000000031077" englishName="Liberian dollar" frenchName="Dollar libérien" status="Enabled"/>
             <code id="00000000000000000000000000031078" englishName="Libyan dinar" frenchName="Dinar libyen" status="Enabled"/>
             <code id="00000000000000000000000000031079" englishName="Lilangeni" frenchName="Lilangeni" status="Enabled"/>
             <code id="00000000000000000000000000031080" englishName="Lithuanian litas" frenchName="Litas lituanien" status="Enabled"/>
-            <code id="00000000000000000000000000031081" englishName="Macanese pataca" frenchName="Pataca de macao" status="Enabled"/>
+            <code id="00000000000000000000000000031081" englishName="Macanese pataca" frenchName="Pataca de Macao" status="Enabled"/>
             <code id="00000000000000000000000000031082" englishName="Macedonian denar" frenchName="Denar macédonien" status="Enabled"/>
             <code id="00000000000000000000000000031083" englishName="Malagasy ariary" frenchName="Ariary malgache" status="Enabled"/>
-            <code id="00000000000000000000000000031084" englishName="Malawian kwacha" frenchName="Kwacha malawite" status="Enabled"/>
+            <code id="00000000000000000000000000031084" englishName="Malawian kwacha" frenchName="Kwacha malawien" status="Enabled"/>
             <code id="00000000000000000000000000031085" englishName="Malaysian ringgit" frenchName="Ringgit malaisien" status="Enabled"/>
             <code id="00000000000000000000000000031086" englishName="Maldivian rufiyaa" frenchName="Rufiyaa maldivien" status="Enabled"/>
             <code id="00000000000000000000000000031087" englishName="Mauritanian ouguiya" frenchName="Ouguiya mauritanien" status="Enabled"/>
@@ -1038,34 +1075,34 @@
             <code id="00000000000000000000000000031094" englishName="Myanma kyat" frenchName="Kyat birman" status="Enabled"/>
             <code id="00000000000000000000000000031095" englishName="Namibian dollar" frenchName="Dollar namibien" status="Enabled"/>
             <code id="00000000000000000000000000031096" englishName="Nepalese rupee" frenchName="Roupie népalaise" status="Enabled"/>
-            <code id="00000000000000000000000000031097" englishName="Netherlands Antillean guilder" frenchName="Florin des antilles néerlandaises" status="Enabled"/>
-            <code id="00000000000000000000000000031098" englishName="New Taiwan dollar" frenchName="Nouveau dollar de taïwan" status="Enabled"/>
+            <code id="00000000000000000000000000031097" englishName="Netherlands Antillean guilder" frenchName="Florin des Antilles néerlandaises" status="Enabled"/>
+            <code id="00000000000000000000000000031098" englishName="New Taiwan dollar" frenchName="Nouveau dollar de Taïwan" status="Enabled"/>
             <code id="00000000000000000000000000031099" englishName="New Zealand dollar" frenchName="Dollar néo-zélandais" status="Enabled"/>
-            <code id="00000000000000000000000000031100" englishName="Nigerian naira" frenchName="Naira nigérien" status="Enabled"/>
+            <code id="00000000000000000000000000031100" englishName="Nigerian naira" frenchName="Naira nigérian" status="Enabled"/>
             <code id="00000000000000000000000000031101" englishName="North Korean won" frenchName="Won nord-coréen" status="Enabled"/>
             <code id="00000000000000000000000000031102" englishName="Norwegian krone" frenchName="Couronne norvégienne" status="Enabled"/>
             <code id="00000000000000000000000000031103" englishName="Omani rial" frenchName="Rial omanais" status="Enabled"/>
             <code id="00000000000000000000000000031104" englishName="Pakistani rupee" frenchName="Roupie pakistanaise" status="Enabled"/>
             <code id="00000000000000000000000000031105" englishName="Panamanian balboa" frenchName="Balboa panaméen" status="Enabled"/>
-            <code id="00000000000000000000000000031106" englishName="Papua New Guinean kina" frenchName="Kina papouan" status="Enabled"/>
+            <code id="00000000000000000000000000031106" englishName="Papua New Guinean kina" frenchName="Kina papouan-néo-guinéen" status="Enabled"/>
             <code id="00000000000000000000000000031107" englishName="Paraguayan guaraní" frenchName="Guarani paraguayen" status="Enabled"/>
-            <code id="00000000000000000000000000031108" englishName="Peruvian nuevo sol" frenchName="Nuevo sol péruvien" status="Enabled"/>
+            <code id="00000000000000000000000000031108" englishName="Peruvian sol" frenchName="Sol péruvien" status="Enabled"/>
             <code id="00000000000000000000000000031109" englishName="Philippine peso" frenchName="Peso philippin" status="Enabled"/>
-            <code id="00000000000000000000000000031110" englishName="Polish z?oty" frenchName="Zloty polonais" status="Enabled"/>
+            <code id="00000000000000000000000000031110" englishName="Polish zloty" frenchName="Zloty polonais" status="Enabled"/>
             <code id="00000000000000000000000000031111" englishName="Pound sterling" frenchName="Livre sterling" status="Enabled"/>
             <code id="00000000000000000000000000031112" englishName="Qatari rial" frenchName="Rial quatarien" status="Enabled"/>
-            <code id="00000000000000000000000000031113" englishName="Romanian new leu" frenchName="Leu roumain" status="Enabled"/>
+            <code id="00000000000000000000000000031113" englishName="Romanian leu" frenchName="Leu roumain" status="Enabled"/>
             <code id="00000000000000000000000000031114" englishName="Russian rouble" frenchName="Rouble russe" status="Enabled"/>
             <code id="00000000000000000000000000031115" englishName="Rwandan franc" frenchName="Franc rwandais" status="Enabled"/>
-            <code id="00000000000000000000000000031116" englishName="Saint Helena pound" frenchName="Livre de saint-hélène" status="Enabled"/>
+            <code id="00000000000000000000000000031116" englishName="Saint Helena pound" frenchName="Livre de Saint-Hélène" status="Enabled"/>
             <code id="00000000000000000000000000031117" englishName="Samoan tala" frenchName="Tala samoan" status="Enabled"/>
-            <code id="00000000000000000000000000031118" englishName="São Tomé and Príncipe dobra" frenchName="Dobra santoméen" status="Enabled"/>
+            <code id="00000000000000000000000000031118" englishName="São Tomé and Príncipe dobra" frenchName="Dobra de Sao Tomé-et-Principe" status="Enabled"/>
             <code id="00000000000000000000000000031119" englishName="Saudi riyal" frenchName="Riyal saoudien" status="Enabled"/>
             <code id="00000000000000000000000000031120" englishName="Serbian dinar" frenchName="Dinar serbe" status="Enabled"/>
             <code id="00000000000000000000000000031121" englishName="Seychelles rupee" frenchName="Roupie seychelloise" status="Enabled"/>
             <code id="00000000000000000000000000031122" englishName="Sierra Leonean leone" frenchName="Leone sierra-léonais" status="Enabled"/>
             <code id="00000000000000000000000000031123" englishName="Singapore dollar" frenchName="Dollar singapourien" status="Enabled"/>
-            <code id="00000000000000000000000000031124" englishName="Solomon Islands dollar" frenchName="Dollar des îles solomon" status="Enabled"/>
+            <code id="00000000000000000000000000031124" englishName="Solomon Islands dollar" frenchName="Dollar des îles Salomon" status="Enabled"/>
             <code id="00000000000000000000000000031125" englishName="Somali shilling" frenchName="Shilling somalien" status="Enabled"/>
             <code id="00000000000000000000000000031126" englishName="South African rand" frenchName="Rand sud-africain" status="Enabled"/>
             <code id="00000000000000000000000000031127" englishName="South Korean won" frenchName="Won sud-coréen" status="Enabled"/>
@@ -1077,20 +1114,20 @@
             <code id="00000000000000000000000000031133" englishName="Syrian pound" frenchName="Livre syrienne" status="Enabled"/>
             <code id="00000000000000000000000000031134" englishName="Tajikistani somoni" frenchName="Somoni tadjik" status="Enabled"/>
             <code id="00000000000000000000000000031135" englishName="Tanzanian shilling" frenchName="Shilling tanzanien" status="Enabled"/>
-            <code id="00000000000000000000000000031136" englishName="Thai baht" frenchName="Baht thailandais" status="Enabled"/>
-            <code id="00000000000000000000000000031137" englishName="Tongan pa'anga" frenchName="Pa'anga tonguien" status="Enabled"/>
-            <code id="00000000000000000000000000031138" englishName="Trinidad and Tobago dollar" frenchName="Dollar trinidadien" status="Enabled"/>
+            <code id="00000000000000000000000000031136" englishName="Thai baht" frenchName="Baht thaïlandais" status="Enabled"/>
+            <code id="00000000000000000000000000031137" englishName="Tongan pa'anga" frenchName="Pa’anga de Tonga" status="Enabled"/>
+            <code id="00000000000000000000000000031138" englishName="Trinidad and Tobago dollar" frenchName="Dollar de Trinité-et-Tobago" status="Enabled"/>
             <code id="00000000000000000000000000031139" englishName="Tunisian dinar" frenchName="Dinar tunisien" status="Enabled"/>
             <code id="00000000000000000000000000031140" englishName="Turkish lira" frenchName="Livre turque" status="Enabled"/>
             <code id="00000000000000000000000000031141" englishName="Turkmenistani manat" frenchName="Manat turkmène" status="Enabled"/>
-            <code id="00000000000000000000000000031142" englishName="Ugandan shilling" frenchName="Shilling Ougandais" status="Enabled"/>
+            <code id="00000000000000000000000000031142" englishName="Ugandan shilling" frenchName="Shilling ougandais" status="Enabled"/>
             <code id="00000000000000000000000000031143" englishName="Ukrainian hryvnia" frenchName="Hryvnia ukrainienne" status="Enabled"/>
-            <code id="00000000000000000000000000031144" englishName="United Arab Emirates dirham" frenchName="Dirham des émirats arabes unis" status="Enabled"/>
+            <code id="00000000000000000000000000031144" englishName="United Arab Emirates dirham" frenchName="Dirham des Émirats arabes unis" status="Enabled"/>
             <code id="00000000000000000000000000031145" englishName="United States dollar" frenchName="Dollar américain" code="2" status="Enabled"/>
             <code id="00000000000000000000000000031146" englishName="Uruguayan peso" frenchName="Peso uruguayen" status="Enabled"/>
             <code id="00000000000000000000000000031147" englishName="Uzbekistan som" frenchName="Soum ouzbek" status="Enabled"/>
             <code id="00000000000000000000000000031148" englishName="Vanuatu vatu" frenchName="Vatu vanuatuan" status="Enabled"/>
-            <code id="00000000000000000000000000031149" englishName="Venezuelan bolivar fuerte" frenchName="Bolivar fuerte vénézuélien" status="Enabled"/>
+            <code id="00000000000000000000000000031149" englishName="Venezuelan bolivar soberano" frenchName="Bolivar souverain vénézuélien" status="Enabled"/>
             <code id="00000000000000000000000000031150" englishName="Vietnamese dong" frenchName="Dong vietnamien" status="Enabled"/>
             <code id="00000000000000000000000000031151" englishName="Yemeni rial" frenchName="Rial yéméni" status="Enabled"/>
             <code id="00000000000000000000000000031152" englishName="Zambian kwacha" frenchName="Kwacha zambien" status="Enabled"/>
@@ -1105,7 +1142,7 @@
             <code id="00000000000000000000000000000210" englishName="Laboratory" frenchName="Laboratoire" status="Enabled"/>
             <code id="00000000000000000000000000000211" englishName="Temporary" frenchName="Temporaire" status="Enabled"/>
         </table>
-        <table id="00000000000000000000000000048000" englishName="Academic Position Type" frenchName="Type de position académique" isSystem="false" status="Enabled">
+        <table id="00000000000000000000000000048000" englishName="Academic Position Type" frenchName="Type de poste universitaire" isSystem="false" status="Enabled">
             <code id="00000000000000000000000000000213" englishName="Consultation" frenchName="Consultation" status="Enabled"/>
             <code id="00000000000000000000000000000214" englishName="Sessional" frenchName="Chargé de cours" status="Enabled"/>
             <code id="00000000000000000000000000000215" englishName="Term" frenchName="Période déterminée" status="Enabled"/>
@@ -1113,9 +1150,11 @@
             <code id="00000000000000000000000000000217" englishName="Visiting Professorship" frenchName="Professeur invité" status="Enabled"/>
         </table>
         <table id="00000000000000000000000000062000" englishName="Sex" frenchName="Sexe" isSystem="false" status="Enabled">
-            <code id="00000000000000000000000000000282" englishName="Male" frenchName="Homme" status="Enabled"/>
-            <code id="00000000000000000000000000000283" englishName="Female" frenchName="Femme" status="Enabled"/>
-            <code id="00000000000000000000000000000284" englishName="No Response" frenchName="Pas de réponse" status="Enabled"/>
+            <code id="00000000000000000000000000000282" englishName="Male" frenchName="Homme" code="1" status="Enabled"/>
+            <code id="00000000000000000000000000000283" englishName="Female" frenchName="Femme" code="2" status="Enabled"/>
+            <code id="00000000000000000000000000000284" englishName="No Response" frenchName="Pas de réponse" code="3" status="Enabled"/>
+            <code id="00000000000000000000000000000285" englishName="Prefer not to answer" frenchName="Préfère ne pas répondre" code="4" status="Enabled"/>
+            <code id="00000000000000000000000000000286" englishName="None of the above" frenchName="Aucune de ces réponses" code="5" status="Enabled"/>
         </table>
         <table id="00000000000000000000000000067000" englishName="Website Type" frenchName="Type de site Web" isSystem="false" status="Enabled">
             <code id="00000000000000000000000000000302" englishName="Corporate" frenchName="Site d’entreprise" status="Enabled"/>
@@ -4862,7 +4901,7 @@
             <code id="00000000000000000000000014003758" englishName="Centre de Recherche de Valcartier" frenchName="Centre de Recherche de Valcartier" status="Enabled"/>
             <code id="00000000000000000000000014003759" englishName="Centre de Recherche des Cantons de l'Est" frenchName="Centre de Recherche des Cantons de l'Est" status="Enabled"/>
             <code id="00000000000000000000000014003760" englishName="Centre de Recherche Diagnostic Médical Informatisé Inc (Mtl, QC)" frenchName="Centre de Recherche Diagnostic Médical Informatisé Inc (Mtl, QC)" status="Enabled"/>
-            <code id="00000000000000000000000014003761" englishName="Centre de recherche du centre hospitalier de l'université de Montréal (CRCHUM)" frenchName="Centre de recherche du centre hospitalier de l'université de Montréal (CRCHUM)" status="Enabled"/>
+            <code id="00000000000000000000000014003761" englishName="Centre de recherche du Centre hospitalier de l'Université de Montréal (CRCHUM)" frenchName="Centre de recherche du Centre hospitalier de l'Université de Montréal (CRCHUM)" status="Enabled"/>
             <code id="00000000000000000000000014003762" englishName="Centre de Recherche du Centre Hospitalier de l'Université de Sherbrooke Inc. (CRCHUS) (Sherbrooke, QC)" frenchName="Centre de Recherche du Centre Hospitalier de l'Université de Sherbrooke Inc. (CRCHUS) (Sherbrooke, QC)" status="Enabled"/>
             <code id="00000000000000000000000014003763" englishName="Centre de Recherche du CHAUQ" frenchName="Centre de Recherche du CHAUQ" status="Enabled"/>
             <code id="00000000000000000000000014003764" englishName="Centre de Recherche du CHU Sainte-Justine" frenchName="Centre de Recherche du CHU Sainte-Justine" status="Enabled"/>
@@ -8468,7 +8507,7 @@
             <code id="00000000000000000000000014007374" englishName="Fonds Gérard-Dion" frenchName="Fonds Gérard-Dion" status="Enabled"/>
             <code id="00000000000000000000000014007375" englishName="Fonds Gustave-Gingras" frenchName="Fonds Gustave-Gingras" status="Enabled"/>
             <code id="00000000000000000000000014007376" englishName="Fonds Hormones et Cancer" frenchName="Fonds Hormones et Cancer" status="Enabled"/>
-            <code id="00000000000000000000000014007377" englishName="Fonds Institutionel de Recherche de l'Université de Sherbrooke" frenchName="Fonds Institutionel de Recherche de l'Université de Sherbrooke" status="Enabled"/>
+            <code id="00000000000000000000000014007377" englishName="Fonds Institutionnel de Recherche de l'Université de Sherbrooke" frenchName="Fonds Institutionnel de Recherche de l'Université de Sherbrooke" status="Enabled"/>
             <code id="00000000000000000000000014007378" englishName="Fonds Institutionnel de Recherche" frenchName="Fonds Institutionnel de Recherche" status="Enabled"/>
             <code id="00000000000000000000000014007379" englishName="Fonds Institutionnel de Recherche À l'Université du Québec À Chicoutimi" frenchName="Fonds Institutionnel de Recherche À l'Université du Québec À Chicoutimi" status="Enabled"/>
             <code id="00000000000000000000000014007380" englishName="Fonds Institutionnel de Recherche de l'Univ du Québec" frenchName="Fonds Institutionnel de Recherche de l'Univ du Québec" status="Enabled"/>
@@ -11728,7 +11767,7 @@
             <code id="00000000000000000000000014010645" englishName="LMS Labor Medical Systems Ltd" frenchName="LMS Labor Medical Systems Ltd" status="Enabled"/>
             <code id="00000000000000000000000014010646" englishName="Local Employment Centres" frenchName="Centres Locaux d'Emploi" status="Enabled"/>
             <code id="00000000000000000000000014010647" englishName="Localmed" frenchName="Localmed" status="Enabled"/>
-            <code id="00000000000000000000000014010648" englishName="Locked Martin Canada Inc." frenchName="Locked Martin Canada Inc." status="Enabled"/>
+            <code id="00000000000000000000000014010648" englishName="Lockheed Martin Canada Inc." frenchName="Lockheed Martin Canada Inc." status="Enabled"/>
             <code id="00000000000000000000000014010649" englishName="Lockheed Martin Electronic Systems Canada (LMESC) (Mtl, QC)" frenchName="Lockheed Martin Electronic Systems Canada (LMESC) (Mtl, QC)" status="Enabled"/>
             <code id="00000000000000000000000014010650" englishName="Lockheed Martin Electronic Systems Canada (Loral Canada) (Unisys GSG Canada Inc)" frenchName="Lockheed Martin Electronic Systems Canada (Loral Canada) (Unisys GSG Canada Inc)" status="Enabled"/>
             <code id="00000000000000000000000014010651" englishName="Lockheed Martin Technology Services Group" frenchName="Lockheed Martin Technology Services Group" status="Enabled"/>
@@ -11977,7 +12016,7 @@
             <code id="00000000000000000000000014010898" englishName="Manitoba Hog Producers" frenchName="Manitoba Hog Producers" status="Enabled"/>
             <code id="00000000000000000000000014010899" englishName="Manitoba Hydro (Winnipeg, MB)" frenchName="Manitoba Hydro (Winnipeg, MB)" status="Enabled"/>
             <code id="00000000000000000000000014010900" englishName="Manitoba Institute for Patient Safety" frenchName="Manitoba Institute for Patient Safety" status="Enabled"/>
-            <code id="00000000000000000000000014010901" englishName="Manitoba Institute of Child Health (The)" frenchName="Manitoba Institute of Child Health (The)" status="Enabled"/>
+            <code id="00000000000000000000000014010901" englishName="Children’s Hospital Research Institute of Manitoba" frenchName="Children’s Hospital Research Institute of Manitoba" status="Enabled"/>
             <code id="00000000000000000000000014010902" englishName="Manitoba Lung Association" frenchName="Manitoba Lung Association" status="Enabled"/>
             <code id="00000000000000000000000014010903" englishName="Manitoba Medical Service Foundation (MMSF)" frenchName="Manitoba Medical Service Foundation (MMSF)" status="Enabled"/>
             <code id="00000000000000000000000014010904" englishName="Manitoba Medical Services Foundation" frenchName="Manitoba Medical Services Foundation" status="Enabled"/>
@@ -12919,7 +12958,7 @@
             <code id="00000000000000000000000014011848" englishName="Mount Saint Vincent University (MSVU)" frenchName="Mount Saint Vincent University (MSVU)" status="Enabled"/>
             <code id="00000000000000000000000014011849" englishName="Mount Sinai Hospital" frenchName="Hôpital Mount Sinai" status="Enabled"/>
             <code id="00000000000000000000000014011850" englishName="Mount Sinai Hospital Foundation" frenchName="Fondation de l'Hôpital Mont-Sinaï" status="Enabled"/>
-            <code id="00000000000000000000000014011851" englishName="Mount Sinai School" frenchName="Mount Sinai School" status="Enabled"/>
+            <code id="00000000000000000000000014011851" englishName="Mount Sinai School of Medicine" frenchName="Mount Sinai School of Medicine" status="Enabled"/>
             <code id="00000000000000000000000014011852" englishName="Mount St-Hiilire Sugar Refinery" frenchName="Sucrerie Mont St-Hilaire" status="Enabled"/>
             <code id="00000000000000000000000014011853" englishName="Mount Waddington Innovation Centre Society" frenchName="Mount Waddington Innovation Centre Society" status="Enabled"/>
             <code id="00000000000000000000000014011854" englishName="Mountain Equipment Co-op" frenchName="Mountain Equipment Co-op" status="Enabled"/>
@@ -15065,7 +15104,7 @@
             <code id="00000000000000000000000014014016" englishName="Psygene Biotech Inc." frenchName="Psygene Biotech Inc." status="Enabled"/>
             <code id="00000000000000000000000014014017" englishName="PTC Therapeutics Inc." frenchName="PTC Therapeutics Inc." status="Enabled"/>
             <code id="00000000000000000000000014014018" englishName="Public Guardian and Trustee of British Columbia (PGT)" frenchName="Public Guardian and Trustee of British Columbia (PGT)" status="Enabled"/>
-            <code id="00000000000000000000000014014019" englishName="Public Health Agency of Canada (PHAC" frenchName="Agence de santé publique du Canada (ASPC)" status="Enabled"/>
+            <code id="00000000000000000000000014014019" englishName="Public Health Agency of Canada (PHAC)" frenchName="Agence de santé publique du Canada (ASPC)" status="Enabled"/>
             <code id="00000000000000000000000014014020" englishName="Public Health Department of Cree Board of Health and Social Services of James Bay (CBHSSJB) (Qc)" frenchName="Public Health Department of Cree Board of Health and Social Services of James Bay (CBHSSJB) (Qc)" status="Enabled"/>
             <code id="00000000000000000000000014014021" englishName="Public Health Institute" frenchName="Public Health Institute" status="Enabled"/>
             <code id="00000000000000000000000014014022" englishName="Public Health Services in GASHA &amp; CBDHA (Nova Scotia)" frenchName="Public Health Services in GASHA &amp; CBDHA (Nova Scotia)" status="Enabled"/>
@@ -15831,8 +15870,8 @@
             <code id="00000000000000000000000014014785" englishName="Rx Canada" frenchName="Rx Canada" status="Enabled"/>
             <code id="00000000000000000000000014014786" englishName="Rx&amp;D Health Research Foundation" frenchName="Fondation pour la recherche en santé de Rx&amp;D" status="Enabled"/>
             <code id="00000000000000000000000014014787" englishName="RxFoundation" frenchName="RxFoundation" status="Enabled"/>
-            <code id="00000000000000000000000014014788" englishName="Ryerson University (Ontario)" frenchName="Ryerson University (Ontario)" status="Enabled"/>
-            <code id="00000000000000000000000014014789" englishName="Ryerson University (Toronto, ON)" frenchName="Ryerson University (Toronto, ON)" status="Enabled"/>
+            <code id="00000000000000000000000014014788" englishName="Toronto Metropolitan University (Ontario)" frenchName="Toronto Metropolitan University (Ontario)" status="Enabled"/>
+            <code id="00000000000000000000000014014789" englishName="Toronto Metropolitan University (Toronto, ON)" frenchName="Toronto Metropolitan University (Toronto, ON)" status="Enabled"/>
             <code id="00000000000000000000000014014790" englishName="S*BIO" frenchName="S*BIO" status="Enabled"/>
             <code id="00000000000000000000000014014791" englishName="S. Bronfman Foundation" frenchName="Fondation S. Bronfman" status="Enabled"/>
             <code id="00000000000000000000000014014792" englishName="S. Karger AG" frenchName="S. Karger AG" status="Enabled"/>
@@ -19629,6 +19668,7 @@
             <code id="399be64fe65240b1b32c2c91eb34dfae" englishName="Caisse Desjardins Des Rivières de Québec" frenchName="Caisse Desjardins Des Rivières de Québec" status="Enabled"/>
             <code id="39a53bba85f248cb8cd8b594adf28137" englishName="United States Agency for International Development (The) (USAID)" frenchName="United States Agency for International Development (The) (USAID)" status="Enabled"/>
             <code id="39c1cc2e2f0a4d25be7612dc23367d03" englishName="Auschwitz Foundation" frenchName="Fondation Auschwitz" status="Enabled"/>
+            <code id="39c98ed0df734cebb672eb6abbe97766" englishName="TESTPublic Health Agency of Canada (PHAC)" frenchName="TESTAgence de santé publique du Canada (ASPC)" status="Disabled"/>
             <code id="3a0983b65af644b796dd7a04942796bf" englishName="INC Research" frenchName="INC Research" status="Enabled"/>
             <code id="3a0dfd1087624580935c3bdf748c8cf2" englishName="Kharkiv Regional State Administration" frenchName="Kharkiv Regional State Administration" status="Enabled"/>
             <code id="3a1c575e680e43028b55c32b934596f0" englishName="Rosemere Cancer Foundation (UK)" frenchName="Rosemere Cancer Foundation (UK)" status="Enabled"/>
@@ -21184,14 +21224,14 @@
             <code id="00000000000000000000000000000012" englishName="Mailing" frenchName="Postale" status="Enabled"/>
             <code id="00000000000000000000000000000013" englishName="Temporary" frenchName="Temporaire" status="Enabled"/>
         </table>
-        <table id="00000000000000000000000000999000" englishName="Canadian Residency Status" frenchName="Statut de résidence canadienne" isSystem="false" status="Enabled">
+        <table id="00000000000000000000000000999000" englishName="Canadian Residency Status" frenchName="Statut au Canada" isSystem="false" status="Enabled">
             <code id="00000000000000000000000000000034" englishName="Canadian Citizen" frenchName="Citoyen canadien" status="Enabled"/>
             <code id="00000000000000000000000000000035" englishName="Permanent Resident" frenchName="Résident permanent" status="Enabled"/>
             <code id="00000000000000000000000000000037" englishName="Student Work Permit" frenchName="Permis de travail étudiant" status="Enabled"/>
             <code id="00000000000000000000000000000038" englishName="Work Permit" frenchName="Permis de travail" status="Enabled"/>
             <code id="00000000000000000000000000000039" englishName="Visitor Visa" frenchName="Visa de visiteur" status="Enabled"/>
             <code id="00000000000000000000000000000040" englishName="Study Permit" frenchName="Permis d'études" status="Enabled"/>
-            <code id="00000000000000000000000000000041" englishName="Refugee" frenchName="Réfugiés" status="Enabled"/>
+            <code id="00000000000000000000000000000041" englishName="Refugee" frenchName="Réfugié" status="Enabled"/>
             <code id="cc2c33b3a66e4fa4835279d5d8a14631" englishName="Not Applicable" frenchName="Sans objet" status="Enabled"/>
         </table>
         <table id="00000000000000000000000001000000" englishName="System Yes-No" frenchName="Oui-Non Système" isSystem="true" status="Enabled">
@@ -21223,15 +21263,15 @@
         </table>
         <table id="00000000000000000000000100000400" englishName="Course Level" frenchName="Niveau du cours" isSystem="false" status="Enabled">
             <code id="00000000000000000000000100000400" englishName="Undergraduate" frenchName="Premier cycle" status="Enabled"/>
-            <code id="00000000000000000000000100000401" englishName="Graduate" frenchName="Deuxième cycle" status="Enabled"/>
+            <code id="00000000000000000000000100000401" englishName="Graduate" frenchName="Cycles supérieurs" status="Enabled"/>
             <code id="00000000000000000000000100000402" englishName="College" frenchName="Collège" status="Enabled"/>
-            <code id="00000000000000000000000100000403" englishName="Post Graduate" frenchName="Niveau supérieur" status="Enabled"/>
+            <code id="00000000000000000000000100000403" englishName="Post Graduate" frenchName="Postdoctorat" status="Enabled"/>
         </table>
-        <table id="00000000000000000000000100000500" englishName="Disclosure Status" frenchName="Statut divulgation" isSystem="false" status="Enabled">
+        <table id="00000000000000000000000100000500" englishName="Disclosure Status" frenchName="Divulgation" isSystem="false" status="Enabled">
             <code id="00000000000000000000000100000500" englishName="Disclosed" frenchName="Renseignements divulgués" status="Enabled"/>
-            <code id="00000000000000000000000100000501" englishName="Protected" frenchName="Divulgation protégée" status="Enabled"/>
+            <code id="00000000000000000000000100000501" englishName="Protected" frenchName="Renseignements protégés" status="Enabled"/>
         </table>
-        <table id="00000000000000000000000100000700" englishName="Event Type" frenchName="Type d'événement" isSystem="false" status="Enabled">
+        <table id="00000000000000000000000100000700" englishName="Event Type" frenchName="Type d’activité" isSystem="false" status="Enabled">
             <code id="00000000000000000000000100000700" englishName="Conference" frenchName="Conférence" status="Enabled"/>
             <code id="00000000000000000000000100000701" englishName="Course" frenchName="Cours" status="Enabled"/>
             <code id="00000000000000000000000100000702" englishName="Seminar" frenchName="Séminaire" status="Enabled"/>
@@ -21243,7 +21283,7 @@
             <code id="00000000000000000000000100000800" englishName="Awarded" frenchName="Obtenu" status="Enabled"/>
             <code id="00000000000000000000000100000801" englishName="Under Review" frenchName="En cours d’évaluation" status="Enabled"/>
             <code id="00000000000000000000000100000802" englishName="Completed" frenchName="Terminé" status="Enabled"/>
-            <code id="f5a135b1fba64d60a99da01668d900e5" englishName="Declined" frenchName="Décliné" status="Enabled"/>
+            <code id="f5a135b1fba64d60a99da01668d900e5" englishName="Declined" frenchName="Refusé" status="Enabled"/>
         </table>
         <table id="00000000000000000000000100000900" englishName="Funding Type" frenchName="Type de financement" isSystem="false" status="Enabled">
             <code id="00000000000000000000000100000900" englishName="Grant" frenchName="Subvention" status="Enabled"/>
@@ -21256,36 +21296,36 @@
             <code id="00000000000000000000000100001000" englishName="Equipment" frenchName="Équipement" status="Enabled"/>
             <code id="00000000000000000000000100001001" englishName="Operating" frenchName="Fonctionnement" status="Enabled"/>
             <code id="00000000000000000000000100001002" englishName="Establishment" frenchName="Démarrage" status="Enabled"/>
-            <code id="00000000000000000000000100001003" englishName="Infrastructure" frenchName="Infrastructures" status="Enabled"/>
-            <code id="00000000000000000000000100001004" englishName="Workshop" frenchName="Ateliers" status="Enabled"/>
+            <code id="00000000000000000000000100001003" englishName="Infrastructure" frenchName="Infrastructure" status="Enabled"/>
+            <code id="00000000000000000000000100001004" englishName="Workshop" frenchName="Atelier" status="Enabled"/>
         </table>
         <table id="00000000000000000000000100001100" englishName="Knowledge Translation Type" frenchName="Type transfert de connaissance" isSystem="false" status="Enabled">
             <code id="00000000000000000000000100001100" englishName="Consultation Service" frenchName="Service de consultation" status="Enabled"/>
-            <code id="00000000000000000000000100001101" englishName="Citizen Engagement" frenchName="Engagement des citoyens" status="Enabled"/>
-            <code id="00000000000000000000000100001102" englishName="Community Engagement" frenchName="Engagement communautaire" status="Enabled"/>
+            <code id="00000000000000000000000100001101" englishName="Citizen Engagement" frenchName="Mobilisation des citoyens" status="Enabled"/>
+            <code id="00000000000000000000000100001102" englishName="Community Engagement" frenchName="Mobilisation du milieu" status="Enabled"/>
             <code id="00000000000000000000000100001103" englishName="Research Uptake Strategies" frenchName="Stratégies sur l’utilisation de la recherche" status="Enabled"/>
             <code id="222fe7b7a3474e9a979a2b2e54f4f02f" englishName="Standards Development" frenchName="Élaboration de normes" status="Enabled"/>
-            <code id="3c0e55cf841f400e955b4c2146e40216" englishName="Technology, Product, Process, Service Improvement/Development" frenchName="Amélioration ou développement d'une technologie, d'un produit, d'un procédé ou d'un service" status="Enabled"/>
+            <code id="3c0e55cf841f400e955b4c2146e40216" englishName="Technology, Product, Process, Service Improvement/Development" frenchName="Mise au point d’une technologie, d’un produit, d’un procédé ou d’un service" status="Enabled"/>
             <code id="45edfafb646848cd81e046ada81e43ce" englishName="R&amp;D Collaboration with Industry" frenchName="Collaboration en R et D avec l'industrie" status="Enabled"/>
             <code id="aadf657a2fa0499da6676d510c090db6" englishName="Business Innovation" frenchName="Innovation commerciale" status="Enabled"/>
             <code id="c2b7119e959346209c0357366e87d20c" englishName="Consulting for Industry" frenchName="Consultation pour l'industrie" status="Enabled"/>
-            <code id="c6704907461d44c5afaaad17d2fb8540" englishName="Involvement in/Creation of Start-up" frenchName="Participation à une nouvelle entreprise ou création d'une nouvelle entreprise" status="Enabled"/>
+            <code id="c6704907461d44c5afaaad17d2fb8540" englishName="Involvement in/Creation of Start-up" frenchName="Participation à une entreprise en démarrage ou création d’une entreprise en démarrage" status="Enabled"/>
             <code id="deddfd88f4e048c0b4af3986e65997a3" englishName="Policy/Regulation Development" frenchName="Élaboration de politiques ou de règlements" status="Enabled"/>
             <code id="edcf1e83b89c4df2a13178d9d36270f0" englishName="Technology Transfer and Commercialization" frenchName="Transfert et commercialisation de la technologie" status="Enabled"/>
         </table>
         <table id="00000000000000000000000100001200" englishName="Leave Type" frenchName="Type de congé" isSystem="false" status="Enabled">
             <code id="00000000000000000000000100001200" englishName="Sabbatical" frenchName="Congé sabbatique" status="Enabled"/>
             <code id="00000000000000000000000100001201" englishName="Special" frenchName="Congé spécial" status="Enabled"/>
-            <code id="00000000000000000000000100001202" englishName="Study" frenchName="Congé de formation" status="Enabled"/>
+            <code id="00000000000000000000000100001202" englishName="Study" frenchName="Congé d'études" status="Enabled"/>
             <code id="00000000000000000000000100001203" englishName="Unpaid" frenchName="Congé sans solde" status="Enabled"/>
             <code id="00000000000000000000000100001204" englishName="Parental" frenchName="Congé parental" status="Enabled"/>
             <code id="00000000000000000000000100001205" englishName="Medical" frenchName="Congé de maladie" status="Enabled"/>
-            <code id="00000000000000000000000100001206" englishName="Administrative" frenchName="Administrative" status="Enabled"/>
+            <code id="00000000000000000000000100001206" englishName="Administrative" frenchName="Congé administratif" status="Enabled"/>
             <code id="1af15668a9db4a2e8305ed4b6632720a" englishName="Other Circumstances" frenchName="Congé pour d'autres circonstances" status="Enabled"/>
             <code id="40101955ab7548409d5354ba646524c7" englishName="Bereavement" frenchName="Congé de deuil" status="Enabled"/>
         </table>
         <table id="00000000000000000000000100001300" englishName="License Status" frenchName="Statut licence" isSystem="false" status="Enabled">
-            <code id="00000000000000000000000100001300" englishName="In Negotiation" frenchName="En négociation" status="Enabled"/>
+            <code id="00000000000000000000000100001300" englishName="In Negotiation" frenchName="En cours de négociation" status="Enabled"/>
             <code id="00000000000000000000000100001301" englishName="Granted" frenchName="Licence obtenue" status="Enabled"/>
         </table>
         <table id="00000000000000000000000100001500" englishName="Patent Status" frenchName="Statut brevet" isSystem="false" status="Enabled">
@@ -21295,7 +21335,7 @@
             <code id="00000000000000000000000100001503" englishName="Rejected" frenchName="Rejeté" status="Disabled"/>
             <code id="5fdb2397f75847828de2fcf0d4e76979" englishName="Expired" frenchName="Expiré" status="Enabled"/>
             <code id="8238f6074a6b40b6ad8e8bcb2a459317" englishName="Lapsed" frenchName="Périmé" status="Enabled"/>
-            <code id="ded7e03bb406407b8fdfec84fec6f824" englishName="Allowed" frenchName="Accepté" status="Enabled"/>
+            <code id="ded7e03bb406407b8fdfec84fec6f824" englishName="Allowed" frenchName="Accordé" status="Enabled"/>
         </table>
         <table id="00000000000000000000000100001600" englishName="Publication Type" frenchName="Type de publication" isSystem="false" status="Enabled">
             <code id="00000000000000000000000100001600" englishName="Book" frenchName="Livre" status="Enabled"/>
@@ -21303,124 +21343,125 @@
             <code id="00000000000000000000000100001602" englishName="Journal" frenchName="Revue" status="Enabled"/>
             <code id="00000000000000000000000100001604" englishName="Newspaper" frenchName="Journal" status="Enabled"/>
             <code id="00000000000000000000000100001605" englishName="Newsletter" frenchName="Bulletin d’information" status="Enabled"/>
-            <code id="00000000000000000000000100001606" englishName="Conference Abstract" frenchName="Abrégé de conférence" status="Enabled"/>
+            <code id="00000000000000000000000100001606" englishName="Conference Abstract" frenchName="Résumé de conférence" status="Enabled"/>
             <code id="00000000000000000000000100001607" englishName="Report" frenchName="Rapport" status="Enabled"/>
         </table>
         <table id="00000000000000000000000100001700" englishName="Publishing Status" frenchName="Statut publication" isSystem="false" status="Enabled">
             <code id="00000000000000000000000100001700" englishName="Submitted" frenchName="Article soumis" status="Enabled"/>
-            <code id="00000000000000000000000100001701" englishName="Revision Requested" frenchName="Révisions requises" status="Enabled"/>
+            <code id="00000000000000000000000100001701" englishName="Revision Requested" frenchName="Révision demandée" status="Enabled"/>
             <code id="00000000000000000000000100001702" englishName="Accepted" frenchName="Article accepté" status="Enabled"/>
             <code id="00000000000000000000000100001703" englishName="In Press" frenchName="Article sous presse" status="Enabled"/>
             <code id="00000000000000000000000100001704" englishName="Published" frenchName="Article publié" status="Enabled"/>
         </table>
         <table id="00000000000000000000000100001800" englishName="Researcher Status" frenchName="Statut du chercheur" isSystem="false" status="Enabled">
-            <code id="00000000000000000000000100001800" englishName="Master's Student" frenchName="Etudiant de deuxième cycle" status="Enabled"/>
-            <code id="00000000000000000000000100001801" englishName="Doctoral Student" frenchName="Etudiant de troisième cycle" status="Enabled"/>
+            <code id="00000000000000000000000100001800" englishName="Master's Student" frenchName="Étudiant de deuxième cycle" status="Enabled"/>
+            <code id="00000000000000000000000100001801" englishName="Doctoral Student" frenchName="Étudiant de troisième cycle" status="Enabled"/>
             <code id="00000000000000000000000100001802" englishName="Post-doctoral Student" frenchName="Stagiaire postdoctoral" status="Enabled"/>
             <code id="00000000000000000000000100001803" englishName="Researcher" frenchName="Chercheur" status="Enabled"/>
         </table>
-        <table id="00000000000000000000000100001900" englishName="Review Type" frenchName="Type de révision" isSystem="false" status="Enabled">
-            <code id="00000000000000000000000100001900" englishName="Open" frenchName="Ouverte" status="Enabled"/>
-            <code id="00000000000000000000000100001901" englishName="Blind" frenchName="Aveugle" status="Enabled"/>
+        <table id="00000000000000000000000100001900" englishName="Review Type" frenchName="Type d'examen" isSystem="false" status="Enabled">
+            <code id="00000000000000000000000100001900" englishName="Open" frenchName="Ouvert" status="Enabled"/>
+            <code id="00000000000000000000000100001901" englishName="Blind" frenchName="À l’aveugle" status="Enabled"/>
             <code id="00000000000000000000000100001902" englishName="Double Blind" frenchName="En double aveugle" status="Enabled"/>
         </table>
         <table id="00000000000000000000000100002000" englishName="Funding Reviewer Type" frenchName="Type d'évaluateur du financement" isSystem="false" status="Enabled">
-            <code id="00000000000000000000000100002000" englishName="Academic Reviewer" frenchName="Académique" status="Enabled"/>
-            <code id="00000000000000000000000100002001" englishName="Non-academic Reviewer" frenchName="Examinateur non-académique" status="Enabled"/>
-            <code id="00000000000000000000000100002002" englishName="Knowledge User" frenchName="Utilisateur de connaissances" status="Enabled"/>
+            <code id="00000000000000000000000100002000" englishName="Academic Reviewer" frenchName="Évaluateur universitaire" status="Enabled"/>
+            <code id="00000000000000000000000100002001" englishName="Non-academic Reviewer" frenchName="Évaluateur non universitaire" status="Enabled"/>
+            <code id="00000000000000000000000100002002" englishName="Knowledge User" frenchName="Utilisateur des connaissances" status="Enabled"/>
             <code id="00000000000000000000000100002003" englishName="Industry" frenchName="Industrie" status="Enabled"/>
         </table>
         <table id="00000000000000000000000100002100" englishName="Publication Role" frenchName="Rôle-publication" isSystem="false" status="Enabled">
             <code id="00000000000000000000000100002100" englishName="First Listed Author" frenchName="Auteur principal" status="Enabled"/>
-            <code id="00000000000000000000000100002101" englishName="First Listed Editor" frenchName="Éditeur principal" status="Enabled"/>
+            <code id="00000000000000000000000100002101" englishName="First Listed Editor" frenchName="Rédacteur en chef" status="Enabled"/>
             <code id="00000000000000000000000100002102" englishName="Co-Author" frenchName="Coauteur" status="Enabled"/>
-            <code id="00000000000000000000000100002103" englishName="Co-Editor" frenchName="Coéditeur" status="Enabled"/>
+            <code id="00000000000000000000000100002103" englishName="Co-Editor" frenchName="Corédacteur" status="Enabled"/>
             <code id="f6f1d34952c44f7c884ac56036b3ba4d" englishName="Last Author" frenchName="Dernier auteur" status="Enabled"/>
         </table>
         <table id="00000000000000000000000100002300" englishName="Committee Role" frenchName="Rôle-participation à un comité" isSystem="false" status="Enabled">
-            <code id="00000000000000000000000100002300" englishName="Chair" frenchName="Président" status="Enabled"/>
+            <code id="00000000000000000000000100002300" englishName="Chair" frenchName="Présidence" status="Enabled"/>
             <code id="00000000000000000000000100002301" englishName="Committee Member" frenchName="Membre d'un comité" status="Enabled"/>
-            <code id="00000000000000000000000100002302" englishName="Co-chair" frenchName="Coprésident" status="Enabled"/>
-            <code id="00000000000000000000000100002303" englishName="Group Chair" frenchName="Président de groupe" status="Enabled"/>
+            <code id="00000000000000000000000100002302" englishName="Co-chair" frenchName="Coprésidence" status="Enabled"/>
+            <code id="00000000000000000000000100002303" englishName="Group Chair" frenchName="Présidence d’un groupe" status="Enabled"/>
             <code id="00000000000000000000000100002304" englishName="Ex-Officio" frenchName="Membre d’office" status="Enabled"/>
         </table>
         <table id="00000000000000000000000100002400" englishName="Graduate Examination Role" frenchName="Rôle d’examen de diplôme universitaire" isSystem="false" status="Enabled">
             <code id="00000000000000000000000100002400" englishName="Chair" frenchName="Président" status="Enabled"/>
-            <code id="00000000000000000000000100002401" englishName="Committee Member" frenchName="Membre du comité" status="Enabled"/>
+            <code id="00000000000000000000000100002401" englishName="Committee Member" frenchName="Membre d’un jury" status="Enabled"/>
             <code id="00000000000000000000000100002402" englishName="Examiner" frenchName="Évaluateur" status="Enabled"/>
-            <code id="00000000000000000000000100002405" englishName="Thesis Defense Chair" frenchName="Président du comité pour l'évaluation des thèses" status="Enabled"/>
-            <code id="00000000000000000000000100002406" englishName="Thesis Defense Examiner" frenchName="Membre du comité pour l'évaluation des thèses" status="Enabled"/>
-            <code id="00000000000000000000000100002407" englishName="Candidacy Committee Member" frenchName="Membre du comité de candidature" status="Enabled"/>
-            <code id="00000000000000000000000100002408" englishName="Candidacy Committee Chair" frenchName="Président du comité de candidature" status="Enabled"/>
+            <code id="00000000000000000000000100002405" englishName="Thesis Defense Chair" frenchName="Président d’un jury de soutenance de thèse de doctorat" status="Enabled"/>
+            <code id="00000000000000000000000100002406" englishName="Thesis Defense Examiner" frenchName="Examinateur de soutenance de thèse de doctorat" status="Enabled"/>
+            <code id="00000000000000000000000100002407" englishName="Candidacy Committee Member" frenchName="Membre d’un jury de candidature" status="Enabled"/>
+            <code id="00000000000000000000000100002408" englishName="Candidacy Committee Chair" frenchName="Président d’un jury de candidature" status="Enabled"/>
             <code id="00000000000000000000000100002409" englishName="Capping Project Evaluator" frenchName="Évaluateur du projet de fin d'études" status="Enabled"/>
-            <code id="00000000000000000000000100002410" englishName="Master's Oral Exam Chair" frenchName="Président du comité de l'examen oral de maîtrise" status="Enabled"/>
-            <code id="00000000000000000000000100002411" englishName="Master's Oral Exam Member" frenchName="Membre du comité de l'examen oral de maîtrise" status="Enabled"/>
-            <code id="00000000000000000000000100002412" englishName="Master's Proposal Defense Chair" frenchName="Président du comité pour l'évaluation de la proposition de la maîtrise" status="Enabled"/>
-            <code id="00000000000000000000000100002413" englishName="Master's Proposal Defense Member" frenchName="Membre du comité pour l'évaluation de la proposition de la maîtrise" status="Enabled"/>
-            <code id="00000000000000000000000100002414" englishName="PhD Comprehensive Exam Committee Member" frenchName="Membre du comité de l'examen détaillé de doctorat" status="Enabled"/>
+            <code id="00000000000000000000000100002410" englishName="Master's Oral Exam Chair" frenchName="Président d’un jury d’examen oral de maîtrise" status="Enabled"/>
+            <code id="00000000000000000000000100002411" englishName="Master's Oral Exam Member" frenchName="Membre d’un jury d’examen oral de maîtrise" status="Enabled"/>
+            <code id="00000000000000000000000100002412" englishName="Master's Proposal Defense Chair" frenchName="Président d’un jury de soutenance de mémoire de maîtrise" status="Enabled"/>
+            <code id="00000000000000000000000100002413" englishName="Master's Proposal Defense Member" frenchName="Membre d’un jury de soutenance de mémoire de maîtrise" status="Enabled"/>
+            <code id="00000000000000000000000100002414" englishName="PhD Comprehensive Exam Committee Member" frenchName="Membre d’un jury d’examen de synthèse de doctorat" status="Enabled"/>
             <code id="00000000000000000000000100002415" englishName="PhD External Reader" frenchName="Lecteur externe pour le doctorat" status="Enabled"/>
             <code id="00000000000000000000000100002416" englishName="PhD External Examiner" frenchName="Évaluateur externe pour le doctorat" status="Enabled"/>
-            <code id="00000000000000000000000100002417" englishName="PhD Oral Exam Chair" frenchName="Président du comité de l'examen oral du doctorat" status="Enabled"/>
-            <code id="00000000000000000000000100002418" englishName="PhD Oral Exam Member" frenchName="Membre du comité de l'examen oral du doctorat" status="Enabled"/>
+            <code id="00000000000000000000000100002417" englishName="PhD Oral Exam Chair" frenchName="Président d’un jury d’examen oral de doctorat" status="Enabled"/>
+            <code id="00000000000000000000000100002418" englishName="PhD Oral Exam Member" frenchName="Membre d’un jury d’examen oral de doctorat" status="Enabled"/>
         </table>
         <table id="00000000000000000000000100002700" englishName="Funding Reviewer Role" frenchName="Rôle-act. D'éval. Demandes de financement" isSystem="false" status="Enabled">
-            <code id="00000000000000000000000100002700" englishName="Chair" frenchName="Président" status="Enabled"/>
+            <code id="00000000000000000000000100002700" englishName="Chair" frenchName="Présidence" status="Enabled"/>
             <code id="00000000000000000000000100002701" englishName="Scientific Officer" frenchName="Agent scientifique" status="Enabled"/>
             <code id="00000000000000000000000100002702" englishName="Committee Member" frenchName="Membre de comité" status="Enabled"/>
-            <code id="00000000000000000000000100002703" englishName="External Reviewer" frenchName="Examinateur externe" status="Enabled"/>
+            <code id="00000000000000000000000100002703" englishName="External Reviewer" frenchName="Évaluateur externe" status="Enabled"/>
         </table>
         <table id="00000000000000000000000100002800" englishName="Funding Role" frenchName="Rôle-financement" isSystem="false" status="Enabled">
             <code id="00000000000000000000000100002800" englishName="Principal Investigator" frenchName="Chercheur principal" status="Enabled"/>
-            <code id="00000000000000000000000100002801" englishName="Co-investigator" frenchName="Co-chercheur" status="Enabled"/>
-            <code id="00000000000000000000000100002802" englishName="Co-applicant" frenchName="Co-demandeur" status="Enabled"/>
+            <code id="00000000000000000000000100002801" englishName="Co-investigator" frenchName="Cochercheur" status="Enabled"/>
+            <code id="00000000000000000000000100002802" englishName="Co-applicant" frenchName="Cocandidat" status="Enabled"/>
             <code id="00000000000000000000000100002803" englishName="Collaborator" frenchName="Collaborateur" status="Enabled"/>
-            <code id="00000000000000000000000100002804" englishName="Principal Knowledge User" frenchName="Utilisateur de connaissances principal" status="Enabled"/>
+            <code id="00000000000000000000000100002804" englishName="Principal Knowledge User" frenchName="Utilisateur des connaissances principal" status="Enabled"/>
             <code id="00000000000000000000000100002805" englishName="Decision Maker" frenchName="Décideur" status="Enabled"/>
-            <code id="00000000000000000000000100002806" englishName="Policy Maker" frenchName="Élaborateur de politique" status="Enabled"/>
-            <code id="00000000000000000000000100002807" englishName="Principal Applicant" frenchName="Demandeur principal" status="Enabled"/>
-            <code id="00000000000000000000000100002808" englishName="Co-knowledge User" frenchName="Utilisateur de connaissances adjoint" status="Enabled"/>
-            <code id="1ab8f85bbd174eb196956e6448120a24" englishName="Project Expert" frenchName="Expert de projet" status="Disabled"/>
+            <code id="00000000000000000000000100002806" englishName="Policy Maker" frenchName="Responsable des politiques" status="Enabled"/>
+            <code id="00000000000000000000000100002807" englishName="Principal Applicant" frenchName="Candidat principal" status="Enabled"/>
+            <code id="00000000000000000000000100002808" englishName="Co-knowledge User" frenchName="Co-utilisateur des connaissances" status="Enabled"/>
+            <code id="1ab8f85bbd174eb196956e6448120a24" englishName="Project Expert" frenchName="Spécialiste de projet" status="Disabled"/>
             <code id="20deec55da7f41658697f99a9a6941bc" englishName="Program Leader" frenchName="Directeur de programme" status="Disabled"/>
             <code id="7d4d113c7a3e49718c4faa306ad294f6" englishName="Project Leader" frenchName="Directeur de projet" status="Disabled"/>
             <code id="80158fb4d8e241f0a4bec1d9a97fb36d" englishName="Program Expert" frenchName="Expert de programme" status="Disabled"/>
             <code id="8750c6001be14e6c9631e32304382a2b" englishName="Nominated Principal Applicant" frenchName="Candidat principal désigné" status="Disabled"/>
             <code id="a1a3104c8a694fc49e1ccc8ebefe3803" englishName="Nominated Principal Investigator" frenchName="Chercheur principal désigné" status="Disabled"/>
+            <code id="b557849420bb4565b1ff306dfa7f8211" englishName="Co-director" frenchName="Codirecteur" status="Enabled"/>
         </table>
-        <table id="00000000000000000000000100002900" englishName="Supervision Role" frenchName="Rôle-superviseur" isSystem="false" status="Enabled">
-            <code id="00000000000000000000000100002900" englishName="Principal Supervisor" frenchName="Superviseur principal" status="Enabled"/>
-            <code id="00000000000000000000000100002901" englishName="Co-Supervisor" frenchName="Cosuperviseur" status="Enabled"/>
-            <code id="00000000000000000000000100002902" englishName="Academic Advisor" frenchName="Conseiller académique" status="Enabled"/>
+        <table id="00000000000000000000000100002900" englishName="Supervision Role" frenchName="Rôle de supervision" isSystem="false" status="Enabled">
+            <code id="00000000000000000000000100002900" englishName="Principal Supervisor" frenchName="Directeur de recherche principal" status="Enabled"/>
+            <code id="00000000000000000000000100002901" englishName="Co-Supervisor" frenchName="Codirecteur de recherche" status="Enabled"/>
+            <code id="00000000000000000000000100002902" englishName="Academic Advisor" frenchName="Conseiller universitaire" status="Enabled"/>
         </table>
         <table id="00000000000000000000000100003200" englishName="Trademark Status" frenchName="Statut de la marque de commerce" isSystem="false" status="Enabled">
             <code id="00000000000000000000000100003200" englishName="All" frenchName="Tout" status="Disabled"/>
-            <code id="00000000000000000000000100003201" englishName="All Active" frenchName="Actif" status="Disabled"/>
+            <code id="00000000000000000000000100003201" englishName="All Active" frenchName="Active" status="Disabled"/>
             <code id="00000000000000000000000100003202" englishName="Pending" frenchName="En instance" status="Enabled"/>
-            <code id="00000000000000000000000100003203" englishName="Registered" frenchName="Enregistré" status="Enabled"/>
-            <code id="00000000000000000000000100003204" englishName="All Inactive" frenchName="Inactif" status="Disabled"/>
+            <code id="00000000000000000000000100003203" englishName="Registered" frenchName="Enregistrée" status="Enabled"/>
+            <code id="00000000000000000000000100003204" englishName="All Inactive" frenchName="Inactive" status="Disabled"/>
         </table>
         <table id="00000000000000000000000100003400" englishName="Recognition Type" frenchName="Type de reconnaissance" isSystem="false" status="Enabled">
             <code id="00000000000000000000000100003400" englishName="Honor" frenchName="Honneur" status="Enabled"/>
-            <code id="00000000000000000000000100003401" englishName="Prize / Award" frenchName="Prix / Récompense" status="Enabled"/>
+            <code id="00000000000000000000000100003401" englishName="Prize / Award" frenchName="Prix" status="Enabled"/>
             <code id="00000000000000000000000100003402" englishName="Distinction" frenchName="Distinction" status="Enabled"/>
             <code id="00000000000000000000000100003403" englishName="Citation" frenchName="Citation" status="Enabled"/>
         </table>
-        <table id="00000000000000000000000100003500" englishName="Setting Type" frenchName="Type d’environnement" isSystem="false" status="Enabled">
+        <table id="00000000000000000000000100003500" englishName="Setting Type" frenchName="Type de milieu" isSystem="false" status="Enabled">
             <code id="00000000000000000000000100003500" englishName="Rural" frenchName="Rural" status="Enabled"/>
             <code id="00000000000000000000000100003501" englishName="Urban" frenchName="Urbain" status="Enabled"/>
             <code id="00000000000000000000000100003502" englishName="Both" frenchName="Les deux" status="Enabled"/>
         </table>
-        <table id="00000000000000000000000100003600" englishName="Stakeholder" frenchName="Intervenants" isSystem="false" status="Enabled">
-            <code id="00000000000000000000000100003600" englishName="Healthcare Personnel" frenchName="Personnel de santé" status="Enabled"/>
-            <code id="00000000000000000000000100003601" englishName="Patients" frenchName="Le patient" status="Enabled"/>
-            <code id="00000000000000000000000100003602" englishName="General Public" frenchName="Public" status="Enabled"/>
-            <code id="00000000000000000000000100003603" englishName="Elders" frenchName="Aînés" status="Enabled"/>
-            <code id="00000000000000000000000100003604" englishName="Academic Personnel" frenchName="Personnel académique" status="Enabled"/>
+        <table id="00000000000000000000000100003600" englishName="Stakeholder" frenchName="Parties prenantes" isSystem="false" status="Enabled">
+            <code id="00000000000000000000000100003600" englishName="Healthcare Personnel" frenchName="Personnel des services de soins de santé" status="Enabled"/>
+            <code id="00000000000000000000000100003601" englishName="Patients" frenchName="Patients" status="Enabled"/>
+            <code id="00000000000000000000000100003602" englishName="General Public" frenchName="Grand public" status="Enabled"/>
+            <code id="00000000000000000000000100003603" englishName="Elders" frenchName="Personnes âgées" status="Enabled"/>
+            <code id="00000000000000000000000100003604" englishName="Academic Personnel" frenchName="Personnel universitaire" status="Enabled"/>
             <code id="00000000000000000000000100003605" englishName="Charity Organizations" frenchName="Organisations de bienfaisance" status="Enabled"/>
-            <code id="00000000000000000000000100003606" englishName="The Media" frenchName="Les médias" status="Enabled"/>
-            <code id="00000000000000000000000100003607" englishName="Government Personnel" frenchName="Personnel du gouvernement" status="Enabled"/>
+            <code id="00000000000000000000000100003606" englishName="The Media" frenchName="Médias" status="Enabled"/>
+            <code id="00000000000000000000000100003607" englishName="Government Personnel" frenchName="Personnel des services du gouvernement" status="Enabled"/>
             <code id="15363bcd7ee7485cbf4cf733f9e866ba" englishName="Utility" frenchName="Service public" status="Enabled"/>
             <code id="1f5f9bb694744eda9202cb7c715f654c" englishName="Industry/Business (&gt;500 employees)" frenchName="Grande entreprise (plus de 500 employés)" status="Enabled"/>
-            <code id="21e11b89541c439b8c0ed7b8823b706e" englishName="Policy Maker/Regulator" frenchName="Décideur ou organisme de réglementation" status="Enabled"/>
+            <code id="21e11b89541c439b8c0ed7b8823b706e" englishName="Policy Maker/Regulator" frenchName="Responsable des politiques ou organisme de règlementationn" status="Enabled"/>
             <code id="58c695a913a54c28a653eac3d8e06bfd" englishName="Industry/Business-Small (&lt;100 employees)" frenchName="Petite entreprise (moins de 100 employés)" status="Enabled"/>
             <code id="7b3bae47bd31465da501b4e68b2c78f1" englishName="Industry/Business-Medium (100 to 500 employees)" frenchName="Moyenne entreprise (de 100 à 500 employés)" status="Enabled"/>
             <code id="a28a00e517884fec97d3824875c374f4" englishName="Industry" frenchName="Industrie" status="Disabled"/>
@@ -21444,21 +21485,21 @@
             <code id="00000000000000000000000100003900" englishName="Economics" frenchName="Économie" status="Enabled"/>
             <code id="00000000000000000000000100003901" englishName="Health" frenchName="Santé" status="Enabled"/>
             <code id="00000000000000000000000100003902" englishName="Politics" frenchName="Politique" status="Enabled"/>
-            <code id="00000000000000000000000100003903" englishName="Science and Technologies" frenchName="Sciences et technologies" status="Enabled"/>
+            <code id="00000000000000000000000100003903" englishName="Science and Technologies" frenchName="Sciences et technologie" status="Enabled"/>
             <code id="00000000000000000000000100003904" englishName="Social Relations and Structures" frenchName="Structures et relations sociales" status="Enabled"/>
         </table>
         <table id="00000000000000000000000100004000" englishName="Technological Application Category" frenchName="Catégorie d’application technologique" isSystem="false" status="Enabled">
-            <code id="00000000000000000000000100004000" englishName="Agro-alimentary" frenchName="Agro-alimentaire" status="Enabled"/>
-            <code id="00000000000000000000000100004001" englishName="Chemistry / Biochemistry" frenchName="Chimie / Biochimie" status="Enabled"/>
-            <code id="00000000000000000000000100004002" englishName="Medical materials and instrumentation" frenchName="Matériels et instrumentation médicaux" status="Enabled"/>
-            <code id="00000000000000000000000100004003" englishName="Orthopaedic devices" frenchName="Appareils d'assistance" status="Enabled"/>
+            <code id="00000000000000000000000100004000" englishName="Agro-alimentary" frenchName="Agroalimentaire" status="Enabled"/>
+            <code id="00000000000000000000000100004001" englishName="Chemistry / Biochemistry" frenchName="Chimie/biochimie" status="Enabled"/>
+            <code id="00000000000000000000000100004002" englishName="Medical materials and instrumentation" frenchName="Matériel et dispositifs médicaux" status="Enabled"/>
+            <code id="00000000000000000000000100004003" englishName="Orthopaedic devices" frenchName="Dispositifs orthopédiques" status="Enabled"/>
             <code id="00000000000000000000000100004004" englishName="Pharmacy" frenchName="Pharmacie" status="Enabled"/>
         </table>
-        <table id="00000000000000000000000100005000" englishName="Audience Type" frenchName="Type d'audience" isSystem="false" status="Enabled">
-            <code id="00000000000000000000000100005000" englishName="Researcher" frenchName="Chercheur" status="Enabled"/>
-            <code id="00000000000000000000000100005001" englishName="Knowledge User" frenchName="Utilisateurs de connaissances" status="Enabled"/>
-            <code id="00000000000000000000000100005002" englishName="Decision Maker" frenchName="Preneur de décision" status="Enabled"/>
-            <code id="00000000000000000000000100005003" englishName="General Public" frenchName="Public" status="Enabled"/>
+        <table id="00000000000000000000000100005000" englishName="Audience Type" frenchName="Type de public" isSystem="false" status="Enabled">
+            <code id="00000000000000000000000100005000" englishName="Researcher" frenchName="Chercheurs" status="Enabled"/>
+            <code id="00000000000000000000000100005001" englishName="Knowledge User" frenchName="Utilisateur des connaissances" status="Enabled"/>
+            <code id="00000000000000000000000100005002" englishName="Decision Maker" frenchName="Décideurs" status="Enabled"/>
+            <code id="00000000000000000000000100005003" englishName="General Public" frenchName="Grand public" status="Enabled"/>
         </table>
         <table id="00000000000000000000000100006000" englishName="Artistic Role" frenchName="Rôle artistique" isSystem="false" status="Disabled">
             <code id="00000000000000000000000100006000" englishName="Performer" frenchName="Interprète" status="Disabled"/>
@@ -21470,20 +21511,20 @@
             <code id="00000000000000000000000100007002" englishName="Poster" frenchName="Affiche" status="Enabled"/>
         </table>
         <table id="092a1732f0bd431bad2b0fa07f045a46" englishName="Supervisory Degrees" frenchName="Degrés d’encadrement" isSystem="false" status="Enabled">
-            <code id="023c853c109e48e7a45838292d0a228a" englishName="Doctorate Equivalent" frenchName="Equivalent au doctorat" code="8" status="Enabled"/>
+            <code id="023c853c109e48e7a45838292d0a228a" englishName="Doctorate Equivalent" frenchName="Équivalent du doctorat" code="8" status="Enabled"/>
             <code id="4f0939ef786e4c23b441f8fbbcaf4ac4" englishName="Master’s non-Thesis" frenchName="Maîtrise sans mémoire" code="5" status="Enabled"/>
             <code id="523470197e8942d89d951d922f4abb0d" englishName="Bachelor’s" frenchName="Baccalauréat" code="1" status="Enabled"/>
             <code id="6bb179b92d1d46059bae10f6d21ea096" englishName="Master’s Thesis" frenchName="Maîtrise avec mémoire" code="6" status="Enabled"/>
-            <code id="87d9c9f3e9ca4a53bbe2c4f3267c97dc" englishName="Bachelor’s Honours" frenchName="Baccalauréat avec distinctions" code="3" status="Enabled"/>
-            <code id="88269e1c7cd544bb93252e1b89491440" englishName="Master’s Equivalent" frenchName="Equivalent à la maîtrise" code="4" status="Enabled"/>
+            <code id="87d9c9f3e9ca4a53bbe2c4f3267c97dc" englishName="Bachelor’s Honours" frenchName="Baccalauréat spécialisé" code="3" status="Enabled"/>
+            <code id="88269e1c7cd544bb93252e1b89491440" englishName="Master’s Equivalent" frenchName="Équivalent de la maîtrise" code="4" status="Enabled"/>
             <code id="94e9ba5f8af842ec98a5bf967dbe4d39" englishName="Certificate" frenchName="Certificat" code="10" status="Enabled"/>
             <code id="971953ad86ca49f3b32ac5c7c2758a1b" englishName="Doctorate" frenchName="Doctorat" code="7" status="Enabled"/>
             <code id="a917e7d50b324463977b8a60e9b56748" englishName="Diploma" frenchName="Diplôme" code="11" status="Enabled"/>
-            <code id="b8d9c4726c0947f0b26d46583a4063db" englishName="Bachelor’s Equivalent" frenchName="Equivalent au baccalauréat" code="2" status="Enabled"/>
+            <code id="b8d9c4726c0947f0b26d46583a4063db" englishName="Bachelor’s Equivalent" frenchName="Équivalent du baccalauréat" code="2" status="Enabled"/>
             <code id="cec964a29a63457883789e8223d0eb28" englishName="Habilitation" frenchName="Habilitation" code="12" status="Enabled"/>
             <code id="de2fd9540d674e7aae7d16be799c5b7f" englishName="Technician" frenchName="Technicien" code="14" status="Enabled"/>
             <code id="e0b26301c88d4be5a6f7143981c9b3bb" englishName="Post-doctorate" frenchName="Postdoctorat" code="9" status="Enabled"/>
-            <code id="f572c198c89f43ca815aca9731fbcafe" englishName="Research Associate" frenchName="Attaché de recherche" code="13" status="Enabled"/>
+            <code id="f572c198c89f43ca815aca9731fbcafe" englishName="Research Associate" frenchName="Associé de recherche" code="13" status="Enabled"/>
         </table>
         <table id="2f859939bc4f4faaa9829ccde7ed73a8" englishName="Contribution Percentage" frenchName="Pourcentage de la contribution" isSystem="false" status="Enabled">
             <code id="2cbfd4e8561644bba03193fd09fee146" englishName="41-50" frenchName="41-50" status="Enabled"/>
@@ -21525,7 +21566,7 @@
             <code id="b436c55f16d74ab386355ce86a44474e" englishName="Central Canada" frenchName="Canada central" status="Enabled"/>
             <code id="b6b09ffc076b453d9109f2fa87476a13" englishName="Southern Africa" frenchName="Afrique méridionale" status="Enabled"/>
             <code id="d2484ab255864f528335d97e2507c84e" englishName="Caribbean" frenchName="Caraïbes" status="Enabled"/>
-            <code id="d557510d977544ddb1e23b8ea8f7b9c6" englishName="Former Soviet Union" frenchName="Anciennement Union des républiques socialistes soviétiques" status="Enabled"/>
+            <code id="d557510d977544ddb1e23b8ea8f7b9c6" englishName="Former Soviet Union" frenchName="Ancienne Union des républiques socialistes soviétiques" status="Enabled"/>
             <code id="d5adc61a9e004e2aa775c26690868d67" englishName="Near and Middle East" frenchName="Proche-Orient et Moyen-Orient" status="Enabled"/>
             <code id="d5e4f08d5b5c4f9eb9e4e373ba9df905" englishName="Southwest Asia" frenchName="Asie du Sud-Ouest" status="Enabled"/>
             <code id="d6311944f143447e836add2ce6a994eb" englishName="Africa" frenchName="Afrique" status="Enabled"/>

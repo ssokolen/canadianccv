@@ -4,7 +4,7 @@ from lxml import etree
 import logging
 import os
 import re
-import toml
+import tomlkit
 import warnings
 import yaml
 from yaml.constructor import SafeConstructor
@@ -513,7 +513,7 @@ class CCV(object):
     def add_toml(self, text):
         """Add contents of TOML formatted string"""
 
-        self.add_content(toml.load(text))
+        self.add_content(tomlkit.parse(text))
 
     #---------------------------------------------------------------------------
     # User functions for output
